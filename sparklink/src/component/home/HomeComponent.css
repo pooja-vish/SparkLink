@@ -1,0 +1,107 @@
+.text_body {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: #fff;
+    font-size: large;
+}
+
+.text_caption {
+    font-family: "Roboto", sans-serif;
+    font-weight: 600 !important;
+    font-style: normal;
+    color: #fff !important;
+    font-size: xxx-large !important;
+}
+
+.text_sub_caption {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500 !important;
+    font-style: normal;
+    color: #fff !important;
+    font-size: x-large !important;
+}
+
+.container-fluid.background {
+    /* background: linear-gradient(135deg, #1a00ff, #ff007b 70%, #ff3f6c); */
+    background: linear-gradient(135deg, #0d1b2a, #1b263b 70%, #415a77);
+    border-radius: 15px;
+    height: 700px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 11px 11px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.carousel-indicators {
+    display: none !important;
+}
+
+.carousel-control-prev {
+    display: none !important;
+}
+
+.carousel-control-next {
+    display: none !important;
+}
+
+.button_text {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: #000;
+    font-size: large;
+}
+
+.container-fluid.background_level_2 {
+    background: #fff;
+    border-radius: 15px;
+    height: 500px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 11px 11px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.text_tagline {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500 !important;
+    font-style: normal;
+    /* color: #000 !important; */
+    background: linear-gradient(135deg, #1a00ff, #ff007b 70%, #ff3f6c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-size: xx-large !important;
+}
+
+.text_subtagline {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400 !important;
+    font-style: normal;
+    background: linear-gradient(135deg, #E6B875, #B8792E 70%, #E6C085);
+    /* background: linear-gradient(135deg, #FFD194, #D1913C 70%, #FFE29F); */
+    /* background: linear-gradient(135deg, #434343, #000000 70%, #1C1C1C); */
+    /* background: linear-gradient(135deg, #1a00ff, #ff007b 70%, #ff3f6c); */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-size: x-large !important;
+}
+
+.vertical-separator {
+    width: 2px;
+    height: 100px;
+    background-color: #e0e0e0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    margin: 0 20px;
+}
+
+
+@media only screen and (min-width: 1200px) {
+    .heading {
+        padding-left: 15%;
+    }
+}
