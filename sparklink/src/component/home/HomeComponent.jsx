@@ -55,25 +55,65 @@ const HomeComponent = () => {
                     </div>
                 </div>
 
-                <div className="row">
-                    <div className="col-lg-4 col-md-4">
-                        <FontAwesomeIcon icon="fa-solid fa-house" />
-                        <div className="text_subtagline text-center">
-
-                            Bring Your Ideas to Life
+                <div className="row mt-5">
+                    <div className="col-lg-4 col-md-4 text-center">
+                        <div className="d-flex align-items-center justify-content-center">
+                            <div className="view_card">
+                                <span className="card_text_caption">Bring Your Ideas to Life</span>
+                                <br />
+                                <br />
+                                <span className="text_subtagline">
+                                    Unlock the potential of your innovative concepts with UWindsor SparkLink.
+                                    Our platform connects you with talented Computer Science students eager to
+                                    transform your IT project visions into reality,
+                                    ensuring your ideas are executed effectively and efficiently.
+                                </span>
+                                <br />
+                                <br />
+                                <button className="text-center button_text button-home">Know More</button>
+                            </div>
+                            {/* <div className="ms-5 line-separator"></div> */}
                         </div>
                     </div>
-                    <div className="col-lg-4 col-md-4">
-                        <div className="text_subtagline text-center">
-                            Showcase Your Skills and Achievements
+                    <div className="col-lg-4 col-md-4 text-center">
+                        <div className="d-flex align-items-center justify-content-center">
+                            <div className="view_card">
+                                <span className="card_text_caption">Showcase Your Skills and Achievements</span>
+                                <br />
+                                <br />
+                                <span className="text_subtagline">
+                                    Showcase your skills and accomplishments,
+                                    gain valuable experience and build a robust portfolio that highlights
+                                    your expertise, making you stand out to future employers.
+                                </span>
+                                <br />
+                                <br />
+                                <button className="text-center button_text button-home">Know More</button>
+                            </div>
+                            {/* <div className="ms-5 line-separator"></div> */}
                         </div>
                     </div>
-                    <div className="col-lg-4 col-md-4">
-                        <div className="text_subtagline text-center">
-                            Track Your Progress and Milestones
+                    <div className="col-lg-4 col-md-4 text-center">
+                        <div className="d-flex align-items-center justify-content-center">
+                            <div className="view_card">
+                                <span className="card_text_caption">Track Your Progress and Milestones</span>
+                                <br />
+                                <br />
+                                <span className="text_subtagline">
+                                    Stay organized and motivated by tracking your project's progress 
+                                    and milestones on the UWindsor SparkLink platform. 
+                                    Monitor your accomplishments, set goals, and celebrate achievements 
+                                    as you collaborate with departments to deliver impactful IT solutions.
+                                </span>
+                                <br />
+                                <br />
+                                <button className="text-center button_text button-home">Know More</button>
+                            </div>
+                            {/* <div className="ms-5 line-separator"></div> */}
                         </div>
                     </div>
                 </div>
+
             </div>
         </>
     );
