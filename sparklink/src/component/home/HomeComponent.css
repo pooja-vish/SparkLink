@@ -56,7 +56,7 @@
 .container-fluid.background_level_2 {
     background: #fff;
     border-radius: 15px;
-    height: 500px;
+    height: 550px;
     padding: 20px;
     margin: 10px 0;
     box-shadow: 11px 11px 16px rgba(0, 0, 0, 0.2);
@@ -80,25 +80,40 @@
     font-family: "Roboto", sans-serif;
     font-weight: 400 !important;
     font-style: normal;
-    background: linear-gradient(135deg, #E6B875, #B8792E 70%, #E6C085);
-    /* background: linear-gradient(135deg, #FFD194, #D1913C 70%, #FFE29F); */
-    /* background: linear-gradient(135deg, #434343, #000000 70%, #1C1C1C); */
-    /* background: linear-gradient(135deg, #1a00ff, #ff007b 70%, #ff3f6c); */
+    /* background: linear-gradient(135deg, #E6B875, #B8792E 70%, #E6C085);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent; */
+    color: #fff;
+    font-size: medium !important;
+    padding-top: 10px;
+}
+
+.view_card {
+    height: 300px;
+    width: 100%;
+    background: linear-gradient(135deg, #1a00ff, #ff007b 70%, #ff3f6c);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 11px 11px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    max-height: 500px !important;
+    overflow-y: auto !important;
+}
+
+.card_text_subcaption {
+    color: #fff;
+}
+
+.card_text_caption {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500 !important;
+    font-style: normal;
+    color: #fff !important;
     font-size: x-large !important;
 }
-
-.vertical-separator {
-    width: 2px;
-    height: 100px;
-    background-color: #e0e0e0;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-    margin: 0 20px;
-}
-
 
 @media only screen and (min-width: 1200px) {
     .heading {
