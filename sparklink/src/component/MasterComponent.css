@@ -26,3 +26,26 @@
 .sparklink_logo {
     height: 58px;
 }
+
+@media (max-width: 768px) {
+    .heading {
+        text-align: center;
+    }
+
+    .nav-text {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-item {
+        margin-bottom: 0;
+    }
+}
+
+@media (min-width: 769px) {
+    .nav-text {
+        justify-content: flex-end;
+        padding-right: 0px;
+    }
+}
