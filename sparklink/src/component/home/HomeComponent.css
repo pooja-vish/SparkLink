@@ -1,5 +1,5 @@
 .text_body {
-    font-family: "Roboto", sans-serif;
+    font-family: "Poppins", system-ui;
     font-weight: 500;
     font-style: normal;
     color: #fff;
@@ -7,7 +7,7 @@
 }
 
 .text_caption {
-    font-family: "Roboto", sans-serif;
+    font-family: "Poppins", system-ui;
     font-weight: 600 !important;
     font-style: normal;
     color: #fff !important;
@@ -15,11 +15,15 @@
 }
 
 .text_sub_caption {
-    font-family: "Roboto", sans-serif;
+    font-family: "Poppins", system-ui;
     font-weight: 500 !important;
     font-style: normal;
-    color: #fff !important;
+    color: #999 !important;
     font-size: x-large !important;
+}
+
+.home_container {
+    padding: 35px 35px 35px 65px !important;
 }
 
 .container-fluid.background {
@@ -42,7 +46,7 @@
 }
 
 .button_text {
-    font-family: "Roboto", sans-serif;
+    font-family: "Poppins", system-ui;
     font-weight: 500;
     font-style: normal;
     color: #000;
@@ -96,11 +100,12 @@
 }
 
 .text_tagline {
-    font-family: "Roboto", sans-serif;
-    font-weight: 500 !important;
+    font-family: "Poppins", system-ui;
+    font-weight: 600 !important;
     font-style: normal;
     /* color: #000 !important; */
-    background: linear-gradient(135deg, #1a00ff, #ff007b 70%, #ff3f6c);
+    /* background: linear-gradient(135deg, #1a00ff, #ff007b 70%, #ff3f6c); */
+    background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -109,7 +114,7 @@
 }
 
 .text_subtagline {
-    font-family: "Roboto", sans-serif;
+    font-family: "Poppins", system-ui;
     font-weight: 400 !important;
     font-style: normal;
     /* background: linear-gradient(135deg, #E6B875, #B8792E 70%, #E6C085);
@@ -154,7 +159,7 @@
 }
 
 .card_text_caption {
-    font-family: "Roboto", sans-serif;
+    font-family: "Poppins", system-ui;
     font-weight: 500 !important;
     font-style: normal;
     color: #000 !important;
