@@ -1,7 +1,7 @@
 body {
   height: 100vh;
   padding: 35px;
-  background-color: #f0f0f0 !important;
+  background: linear-gradient(135deg, #f0f0f0, #f5f0ff);
 }
 
 .button-home {
