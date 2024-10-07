@@ -1,9 +1,9 @@
-.nav-item {
+.master-nav-item {
     text-decoration: none !important;
     color: #fff !important;
 }
 
-.nav-item.active {
+.master-nav-item.active {
     color: #f58e07 !important;
 }
 
@@ -24,7 +24,8 @@
 }
 
 .sparklink_logo {
-    height: 58px;
+    height: 45px;
+    cursor: pointer !important;
 }
 
 @media (max-width: 768px) {

@@ -1,0 +1,123 @@
+.sidemenu-container {
+    position: fixed;
+    height: 100%;
+    z-index: 1000;
+}
+
+.content {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    color: #E6E6E6;
+    font-style: normal;
+}
+
+.navBackground_expanded {
+    height: 100%;
+    width: 235px;
+    padding: 0%;
+    transition: width 0.4s ease, background-color 1s ease, box-shadow 1s ease;
+}
+
+.navBackground {
+    height: 100%;
+    width: 55px;
+    padding: 0%;
+}
+
+.navBackground:hover {
+    width: 235px;
+    background-color: #444; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.navBackground, .navBackground_expanded {
+    background-color: #2b2b2b;
+}
+
+.nav_menu_icon {
+    height: 55px !important;
+    cursor: pointer !important;
+}
+
+.nav_collapsed_menu_icon {
+    height: 45px !important;
+    cursor: pointer !important;
+}
+
+.logo_icon {
+    margin-left: 10px;
+}
+
+.nav-item.active span,
+.nav-item.active a {
+    color: #6d66d0 !important;
+    /* font-size: 18px; */
+    /* transition: color 0.5s ease-in-out, font-size 0.5s ease-in-out; */
+}
+
+.nav-item span,
+.nav-item a {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #E6E6E6;
+    font-style: normal;
+    text-decoration: none !important;
+}
+
+.nav-item span:hover,
+.nav-item a:hover {
+    color: #FFD700 !important; 
+    font-size: 16px;
+    transition: color 1s ease-out;
+}
+
+.nav-item.active {
+    /* transition: color 0.2s ease-in-out, font-size 0.2s ease-in-out; */
+    background-color: #333;
+    border-radius: 8px;
+}
+
+/* Default styles for nav items */
+.nav-item {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #E6E6E6; /* Default text color */
+    font-style: normal;
+    text-decoration: none !important;
+    height: 45px;
+    display: flex;
+    align-items: center;
+}
+
+/* Styles for hovered items */
+.nav-item:hover {
+    color: #FFD700 !important; 
+    font-size: 16px;
+    /* transition: color 0.1s ease-in-out, font-size 0.1s ease-in-out; */
+}
+
+/* Ensure that span does not override link styling */
+.nav-item span {
+    display: inline-block;
+    text-decoration: none !important; /* Remove underline from span */
+}
+
+.nav_menu_icon {
+    height: 33px;
+}
+
+.text-menu {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.text-menu-category {
+    color: #999;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.nav_sub_menu_icon {
+    height: 25px;
+}

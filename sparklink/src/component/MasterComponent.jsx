@@ -18,7 +18,7 @@ const MasterComponent = () => {
                         <img src={sparklink_logo} alt="Logo" className="sparklink_logo" />
                     </div>
                     <div className="col-lg-3 col-md-6 col-sm-12 mt-2 nav-text d-flex">
-                        <span className="px-3">
+                        {/* <span className="px-3">
                             <Link className={getNavItemClass('/')} to="/">Home</Link>
                         </span>
                         <span className="px-3">
@@ -26,7 +26,7 @@ const MasterComponent = () => {
                         </span>
                         <span className="px-3">
                             <Link className={getNavItemClass('/contact')} to="/contact">Contact</Link>
-                        </span>
+                        </span> */}
                     </div>
                 </div>
             </div>
