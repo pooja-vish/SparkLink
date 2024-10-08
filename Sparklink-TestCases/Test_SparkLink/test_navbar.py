@@ -42,13 +42,3 @@ class NavbarTestCase(BaseCase):
         self.click_xpath('// *[ @ id = "root"] / div[1] / div / div / nav / div / ul[1] / li[1]')
         self.sleep(3)
 
-
-
-            # // *[ @ id = "root"] / div[1] / div / div / nav / div / ul[1] / li[1]
-            # // *[ @ id = "root"] / div[1] / div / div / nav / div / ul[1] / li[2]
-            # // *[ @ id = "root"] / div[1] / div / div / nav / div / ul[1] / li[3]
-            # // *[ @ id = "root"] / div[1] / div / div / nav / div / ul[2] / li[1]
-            # // *[ @ id = "root"] / div[1] / div / div / nav / div / ul[2] / li[2]
-            # // *[ @ id = "root"] / div[1] / div / div / nav / div / ul[2] / li[3]
-            # # root > div.container-fluid > div > div > nav > div > ul:nth-child(3) > li:nth-child(2)
-            # root > div.container-fluid > div > div > nav > div > ul.nav.navbar-nav.mt-5 > li:nth-child(2)
