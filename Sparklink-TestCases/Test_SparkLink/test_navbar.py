@@ -37,6 +37,7 @@ class NavbarTestCase(BaseCase):
 
                 else:
                     print(f"nav id {nav_id} not found ")
+                    #iueyrvbowhrbv9wrhv
 
         #This click the user profile section, should be done in aother page.
         self.click_xpath('// *[ @ id = "root"] / div[1] / div / div / nav / div / ul[1] / li[1]')
