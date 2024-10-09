@@ -34,34 +34,35 @@ const MenuComponent = () => {
                                 <Collapse in={open}>
                                     <div className='navBackground_expanded text-center mt-3'>
                                         <div className="logo text-center">
-                                            <img src={sparklink_icon}
-                                                className='nav_menu_icon' alt=''></img>
-                                            <img src={sparklink_logo} alt="Logo" className="sparklink_logo" style={{ marginLeft: 15 }} />
+                                            <Link className='text-menu' to='/'>
+                                                <img src={sparklink_icon}
+                                                    className='nav_menu_icon' alt=''></img>
+                                                <img src={sparklink_logo} alt="Logo" className="sparklink_logo" style={{ marginLeft: 15 }} /></Link>
                                         </div>
                                         <ul className="nav navbar-nav mt-5">
                                             <div className="text-menu-category text-start px-3">Home</div>
-                                            <li className={getNavItemClass('/progress2')}>
+                                            <li className={getNavItemClass('/profile')}>
                                                 <span style={{ cursor: 'pointer' }}>
-                                                    <Link className='text-menu' to='/progress'>
+                                                    <Link className='text-menu' to='/profile'>
                                                         <img src={profile_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;User Profile</Link>
                                                 </span>
                                             </li>
-                                            {role === '' && (<li className={getNavItemClass('/progress1')}>
+                                            {role === '' && (<li className={getNavItemClass('/about')}>
                                                 <span style={{ cursor: 'pointer' }}>
-                                                    <Link className='text-menu' to='/progress'>
+                                                    <Link className='text-menu' to='/about'>
                                                         <img src={about_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;About Us</Link>
                                                 </span>
                                             </li>)}
-                                            {role === '' && (<li className={getNavItemClass('/diagnosis')}>
+                                            {role === '' && (<li className={getNavItemClass('/contact')}>
                                                 <span style={{ cursor: 'pointer' }}>
                                                     <Link style={{
                                                         fontFamily: '"Poppins", sans-serif', fontWeight: 500,
                                                         color: '#E6E6E6', fontStyle: 'normal'
-                                                    }} to='/diagnosis'>
+                                                    }} to='/contact'>
                                                         <img src={contact_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;Contact Us</Link>
@@ -70,28 +71,28 @@ const MenuComponent = () => {
                                         </ul>
                                         <ul className="nav navbar-nav mt-3">
                                             <div className="text-menu-category text-start px-3">Project</div>
-                                            <li className={getNavItemClass('/progress')}>
+                                            <li className={getNavItemClass('/create-project')}>
                                                 <span style={{ cursor: 'pointer' }}>
-                                                    <Link className='text-menu' to='/progress'>
+                                                    <Link className='text-menu' to='/create-project'>
                                                         <img src={create_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;Create Project</Link>
                                                 </span>
                                             </li>
-                                            {role === '' && (<li className={getNavItemClass('/progress1')}>
+                                            {role === '' && (<li className={getNavItemClass('/view-project')}>
                                                 <span style={{ cursor: 'pointer' }}>
-                                                    <Link className='text-menu' to='/progress'>
+                                                    <Link className='text-menu' to='/view-project'>
                                                         <img src={view_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;View Project</Link>
                                                 </span>
                                             </li>)}
-                                            {role === '' && (<li className={getNavItemClass('/diagnosis')}>
+                                            {role === '' && (<li className={getNavItemClass('/progress')}>
                                                 <span style={{ cursor: 'pointer' }}>
                                                     <Link style={{
                                                         fontFamily: '"Poppins", sans-serif', fontWeight: 500,
                                                         color: '#E6E6E6', fontStyle: 'normal'
-                                                    }} to='/diagnosis'>
+                                                    }} to='/progress'>
                                                         <img src={milestone_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;Milestone Tracker</Link>

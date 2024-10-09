@@ -267,3 +267,7 @@
         padding-left: 15%;
     }
 }
+
+.home-footer-container {
+    padding: 0 38px 38px 65px !important;
+}

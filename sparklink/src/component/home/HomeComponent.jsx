@@ -6,6 +6,7 @@ import lightbulb_img from '../../assets/lightbulb.png';
 import profile_img from '../../assets/user.png';
 import progress_img from '../../assets/progress.png';
 import MenuComponent from '../menu/MenuComponent';
+import FooterComponent from '../footer/FooterComponent';
 
 const HomeComponent = () => {
     return (
@@ -177,6 +178,10 @@ const HomeComponent = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div className="home-footer-container">
+                <FooterComponent></FooterComponent>
             </div>
         </>
     );
