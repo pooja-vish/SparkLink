@@ -1,0 +1,50 @@
+test_navbar.py::NavbarTestCase::test_navbar
+--------------------------------------------------------------------
+Last Page: http://localhost:3000/
+ Duration: 0.19s
+  Browser: Chrome 129.0.6668.91
+   Driver: chromedriver 129.0.6668.100
+Timestamp: 1728603779  (Unix Timestamp)
+     Date: Thursday, October 10, 2024
+     Time: 7:42:59 PM  (EDT, UTC-04:00)
+--------------------------------------------------------------------
+Traceback:
+  File "/Users/fajukoodunayo/Documents/SparkLink/Sparklink-TestCases/Test_SparkLink/test_navbar.py", line 6, in test_navbar
+    self.open("http://localhost:3000/")
+  File "/Users/fajukoodunayo/Documents/SparkLink/Sparklink-TestCases/venv/lib/python3.12/site-packages/seleniumbase/fixtures/base_case.py", line 259, in open
+    self.driver.get(url)
+  File "/Users/fajukoodunayo/Documents/SparkLink/Sparklink-TestCases/venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py", line 363, in get
+    self.execute(Command.GET, {"url": url})
+  File "/Users/fajukoodunayo/Documents/SparkLink/Sparklink-TestCases/venv/lib/python3.12/site-packages/selenium/webdriver/remote/webdriver.py", line 354, in execute
+    self.error_handler.check_response(response)
+  File "/Users/fajukoodunayo/Documents/SparkLink/Sparklink-TestCases/venv/lib/python3.12/site-packages/selenium/webdriver/remote/errorhandler.py", line 229, in check_response
+    raise exception_class(message, screen, stacktrace)
+Exception: Message: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=129.0.6668.91)
+Stacktrace:
+0   chromedriver                        0x00000001048ac500 cxxbridge1$str$ptr + 1917112
+1   chromedriver                        0x00000001048a4890 cxxbridge1$str$ptr + 1885256
+2   chromedriver                        0x00000001044b4538 cxxbridge1$string$len + 89424
+3   chromedriver                        0x00000001044ada4c cxxbridge1$string$len + 62052
+4   chromedriver                        0x000000010449f96c cxxbridge1$string$len + 4484
+5   chromedriver                        0x00000001044a13a4 cxxbridge1$string$len + 11196
+6   chromedriver                        0x000000010449fd18 cxxbridge1$string$len + 5424
+7   chromedriver                        0x000000010449f594 cxxbridge1$string$len + 3500
+8   chromedriver                        0x000000010449f4e0 cxxbridge1$string$len + 3320
+9   chromedriver                        0x000000010449d8b4 core::str::slice_error_fail::hbaf5d05fe3921cd2 + 60916
+10  chromedriver                        0x000000010449de14 core::str::slice_error_fail::hbaf5d05fe3921cd2 + 62292
+11  chromedriver                        0x00000001044b6a38 cxxbridge1$string$len + 98896
+12  chromedriver                        0x00000001045334fc cxxbridge1$string$len + 609556
+13  chromedriver                        0x0000000104532b7c cxxbridge1$string$len + 607124
+14  chromedriver                        0x00000001044ed374 cxxbridge1$string$len + 322444
+15  chromedriver                        0x00000001044edfc4 cxxbridge1$string$len + 325596
+16  chromedriver                        0x0000000104873d2c cxxbridge1$str$ptr + 1685732
+17  chromedriver                        0x0000000104878530 cxxbridge1$str$ptr + 1704168
+18  chromedriver                        0x0000000104858e08 cxxbridge1$str$ptr + 1575360
+19  chromedriver                        0x0000000104878e00 cxxbridge1$str$ptr + 1706424
+20  chromedriver                        0x0000000104849f94 cxxbridge1$str$ptr + 1514316
+21  chromedriver                        0x000000010489562c cxxbridge1$str$ptr + 1823204
+22  chromedriver                        0x00000001048957ac cxxbridge1$str$ptr + 1823588
+23  chromedriver                        0x00000001048a4530 cxxbridge1$str$ptr + 1884392
+24  libsystem_pthread.dylib             0x000000018f80f2e4 _pthread_start + 136
+25  libsystem_pthread.dylib             0x000000018f80a0fc thread_start + 8
