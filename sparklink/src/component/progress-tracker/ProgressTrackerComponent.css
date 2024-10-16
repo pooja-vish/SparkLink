@@ -1,0 +1,182 @@
+/* Main Container */
+.container-fluid {
+    padding-left: 0px !important;
+}
+
+/* Container for progress tracker */
+.progress-tracker {
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: "Poppins", system-ui;
+    font-weight: 300;
+}
+
+/* Search Bar */
+.search-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* Tabs */
+.tabs-wrapper {
+    margin-bottom: 20px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+}
+
+.tab {
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.tab.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.tab:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Progress Card Layout */
+.progress-card-layout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.progress-background-card {
+    height: auto;
+    max-width: 100% !important;
+    object-fit: contain;
+    background-color: rgba(211, 211, 211, 0.1);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow-y: auto;
+}
+
+/* Arrow Container */
+.arrow-container {
+    width: 50px; /* Set width for arrow container */
+    display: flex;
+    align-items: start;
+    justify-content: center;
+}
+
+.scroll-button {
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    color: #007bff;
+    cursor: pointer;
+}
+
+/* Scrollable Progress Items */
+.progress-items {
+    display: flex;
+    gap: 20px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    transform: translateZ(0);
+    width: 100%; /* Allow the progress items to take up the full width */
+}
+
+/* Progress Cards */
+.progress-card {
+    background-color: #2b2b2b;
+    color: white;
+    padding: 20px;
+    border-radius: 16px;
+    width: 250px;
+    min-width: 250px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.progress-card:hover {
+    transform: translateY(-10px);
+}
+
+/* Progress Image */
+.progress-image {
+    width: 100%;
+    height: 120px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Progress Content */
+.progress-category {
+    color: #999;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.progress-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    flex-grow: 1;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 5px;
+}
+
+.progress-text {
+    font-weight: bold;
+    color: #999;
+}
+
+/* Description */
+.description {
+    margin-top: 20px;
+}
+
+.progress-footer-container {
+    padding: 0 20px !important;
+}

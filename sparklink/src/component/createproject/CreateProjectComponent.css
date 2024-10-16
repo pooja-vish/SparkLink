@@ -1,0 +1,270 @@
+/* Main Container */
+.container-fluid {
+    padding-left: 0px !important;
+}
+
+/* Container for progress tracker */
+.progress-tracker {
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: "Poppins", system-ui;
+    font-weight: 300;
+    font-style: normal;
+}
+
+/* Search Bar */
+/* .search-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+} */
+
+.search-input {
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.tab {
+    font-size: 16px;
+    font-weight: bold;
+    color: #999;
+    cursor: pointer;
+}
+
+.tab.active {
+    color: black;
+    border-bottom: 2px solid black;
+}
+
+/* Progress Cards */
+.progress-items {
+    cursor: pointer !important;
+    display: flex;
+    gap: 20px;
+}
+
+.progress-card {
+    background-color: #2b2b2b;
+    color: white;
+    padding: 20px;
+    border-radius: 16px;
+    width: 250px;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.progress-card:hover {
+    transform: translateY(-10px);
+}
+
+/* .progress-image {
+    width: 100%;
+    height: 120px;
+    background-color: #444;
+    border-radius: 12px;
+    margin-bottom: 20px;
+} */
+
+/* Progress Content */
+.progress-category {
+    color: #999;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.progress-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    display: flex;
+    align-items: center; /* Center align items vertically */
+    margin-top: 10px; /* Space above progress bar */
+}
+
+.progress-bar {
+    flex-grow: 1; /* Allow progress bar to take available space */
+    height: 10px; /* Height of the progress bar */
+    background-color: #e0e0e0; /* Light gray background for the bar */
+    border-radius: 5px; /* Rounded corners */
+    position: relative; /* For positioning the inner progress */
+    margin-right: 10px; /* Space between the progress bar and text */
+}
+
+.progress {
+    height: 100%; /* Fill the height of the bar */
+    background-color: #007bff; /* Blue color for the progress */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.progress-text {
+    font-weight: bold; /* Bold text for visibility */
+    color: #999; /* Dark text color */
+}
+
+.progress-image {
+    width: 100%;
+    height: 120px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    /* background-image: url('../../assets/user.png'); 
+    background-size: cover; 
+    background-position: center;  */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    /* Icon color */
+    font-size: 2em;
+    /* Icon size */
+    transition: transform 0.2s ease;
+    /* Smooth transition */
+}
+
+.progress-image:hover {
+    transform: scale(1.05);
+    /* Slightly scale on hover */
+}
+
+/* Optional: Add additional styles for the icon */
+.progress-image i {
+    opacity: 0.8;
+    /* Make icon slightly transparent */
+}
+
+.progress-card:hover .progress-image i {
+    opacity: 1;
+    /* Fully visible on card hover */
+}
+
+.createproject_layout {
+    height: auto;
+    max-width: 100% !important;
+    object-fit: contain;
+    background-color: rgba(211, 211, 211, 0.1);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow-y: auto;
+}
+
+.createproject_Heading{
+    background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    margin-left: 10px;
+    font-family: "Poppins", system-ui;
+    font-weight: 600 !important;
+    font-style: normal;
+    font-size: xxx-large !important;
+}
+
+.form_label{
+    font-weight: 600 !important;
+    display: block;
+    font-size: 1.1rem;
+    /* font-weight: 500; */
+    color: #000;
+}
+
+.radio_button_container input[type="radio"] {
+    margin-left: 50px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.radio_button_container input[type="checkbox"] {
+    margin-left: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.submit{
+    
+    display: block;
+    margin: 20px auto; /* Auto margin centers the button horizontally */
+    padding: 10px 20px;
+    border: 2px solid #6a6a6a;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.radio_button_container span {
+    font-family: "Poppins", system-ui;
+    margin-left: 5px;
+}
+.createproject_form{
+    padding-left:20px;
+}
+.createproject_form input[type="text"]{
+    display: block;
+    width: 75%;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #6a6a6a;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.createproject_form input[type="text"]:focus{
+    border-color: #444;
+    box-shadow: 0 0 8px rgba(100, 90, 100, 0.8);
+    outline: none;
+}
+
+
+.tab {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+.tab.active {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.tab:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    color: #007bff;
+    border: 1px solid #007bff;
+}
+
+.createproject_datepicker {
+    display: block;
+    cursor: pointer !important;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #6a6a6a;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
