@@ -8,9 +8,31 @@ const Role = sequelize.define('Role', {
     primaryKey: true,
     autoIncrement: true,
   },
-  role_name: {
-    type: DataTypes.STRING(50),
+  role_desc: {
+    type: DataTypes.STRING(20), // Adjusted to match the DB
     allowNull: false,
+  },
+  is_active: {
+    type: DataTypes.STRING(2), // Adjusted to match the DB
+    allowNull: false,
+  },
+  created_by: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  modified_by: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  created_on: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    allowNull: false,
+  },
+  modified_on: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
   },
 }, {
   tableName: 't_role',
