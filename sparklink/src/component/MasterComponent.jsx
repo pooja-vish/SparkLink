@@ -1,15 +1,8 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import './MasterComponent.css';
 import sparklink_logo from '../assets/SparkLink_Logo.png';
 
 const MasterComponent = () => {
-    const location = useLocation();
-
-    const getNavItemClass = (path) => {
-        return location.pathname === path ? 'nav-item active' : 'nav-item';
-    };
-
     return (
         <>
             <div className="container-fluid">
