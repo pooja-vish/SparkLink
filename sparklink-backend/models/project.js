@@ -13,7 +13,7 @@ const Project = sequelize.define('Project', {
   },
   skills_req: {
     type: DataTypes.STRING(250),
-    allowNull: false,
+    allowNull: true,
   },
   budget: {
     type: DataTypes.NUMERIC(10, 2),
@@ -61,14 +61,7 @@ const Project = sequelize.define('Project', {
       key: 'user_id',
     },
   },
-  department_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'department',  // Replace with your actual department table model name
-      key: 'department_id',
-    },
-  }
+ 
 }, {
   tableName: 't_project',
   timestamps: false,  // If you're not using Sequelize's automatic timestamps

@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
 
     // Create a new user
     const newUser = await User.create({
-      user_id : 2,
+      user_id,
       username,
       email,
       name,
