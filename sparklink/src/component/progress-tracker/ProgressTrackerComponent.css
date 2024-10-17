@@ -28,6 +28,7 @@
 }
 
 /* Tabs */
+/* Tabs */
 .tabs-wrapper {
     margin-bottom: 20px;
 }
@@ -36,6 +37,7 @@
     display: flex;
     justify-content: flex-start;
     gap: 5px;
+    flex-wrap: wrap;
 }
 
 .tab {
@@ -58,6 +60,31 @@
     color: white;
 }
 
+/* Mobile View for Tabs */
+@media (max-width: 768px) {
+    .tabs {
+        gap: 3px; /* Reduce gap between tabs */
+    }
+
+    .tab {
+        padding: 6px 10px; /* Reduce padding */
+        font-size: 14px;   /* Decrease font size slightly */
+    }
+}
+
+@media (max-width: 576px) {
+    .tabs {
+        flex-direction: column; /* Stack tabs vertically on smaller devices */
+        gap: 10px;
+    }
+
+    .tab {
+        width: 100%; /* Make each tab take full width */
+        text-align: center;
+    }
+}
+
+
 /* Progress Card Layout */
 .progress-card-layout {
     display: flex;
@@ -66,12 +93,11 @@
     position: relative;
 }
 
+/* Progress Background Card */
 .progress-background-card {
     height: auto;
     max-width: 100% !important;
-    object-fit: contain;
     background-color: rgba(211, 211, 211, 0.1);
-    border: 1px solid transparent;
     border-radius: 8px;
     padding: 20px;
     margin: 10px 0;
@@ -82,9 +108,9 @@
 
 /* Arrow Container */
 .arrow-container {
-    width: 50px; /* Set width for arrow container */
+    width: 30px;
     display: flex;
-    align-items: start;
+    align-items: center;
     justify-content: center;
 }
 
@@ -100,13 +126,30 @@
 .progress-items {
     display: flex;
     gap: 20px;
-    overflow-x: hidden;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    padding-bottom: 25px;
     scroll-behavior: smooth;
     transform: translateZ(0);
-    width: 100%; /* Allow the progress items to take up the full width */
+    width: 100%;
+    scrollbar-color: #a9a9a9 transparent;
 }
 
-/* Progress Cards */
+@media (max-width: 768px) {
+    .progress-items {
+        overflow-x: auto;
+        padding-bottom: 15px;
+    }
+
+    .progress-card {
+        min-width: 80%;
+    }
+
+    .arrow-container {
+        display: none;
+    }
+}
+
+/* Progress Card */
 .progress-card {
     background-color: #2b2b2b;
     color: white;
@@ -175,8 +218,27 @@
 /* Description */
 .description {
     margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.progress-footer-container {
-    padding: 0 20px !important;
+/* Progress Container */
+.progress_container {
+    padding-left: 65px !important;
 }
+
+@media (max-width: 768px) {
+    .progress_container {
+        padding-left: 45px !important;
+    }
+}
+
+/* .footer-fixed {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+} */
