@@ -3,12 +3,54 @@ const Project = require('../models/project');
 // Create a new project
 exports.createProject = async (req, res) => {
   try {
-    const project = await Project.create(req.body);
-    res.status(201).json(project);
+    console.log("Request received");
+
+    // Destructure fields from the request body
+    const { 
+      project_name, 
+      purpose, 
+      product, 
+      project_budget, 
+      project_audience, 
+      features, 
+      project_deadline, 
+      end_date 
+    } = req.body;
+
+    // Validate required fields
+    if (!project_name || !purpose || !product || !project_budget || !project_deadline || !end_date) {
+      return res.status(400).json({ message: 'Please provide all required fields: project_name, purpose, product, project_budget, project_deadline, end_date.' });
+    }
+
+    // Combine fields to form proj_desc
+    const proj_desc = `Purpose: ${purpose}, Product: ${product}, Features: ${features}`;
+
+    // Prepare project data for the database
+    const projectData = {
+      proj_desc: proj_desc,
+      budget: project_budget,
+      start_date: project_deadline, // Assuming this is the start date
+      end_date: end_date, // Use the correct end date
+      created_by: 2, // Replace with req.user.id if you have authentication in place
+      status: 1, // Set the default status
+      user_id: 2, // Replace with req.user.id if you have authentication in place
+      modified_by: 2 // Replace with req.user.id if needed
+    };
+
+    // Create the project in the database
+    const project = await Project.create(projectData);
+
+    // Respond with success message and the created project data
+    res.status(201).json({ message: 'Project created successfully', project });
+
   } catch (error) {
+    // Log error and respond with error message
+    console.error(error);
     res.status(500).json({ message: 'Error creating project', error: error.message });
   }
 };
+
+
 
 // Get all projects
 exports.getAllProjects = async (req, res) => {

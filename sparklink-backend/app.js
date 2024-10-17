@@ -13,7 +13,10 @@ const projectRouter = require('./routes/projectRoutes');
 const app = express();
 
 // Middleware
-app.use(cors()); // Enable CORS
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+ // Enable CORS
 app.use(bodyParser.json()); // Parse JSON bodies
 
 // Test database connection first
@@ -41,7 +44,7 @@ app.use('/project', projectRouter);
 
 
 // Start the server
-const PORT = 3000; // Allow for dynamic port assignment if needed
+const PORT = 5000; // Allow for dynamic port assignment if needed
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
