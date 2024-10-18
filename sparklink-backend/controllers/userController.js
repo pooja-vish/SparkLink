@@ -1,43 +1,66 @@
-// controllers/userController.js
-const { User, Role } = require('../models'); // Import User and Role models
+const User = require('../models/user');
+const bcrypt = require('bcrypt');
 
-// User Registration
-const register = async (req, res) => {
-  const { username, password, email, role, name } = req.body;
+// Register a new user with role
+exports.register = async (req, res) => {
   try {
-    // Check if role exists
-    const userRole = await Role.findOne({ where: { role_id: role } });
-    if (!userRole) {
-      return res.status(400).json({ error: 'Invalid role' });
+    const { username, email, password, role, name, user_id } = req.body;
+
+    // Check if the user already exists
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create a new user
-    const newUser = await User.create({ username, password, email, role, name });
+    const newUser = await User.create({
+      user_id,
+      username,
+      email,
+      name,
+      password: hashedPassword,
+      role, // Save the user's role
+      is_active: 'Y', // Default value
+      created_by: 1, // Adjust based on your requirements
+      modified_by: 1 // Adjust based on your requirements
+    });
 
     res.status(201).json({ message: 'User registered successfully', user: newUser });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 };
 
-// User Login
-const login = async (req, res) => {
-  const { username, password } = req.body;
+// Login user with role
+exports.login = async (req, res) => {
   try {
-    const user = await User.findOne({ where: { username } });
+    const { email, password } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    const validPassword = await user.validPassword(password);
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    res.json({ message: 'Login successful', user });
+    res.status(200).json({ 
+      message: 'Login successful', 
+      user: { 
+        user_id: user.user_id, 
+        username: user.username, 
+        email: user.email, 
+        role: user.role // Include the user's role in the response
+      } 
+    });
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred during login' });
+    res.status(500).json({ message: 'Error logging in', error: error.message });
   }
 };
-
-module.exports = { register, login };

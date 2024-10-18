@@ -2,7 +2,6 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../config/db');
-const Role = require('./role'); // Import Role model to establish associations
 
 const User = sequelize.define('User', {
   user_id: {
@@ -16,12 +15,8 @@ const User = sequelize.define('User', {
     unique: true,
   },
   role: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(50), // Matches VARCHAR(50) in the table
     allowNull: false,
-    references: {
-      model: Role, // refers to Role model
-      key: 'role_id',
-    },
   },
   name: {
     type: DataTypes.STRING(250),
@@ -41,9 +36,17 @@ const User = sequelize.define('User', {
     allowNull: false,
     defaultValue: 'Y',
   },
+  created_by: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   created_on: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
+  },
+  modified_by: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
   modified_on: {
     type: DataTypes.DATE,
@@ -70,8 +73,5 @@ const User = sequelize.define('User', {
 User.prototype.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-
-// Associate User with Role (one-to-many relationship)
-User.belongsTo(Role, { foreignKey: 'role' });
 
 module.exports = User;

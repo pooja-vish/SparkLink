@@ -71,6 +71,11 @@
     transition: color 1s ease-out;
 }
 
+nav {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
 .nav-item.active {
     /* transition: color 0.2s ease-in-out, font-size 0.2s ease-in-out; */
     background-color: #333;

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import './MenuComponent.css';
-import MasterComponent from '../MasterComponent';
 import Collapse from 'react-bootstrap/Collapse';
 import sparklink_logo from '../../assets/SparkLink_Logo.png';
 import sparklink_icon from '../../assets/SparkLink_icon.png';
@@ -32,7 +31,8 @@ const MenuComponent = () => {
                             style={{ position: 'absolute' }}>
                             {open ? (
                                 <Collapse in={open}>
-                                    <div className='navBackground_expanded text-center mt-3'>
+                                    <div className='navBackground_expanded text-center'>
+                                        <br />
                                         <div className="logo text-center">
                                             <Link className='text-menu' to='/'>
                                                 <img src={sparklink_icon}
@@ -103,7 +103,8 @@ const MenuComponent = () => {
                                 </Collapse>
                             ) : (
                                 <Collapse in={!open}>
-                                    <div className='navBackground mt-3'>
+                                    <div className='navBackground'>
+                                        <br />
                                         <div className="logo text-center">
                                             <img src={sparklink_icon}
                                                 className='nav_collapsed_menu_icon' alt=''></img>
