@@ -14,12 +14,12 @@ exports.createProject = async (req, res) => {
       project_audience, 
       features, 
       project_deadline, 
-      end_date 
+      image_url // Add image_url field
     } = req.body;
 
     // Validate required fields
-    if (!project_name || !purpose || !product || !project_budget || !project_deadline || !end_date) {
-      return res.status(400).json({ message: 'Please provide all required fields: project_name, purpose, product, project_budget, project_deadline, end_date.' });
+    if (!project_name || !purpose || !product || !project_budget || !project_deadline || !image_url) {
+      return res.status(400).json({ message: 'Please provide all required fields: project_name, purpose, product, project_budget, project_deadline, and image_url.' });
     }
 
     // Combine fields to form proj_desc
@@ -29,12 +29,12 @@ exports.createProject = async (req, res) => {
     const projectData = {
       proj_desc: proj_desc,
       budget: project_budget,
-      start_date: project_deadline, // Assuming this is the start date
-      end_date: end_date, // Use the correct end date
+      end_date: project_deadline, // Use the correct end date
       created_by: 2, // Replace with req.user.id if you have authentication in place
       status: 1, // Set the default status
       user_id: 2, // Replace with req.user.id if you have authentication in place
-      modified_by: 2 // Replace with req.user.id if needed
+      modified_by: 2, // Replace with req.user.id if needed
+      image_url: image_url // Save image URL
     };
 
     // Create the project in the database
@@ -49,8 +49,6 @@ exports.createProject = async (req, res) => {
     res.status(500).json({ message: 'Error creating project', error: error.message });
   }
 };
-
-
 
 // Get all projects
 exports.getAllProjects = async (req, res) => {

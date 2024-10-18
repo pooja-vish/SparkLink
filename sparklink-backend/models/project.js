@@ -30,6 +30,7 @@ const Project = sequelize.define('Project', {
   start_date: {
     type: DataTypes.DATE,
     allowNull: true,  // If you want to allow nullable start_date
+    default: null
   },
   end_date: {
     type: DataTypes.DATE,
@@ -61,7 +62,10 @@ const Project = sequelize.define('Project', {
       key: 'user_id',
     },
   },
- 
+  image_url: {
+    type: DataTypes.STRING,  // Store the image URL as a string
+    allowNull: false,  // Ensure an image URL is always provided
+  }
 }, {
   tableName: 't_project',
   timestamps: false,  // If you're not using Sequelize's automatic timestamps
