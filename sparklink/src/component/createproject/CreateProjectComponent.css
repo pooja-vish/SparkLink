@@ -166,18 +166,7 @@
     overflow-y: auto;
 }
 
-.createproject_Heading{
-    background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    margin-left: 10px;
-    font-family: "Poppins", system-ui;
-    font-weight: 600 !important;
-    font-style: normal;
-    font-size: xxx-large !important;
-}
+
 
 .form_label{
     font-weight: 600 !important;
@@ -187,21 +176,80 @@
     color: #000;
 }
 
-.radio_button_container input[type="radio"] {
-    margin-left: 50px;
-    margin-top: 10px;
-    cursor: pointer;
+@media (max-width: 768px) {
+    .radio_button_container input[type="checkbox"] {
+        margin-left: 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        
+    }
+    /* .form_question_pair{
+        display: block;
+    } */
+    .createproject_Heading{
+        background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        margin-left: 10px;
+        font-family: "Poppins", system-ui;
+        font-weight: 500 !important;
+        font-style: normal;
+        font-size: xx-large !important;
+        text-align: center;
+    }
+    .form_label{
+        font-weight: 500 !important;
+        display: block;
+        font-size: 1rem;
+        /* font-weight: 500; */
+        color: #000;
+    }
+    .createproject_form input[type="text"], .createproject_form input[type="number"]{
+        width: 95% !important;
+    }
+
+    .createproject_layout{
+        width: 100%;
+        margin-left: 15px;
+    }
+
 }
 
-.radio_button_container input[type="checkbox"] {
-    margin-left: 50px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    cursor: pointer;
+@media (min-width: 769px) {
+    .radio_button_container input[type="checkbox"]:first-of-type{
+        margin-left: 15px;
+    }
+    
+    .radio_button_container input[type="checkbox"]:not(:first-child) {
+        margin-left: 50px;
+    }
+    
+    .radio_button_container input[type="checkbox"] {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+    .createproject_Heading{
+        background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        margin-left: 10px;
+        font-family: "Poppins", system-ui;
+        font-weight: 600 !important;
+        font-style: normal;
+        font-size: xxx-large !important;
+    }
 }
+
+
+
 
 .submit{
-    
     display: block;
     margin: 20px auto; /* Auto margin centers the button horizontally */
     padding: 10px 20px;
@@ -217,7 +265,7 @@
 .createproject_form{
     padding-left:20px;
 }
-.createproject_form input[type="text"]{
+.createproject_form input[type="text"], .createproject_form input[type="number"]{
     display: block;
     width: 75%;
     padding: 10px;
