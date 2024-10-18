@@ -52,6 +52,7 @@ class CreateProjectFormTest(BaseCase):
             self.sleep(2)
 
             self.click(".submit.button-home")
+            self.sleep(2)
 
         else:
             print("element is not visible")
