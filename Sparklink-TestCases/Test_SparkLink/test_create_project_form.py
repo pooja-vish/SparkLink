@@ -5,11 +5,11 @@ class CreateProjectFormTest(BaseCase):
         self.open("http://localhost:3000/") #open up the web application
         self.sleep(3) # sleeps for 3 seconds
 
-        self.click(".navBackground.mt-3.collapse.show")#open up the navigation bar
+        self.click(".navBackground.collapse.show")#open up the navigation bar
         self.sleep(3)
-        if self.is_element_visible('//*[@id="root"]/div[1]/div/div/nav/div/ul[2]/li[1]'): #checks if the element we want to click is present
+        if self.is_element_visible('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[1]'): #checks if the element we want to click is present
             print("element is visible") # gives the confirmation message
-            self.click_xpath('//*[@id="root"]/div[1]/div/div/nav/div/ul[2]/li[1]') #clicks the button then it navigates to the form page
+            self.click_xpath('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[1]') #clicks the button then it navigates to the form page
             self.sleep(3)
 
             self.send_keys('[name="project_name"]', "Web Design")
