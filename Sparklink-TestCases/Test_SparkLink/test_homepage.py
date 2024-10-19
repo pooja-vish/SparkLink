@@ -13,7 +13,7 @@ class Test_homepage(BaseCase):
         #scrolls back to the top
         self.scroll_to('[alt="Logo"]',by="css selector")
         self.sleep(2)
-
+# wddcdc
         #click on all the navigations bars and return to the home page
         # for i in range (1,4): #iterate through all the nav bars and click them.
         #     index_num=f'/div[1]/div[1]/div/div[2]/span[{i}]/a'
