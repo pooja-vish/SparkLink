@@ -1,0 +1,19 @@
+# Ignore macOS system files
+.DS_Store
+
+# Ignore node modules
+node_modules/
+
+# Ignore virtual environments
+venv/
+Sparklink-TestCases/venv/
+
+# Ignore Pycache files
+__pycache__/
+*.pyc
+
+# Ignore IntelliJ IDEA files (if applicable)
+*.idea/
+*.iml
+misc.xml
+
