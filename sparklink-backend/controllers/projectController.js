@@ -1,4 +1,5 @@
 const Project = require("../models/project");
+const { Op } = require('sequelize');
 
 // Create a new project
 exports.createProject = async (req, res) => {
@@ -128,5 +129,33 @@ exports.deleteProject = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error deleting project", error: error.message });
+  }
+};
+
+exports.filterProject = async (req, res) => {
+  try {
+    const { projName } = req.query;
+
+    if (projName && typeof projName !== 'string') {
+      return res.status(400).json({ message: 'Invalid projName parameter' });
+    }
+
+    const filter = projName
+      ? {
+          project_name: {
+            [Op.iLike]: `%${projName}%`,  // Use iLike for case-insensitive search
+          },
+        }
+      : {};  // If projName is not provided, no filter is applied
+
+    // Fetch projects using the filter
+    const projects = await Project.findAll({
+      where: filter
+    });
+
+    res.status(200).json(projects);
+  } catch (error) {
+    console.error('Error filtering projects:', error);
+    res.status(500).json({ message: 'Error filtering projects', error: error.message });
   }
 };
