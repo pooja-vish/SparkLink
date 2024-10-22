@@ -75,7 +75,8 @@ const ProgressTrackerComponent = () => {
         if (selectedOption) {
             setSearchQuery(selectedOption.label); // Update the search query
             // Filter project list case-insensitively
-            const filteredProjects = originalProjectList.filter((item) =>
+            const filteredProjects = originalProjectList.filter((item) => 
+                item.project_name && selectedOption.value && 
                 item.project_name.toLowerCase() === selectedOption.value.toLowerCase()
             );
             setProjectList(filteredProjects); // Filter project list
