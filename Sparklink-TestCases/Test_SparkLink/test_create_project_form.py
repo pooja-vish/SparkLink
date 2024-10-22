@@ -5,6 +5,7 @@ class CreateProjectFormTest(BaseCase):
         self.open("http://localhost:3100/") #open up the web application
         self.sleep(3) # sleeps for 3 seconds
 
+
         self.click(".navBackground.collapse.show")#open up the navigation bar
         self.sleep(3)
         if self.is_element_visible('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[1]'): #checks if the element we want to click is present
@@ -57,6 +58,9 @@ class CreateProjectFormTest(BaseCase):
             # raise this the selector is same as the project timeline selector
             self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > input[type=text]:nth-child(12)", "For the e-commerce site, I want to include user-friendly navigation, secure payment gateways, a product catalog with search and filter options, customer reviews and ratings, personalized recommendations, a shopping cart, order tracking, inventory management, and a responsive design for both desktop and mobile users.")
             self.sleep(2)
+
+            self.send_keys(".createproject_datepicker.date", "002023-10-10")
+            self.sleep(3)
 
             self.click(".submit.button-home")
             self.sleep(2)
