@@ -7,6 +7,10 @@ const Project = sequelize.define('Project', {
     primaryKey: true,
     autoIncrement: true,
   },
+  project_name: {
+    type: DataTypes.STRING(150),
+    allowNull: false,
+  },
   proj_desc: {
     type: DataTypes.STRING(250),
     allowNull: false,
