@@ -2,7 +2,7 @@ from seleniumbase import BaseCase
 import random
 class CreateProjectFormTest(BaseCase):
     def test_create_form(self):
-        self.open("http://localhost:3000/") #open up the web application
+        self.open("http://localhost:3100/") #open up the web application
         self.sleep(3) # sleeps for 3 seconds
 
         self.click(".navBackground.collapse.show")#open up the navigation bar

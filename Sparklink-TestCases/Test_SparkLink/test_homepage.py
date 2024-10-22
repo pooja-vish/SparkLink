@@ -3,7 +3,7 @@ from seleniumbase import BaseCase
 class Test_homepage(BaseCase):
     def test_homepage(self):
         #Opens the Sperklink homepage.
-        self.open("http://localhost:3000/")
+        self.open("http://localhost:3100/")
         self.sleep(2)#Sleeps for two seconds
 
         #Scrolls to the bottom of the page
