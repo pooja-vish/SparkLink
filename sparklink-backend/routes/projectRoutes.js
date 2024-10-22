@@ -5,9 +5,13 @@ const {
   getProjectById,
   updateProject,
   deleteProject,
+  filterProject,
 } = require('../controllers/projectController');
 
 const router = express.Router();
+
+// Search Filter project with Proj name
+router.get('/filter', filterProject);
 
 // POST route to create a new project
 router.post('/', createProject);
