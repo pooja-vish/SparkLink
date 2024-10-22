@@ -13,6 +13,17 @@
     font-style: normal;
 }
 
+.error-message {
+    color: red;
+    margin: 10px 0;
+  }
+  
+  .success-message {
+    color: green;
+    margin: 10px 0;
+  }
+  
+
 /* Search Bar */
 /* .search-container {
     display: flex;
@@ -135,6 +146,25 @@
     transition: transform 0.2s ease;
     /* Smooth transition */
 }
+
+.form_textarea {
+    width: 100%; /* Full width to match input fields */
+    height: 100px; /* Height can be adjusted as needed */
+    padding: 10px; /* Padding for comfort */
+    border: 1px solid #ccc; /* Border style */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+    resize: vertical; /* Allow resizing vertically */
+  }
+  
+  .form_textarea:focus {
+    border-color: #007bff; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focus shadow */
+  }
+  
+
 
 .progress-image:hover {
     transform: scale(1.05);
