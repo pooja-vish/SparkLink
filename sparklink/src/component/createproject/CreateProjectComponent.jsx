@@ -9,6 +9,7 @@ import {
 import { storage } from "../../firebase_script"; // Your Firebase config file
 import "./CreateProjectComponent.css";
 import MenuComponent from "../../component/menu/MenuComponent";
+import FooterComponent from "../footer/FooterComponent";
 
 const CreateProjectComponent = () => {
   const dateInputRef = useRef(null);
@@ -17,12 +18,13 @@ const CreateProjectComponent = () => {
   const [otherPurposeText, setOtherPurposeText] = useState("");
   const [otherProductText, setOtherProductText] = useState("");
   const [loading, setLoading] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
   // Form states
   const [projectName, setProjectName] = useState("");
   const [purpose, setPurpose] = useState([]);
   const [product, setProduct] = useState([]);
   const [projectBudget, setProjectBudget] = useState("");
-  const [projectAudience, setProjectAudience] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
   const [features, setFeatures] = useState("");
   const [projectDeadline, setProjectDeadline] = useState("");
   const [imageFile, setImageFile] = useState(null); // State for the image file
@@ -109,11 +111,12 @@ const CreateProjectComponent = () => {
       !purpose.length ||
       !product.length ||
       !projectBudget ||
-      !projectAudience ||
+      !projectDescription ||
       !features ||
       !projectDeadline
     ) {
       setErrorMessage("Please fill in all required fields.");
+      setLoading(false);
       return;
     }
 
@@ -140,6 +143,9 @@ const CreateProjectComponent = () => {
         console.log("Image uploaded successfully:", imageUrl);
       } catch (error) {
         setErrorMessage("Error uploading image: " + error.message);
+      }
+      finally {
+        setLoading(false); 
         return;
       }
     }
@@ -149,7 +155,7 @@ const CreateProjectComponent = () => {
       purpose: purpose.join(", "),
       product: product.join(", "),
       project_budget: projectBudget,
-      project_audience: projectAudience,
+      project_description: projectDescription,
       features: features,
       project_deadline: projectDeadline,
       image_url: imageUrl, // Include the image URL in the form data
@@ -172,7 +178,7 @@ const CreateProjectComponent = () => {
         console.log("Project created successfully:", project);
       } else {
         const errorResponse = await response.json();
-        setErrorMessage(errorResponse.message || "Failed to create project");
+        setErrorMessage(errorResponse.message || " Failed to create project " );
       }
     } catch (error) {
       setErrorMessage("Error submitting form: " + error.message);
@@ -199,6 +205,7 @@ const CreateProjectComponent = () => {
                   <form onSubmit={handleSubmit}>
                     <label className="form_label">
                       1. What is the name of your project?
+                      <span className="text-danger"> *</span>
                     </label>
                     <input
                       type="text"
@@ -207,10 +214,12 @@ const CreateProjectComponent = () => {
                       placeholder="e.g., My Awesome App"
                       onChange={(e) => setProjectName(e.target.value)}
                       maxLength={150}
+                      required
                     />
 
                     <label className="form_label">
                       2. What is the main purpose of the product?
+                      <span className="text-danger"> *</span>
                     </label>
                     <div className="radio_button_container">
                       <div>
@@ -286,6 +295,7 @@ const CreateProjectComponent = () => {
 
                     <label className="form_label">
                       3. What type of product do you want to build?
+                      <span className="text-danger"> *</span>
                     </label>
                     <div className="radio_button_container ">
                       <div>
@@ -378,6 +388,7 @@ const CreateProjectComponent = () => {
                     <label className="form_label">
                       4. What is your estimated budget for this project (in
                       CAD)?
+                      <span className="text-danger"> *</span>
                     </label>
                     <input
                       type="number"
@@ -386,23 +397,27 @@ const CreateProjectComponent = () => {
                       onChange={(e) => setProjectBudget(e.target.value)}
                       placeholder="e.g., 2000"
                       min="0"
+                      required
                     />
 
                     <label className="form_label">
                       5. Please provide a brief description of your product:
+                      <span className="text-danger"> *</span>
                     </label>
                     <input
                       type="text"
-                      name="project_audience"
-                      value={projectAudience}
-                      onChange={(e) => setProjectAudience(e.target.value)}
+                      name="project_Description"
+                      value={projectDescription}
+                      onChange={(e) => setProjectDescription(e.target.value)}
                       placeholder="e.g., A social media platform for connecting local communities"
                       maxLength={250} // You can set a maximum length if needed
+                      required
                     />
 
                     <label className="form_label">
                       6. What are the main features or functionalities you want
                       to include in the project?
+                      <span className="text-danger"> *</span>
                     </label>
                     <textarea
                       name="features"
@@ -410,11 +425,13 @@ const CreateProjectComponent = () => {
                       onChange={(e) => setFeatures(e.target.value)}
                       className="form_textarea" // Add a class for styling
                       placeholder="e.g., User login, real-time chat, payment integration"
+                      required
                     ></textarea>
 
                     <label className="form_label">
                       7. What is the expected timeline or deadline for the
                       project completion?
+                      <span className="text-danger"> *</span>
                     </label>
                     <input
                       type="date"
@@ -422,8 +439,9 @@ const CreateProjectComponent = () => {
                       ref={dateInputRef}
                       value={projectDeadline}
                       className="createproject_datepicker date"
+                      min={today} 
                       //   onClick={triggerDatePicker}
-                      onChange={(e) => setProjectDeadline(e.target.value)}
+                      onChange={(e) => setProjectDeadline(e.target.value)} required
                     />
 
                     <label className="form_label">
@@ -464,6 +482,10 @@ const CreateProjectComponent = () => {
           </div>
         )}
       </div>
+      <div className="footer-fixed">
+        <FooterComponent></FooterComponent>
+      </div>
+      
     </>
   );
 };

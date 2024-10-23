@@ -1,22 +1,24 @@
 const Project = require("../models/project");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 // Create a new project
 exports.createProject = async (req, res) => {
   try {
     console.log("Request received");
-
+    const today = new Date().toISOString().split("T")[0];
     // Destructure fields from the request body
     const {
       project_name,
       purpose,
       product,
       project_budget,
-      project_audience,
+      project_description,
       features,
       project_deadline,
       image_url, // Add image_url field
     } = req.body;
+
+    
 
     // Validate required fields
     if (
@@ -24,22 +26,50 @@ exports.createProject = async (req, res) => {
       !purpose ||
       !product ||
       !project_budget ||
-      !project_deadline ||
-      !image_url
+      !project_description ||
+      !project_deadline
+      // !image_url
     ) {
+      return res.status(400).json({
+        message:
+          "Please provide all required fields: project name, purpose, product,descriptio, budget and deadline",
+      });
+    }
+
+    //Validations
+    // //if image_url is empty
+    // if (image_url === "") {
+    //   image_url = "defaultImage";
+    // }
+    // console.log("image url : " + image_url);
+    if (project_name.length > 150) {
+      console.log("project_name length : " + project_name.length);
       return res
-        .status(400)
+        .status(500)
+        .json({ message: "Project name should be less than 10 characters" });
+    }
+    if (project_budget < 0) {
+      console.log("project_name length : " + project_name.length);
+      return res
+        .status(500)
         .json({
-          message:
-            "Please provide all required fields: project_name, purpose, product, project_budget, project_deadline, and image_url.",
+          message: "The project budget must be greater than or equal to zero.",
         });
     }
 
+    if (project_deadline < today) {
+      console.log("project_name length : " + project_deadline);
+      return res
+        .status(500)
+        .json({ message: "The project deadline must be a future date." });
+    }
+
     // Combine fields to form proj_desc
-    const proj_desc = `Purpose: ${purpose}, Product: ${product}, Features: ${features}`;
+    const proj_desc = `Purpose: ${purpose}; Product: ${product};Description: ${project_description};Features: ${features}`;
 
     // Prepare project data for the database
     const projectData = {
+      project_name: project_name,
       proj_desc: proj_desc,
       budget: project_budget,
       end_date: project_deadline, // Use the correct end date
@@ -47,7 +77,6 @@ exports.createProject = async (req, res) => {
       status: 1, // Set the default status
       user_id: 2, // Replace with req.user.id if you have authentication in place
       modified_by: 2,
-      project_name: project_name,
       image_url: image_url, // Save image URL
     };
 
@@ -136,26 +165,28 @@ exports.filterProject = async (req, res) => {
   try {
     const { projName } = req.query;
 
-    if (projName && typeof projName !== 'string') {
-      return res.status(400).json({ message: 'Invalid projName parameter' });
+    if (projName && typeof projName !== "string") {
+      return res.status(400).json({ message: "Invalid projName parameter" });
     }
 
     const filter = projName
       ? {
           project_name: {
-            [Op.iLike]: `%${projName}%`,  // Use iLike for case-insensitive search
+            [Op.iLike]: `%${projName}%`, // Use iLike for case-insensitive search
           },
         }
-      : {};  // If projName is not provided, no filter is applied
+      : {}; // If projName is not provided, no filter is applied
 
     // Fetch projects using the filter
     const projects = await Project.findAll({
-      where: filter
+      where: filter,
     });
 
     res.status(200).json(projects);
   } catch (error) {
-    console.error('Error filtering projects:', error);
-    res.status(500).json({ message: 'Error filtering projects', error: error.message });
+    console.error("Error filtering projects:", error);
+    res
+      .status(500)
+      .json({ message: "Error filtering projects", error: error.message });
   }
 };
