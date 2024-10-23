@@ -13,6 +13,17 @@
     font-style: normal;
 }
 
+.error-message {
+    color: red;
+    margin: 10px 0;
+  }
+  
+  .success-message {
+    color: green;
+    margin: 10px 0;
+  }
+  
+
 /* Search Bar */
 /* .search-container {
     display: flex;
@@ -136,6 +147,25 @@
     /* Smooth transition */
 }
 
+.form_textarea {
+    width: 100%; /* Full width to match input fields */
+    height: 100px; /* Height can be adjusted as needed */
+    padding: 10px; /* Padding for comfort */
+    border: 1px solid #ccc; /* Border style */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+    resize: vertical; /* Allow resizing vertically */
+  }
+  
+  .form_textarea:focus {
+    border-color: #007bff; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focus shadow */
+  }
+  
+
+
 .progress-image:hover {
     transform: scale(1.05);
     /* Slightly scale on hover */
@@ -166,7 +196,18 @@
     overflow-y: auto;
 }
 
-
+.createproject_Heading{
+    background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    margin-left: 10px;
+    font-family: "Poppins", system-ui;
+    font-weight: 600 !important;
+    font-style: normal;
+    font-size: xxx-large !important;
+}
 
 .form_label{
     font-weight: 600 !important;
@@ -176,80 +217,21 @@
     color: #000;
 }
 
-@media (max-width: 768px) {
-    .radio_button_container input[type="checkbox"] {
-        margin-left: 15px;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        cursor: pointer;
-        
-    }
-    /* .form_question_pair{
-        display: block;
-    } */
-    .createproject_Heading{
-        background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        -webkit-text-fill-color: transparent;
-        margin-left: 10px;
-        font-family: "Poppins", system-ui;
-        font-weight: 500 !important;
-        font-style: normal;
-        font-size: xx-large !important;
-        text-align: center;
-    }
-    .form_label{
-        font-weight: 500 !important;
-        display: block;
-        font-size: 1rem;
-        /* font-weight: 500; */
-        color: #000;
-    }
-    .createproject_form input[type="text"], .createproject_form input[type="number"]{
-        width: 95% !important;
-    }
-
-    .createproject_layout{
-        width: 100%;
-        margin-left: 15px;
-    }
-
+.radio_button_container input[type="radio"] {
+    margin-left: 50px;
+    margin-top: 10px;
+    cursor: pointer;
 }
 
-@media (min-width: 769px) {
-    .radio_button_container input[type="checkbox"]:first-of-type{
-        margin-left: 15px;
-    }
-    
-    .radio_button_container input[type="checkbox"]:not(:first-child) {
-        margin-left: 50px;
-    }
-    
-    .radio_button_container input[type="checkbox"] {
-        margin-top: 10px;
-        margin-bottom: 10px;
-        cursor: pointer;
-    }
-    .createproject_Heading{
-        background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        -webkit-text-fill-color: transparent;
-        margin-left: 10px;
-        font-family: "Poppins", system-ui;
-        font-weight: 600 !important;
-        font-style: normal;
-        font-size: xxx-large !important;
-    }
+.radio_button_container input[type="checkbox"] {
+    margin-left: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
-
-
-
 
 .submit{
+    
     display: block;
     margin: 20px auto; /* Auto margin centers the button horizontally */
     padding: 10px 20px;
@@ -265,7 +247,7 @@
 .createproject_form{
     padding-left:20px;
 }
-.createproject_form input[type="text"], .createproject_form input[type="number"]{
+.createproject_form input[type="text"]{
     display: block;
     width: 75%;
     padding: 10px;
