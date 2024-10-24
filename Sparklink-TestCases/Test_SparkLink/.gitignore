@@ -22,6 +22,7 @@ node_modules/
 dist/
 build/
 latest_logs/
-basic_test_info.txt/
-page_source.html/
-screenshot.png/
+Sparklink-TestCases/Test_SparkLink/latest_logs/Test_SparkLink.test_create_project_form.CreateProjectFormTest.test_create_form/basic_test_info.txt
+Sparklink-TestCases/Test_SparkLink/latest_logs/Test_SparkLink.test_create_project_form.CreateProjectFormTest.test_create_form/page_source.html
+Sparklink-TestCases/Test_SparkLink/latest_logs/Test_SparkLink.test_create_project_form.CreateProjectFormTest.test_create_form/screenshot.png
+
