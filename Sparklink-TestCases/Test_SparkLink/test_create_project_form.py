@@ -63,6 +63,7 @@ class CreateProjectFormTest(BaseCase):
             self.sleep(3)
 
             # This field is to upload file
+
             file_path = "/Users/fajukoodunayo/Downloads/AfricaMap.jpg"
             self.choose_file('[accept="image/*"]', file_path, by="css selector")
             self.sleep(4)
