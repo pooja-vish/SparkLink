@@ -22,3 +22,6 @@ node_modules/
 dist/
 build/
 latest_logs/
+basic_test_info.txt/
+page_source.html/
+screenshot.png/
