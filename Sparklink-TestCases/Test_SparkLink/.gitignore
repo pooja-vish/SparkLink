@@ -1,0 +1,29 @@
+# Byte-compiled Python files
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+
+# Virtual environment
+venv/
+.env/
+
+# IDE settings
+.vscode/
+
+# Logs and database
+*.log
+*.sqlite3
+
+# Node.js dependencies
+node_modules/
+
+# Generated files
+dist/
+build/
+latest_logs/
+Sparklink-TestCases/Test_SparkLink/latest_logs/Test_SparkLink.test_create_project_form.CreateProjectFormTest.test_create_form/basic_test_info.txt
+Sparklink-TestCases/Test_SparkLink/latest_logs/Test_SparkLink.test_create_project_form.CreateProjectFormTest.test_create_form/page_source.html
+Sparklink-TestCases/Test_SparkLink/latest_logs/Test_SparkLink.test_create_project_form.CreateProjectFormTest.test_create_form/screenshot.png
+
+.DS_Store/

@@ -3,7 +3,7 @@ from seleniumbase import BaseCase
 class NavbarTestCase(BaseCase):
     def test_navbar(self):
         #open the sparklink home page
-        self.open("http://localhost:3000/")
+        self.open("http://localhost:3100/")
 
         if self.is_element_visible(".navBackground.mt-3.collapse.show"):
             print("Element is Visible")
