@@ -18,24 +18,24 @@ class CreateProjectFormTest(BaseCase):
 
             E_Commerce='[value="E-Commerce"]'
             SocialMedia='[value="Social Media"]'
-            internal_tool='[value="internal tool"]'
-            Other="#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(4) > div:nth-child(4) > input[type=checkbox]"
+            internal_tool='[value="Internal Tool"]'
+            #Other="#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(4) > div:nth-child(4) > input[type=checkbox]"
             Website ='[value="Website"]'
             AndroidApp ='[value="Android App"]'
             IOSApp ='[value="IOS App"]'
             WindowsSoftware ='[value="Windows Software"]'
-            Other2 ="#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(6) > div:nth-child(5) > input[type=checkbox]"
+            #Other2 ="#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(6) > div:nth-child(5) > input[type=checkbox]"
 
-            first_selection=[E_Commerce,SocialMedia,internal_tool,Other]
-            second_selection=[Website,AndroidApp,IOSApp,WindowsSoftware,Other2 ]
+            first_selection=[E_Commerce,SocialMedia,internal_tool]
+            second_selection=[Website,AndroidApp,IOSApp,WindowsSoftware]
             first_choice=random.sample(first_selection,2)
             self.sleep(3)
             for choice in first_choice:
                 self.click(choice)  # Click each randomly selected checkbox
                 self.sleep(1)  # Optional: pause between clicks if needed
 
-                if choice == Other:
-                    self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(4) > input[type=text]", "Testing if the other section works")
+                # if choice == Other:
+                #     self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(4) > input[type=text]", "Testing if the other section works")
 
             #self.click(Other)#this is for the option button when it if functional
 
@@ -45,25 +45,30 @@ class CreateProjectFormTest(BaseCase):
                 self.click(choice)
                 self.sleep(1)
 
-                if choice == Other2:
-                    self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(6) > input[type=text]", "Testing if the other section works")
+                # if choice == Other2:
+                #     self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(6) > input[type=text]", "Testing if the other section works")
 
 
             self.send_keys('[name="project_budget"]', "$50,000")
             self.sleep(2)
 
-            self.send_keys('[name="product_description"]', "The Students, The Teachers")
+            self.send_keys('[name="project_audience"]', "The Students, The Teachers")
             self.sleep(2)
 
             # raise this the selector is same as the project timeline selector
-            self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > input[type=text]:nth-child(12)", "For the e-commerce site, I want to include user-friendly navigation, secure payment gateways, a product catalog with search and filter options, customer reviews and ratings, personalized recommendations, a shopping cart, order tracking, inventory management, and a responsive design for both desktop and mobile users.")
+            self.send_keys('[name="features"]', "Jut WOW me please")
             self.sleep(2)
 
-            self.send_keys(".createproject_datepicker.date", "002023-10-10")
+            self.send_keys('[name="project_deadline"]', "002026-10-10")
             self.sleep(3)
 
+            # This field is to upload file
+            file_path = "/Users/fajukoodunayo/Downloads/AfricaMap.jpg"
+            self.choose_file('[accept="image/*"]', file_path, by="css selector")
+            self.sleep(4)
+
             self.click(".submit.button-home")
-            self.sleep(2)
+            self.sleep(10)
 
         else:
             print("element is not visible")
