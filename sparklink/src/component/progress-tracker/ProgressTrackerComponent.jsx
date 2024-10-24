@@ -75,7 +75,8 @@ const ProgressTrackerComponent = () => {
         if (selectedOption) {
             setSearchQuery(selectedOption.label); // Update the search query
             // Filter project list case-insensitively
-            const filteredProjects = originalProjectList.filter((item) =>
+            const filteredProjects = originalProjectList.filter((item) => 
+                item.project_name && selectedOption.value && 
                 item.project_name.toLowerCase() === selectedOption.value.toLowerCase()
             );
             setProjectList(filteredProjects); // Filter project list
@@ -160,7 +161,7 @@ const ProgressTrackerComponent = () => {
                                                             </div>
                                                             <div className="progress-content">
                                                                 {/* <span className="progress-category">{item.project_name}</span> */}
-                                                                <h3 className="progress-title">{item.proj_id} - {item.project_name}</h3>
+                                                                <h3 className="progress-title">{item.project_name}</h3>
                                                                 <div className="progress-bar-container">
                                                                     <div className="progress-bar">
                                                                         {/* <div className="progress" style={{ width: `${item.progress}%` }}></div> */}
