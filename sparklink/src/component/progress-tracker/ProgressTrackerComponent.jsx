@@ -15,6 +15,7 @@ const ProgressTrackerComponent = () => {
     //const [selectedTab, setSelectedTab] = useState('All');
     const [activeProgressIndex, setActiveProgressIndex] = useState(null);
     const progressListRef = useRef(null);
+    const [loading, setLoading] = useState(false);
 
     // Function to handle tab click (All, Active, Completed)
     // const handleTabClick = (tab) => {
@@ -30,12 +31,15 @@ const ProgressTrackerComponent = () => {
     // Fetch projects when the component first loads
     useEffect(() => {
         const fetchProjects = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get('/project');
                 setProjectList(response.data);
                 setOriginalProjectList(response.data);  // Store the original project list
             } catch (err) {
                 setError(err.message);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -75,8 +79,8 @@ const ProgressTrackerComponent = () => {
         if (selectedOption) {
             setSearchQuery(selectedOption.label); // Update the search query
             // Filter project list case-insensitively
-            const filteredProjects = originalProjectList.filter((item) => 
-                item.project_name && selectedOption.value && 
+            const filteredProjects = originalProjectList.filter((item) =>
+                item.project_name && selectedOption.value &&
                 item.project_name.toLowerCase() === selectedOption.value.toLowerCase()
             );
             setProjectList(filteredProjects); // Filter project list
@@ -110,7 +114,7 @@ const ProgressTrackerComponent = () => {
                                                 onChange={handleSelectChange}
                                                 onInputChange={handleInputChange}
                                                 options={suggestions}
-                                                placeholder="Search projects..."
+                                                placeholder="Search by Project name"
                                                 isClearable
                                                 className="search-select search-input"
                                             />
@@ -161,12 +165,15 @@ const ProgressTrackerComponent = () => {
                                                             </div>
                                                             <div className="progress-content">
                                                                 {/* <span className="progress-category">{item.project_name}</span> */}
-                                                                <h3 className="progress-title">{item.project_name}</h3>
+                                                                <span className="progress-category">Software</span>
+                                                                <div className="progress-title">{item.project_name}</div>
                                                                 <div className="progress-bar-container">
                                                                     <div className="progress-bar">
                                                                         {/* <div className="progress" style={{ width: `${item.progress}%` }}></div> */}
+                                                                        <div className="progress" style={{ width: `75%` }}></div>
                                                                     </div>
                                                                     {/* <span className="progress-text">{item.progress}%</span> */}
+                                                                    <span className="progress-text">75%</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -180,8 +187,8 @@ const ProgressTrackerComponent = () => {
 
                                             {activeProgressIndex !== null && (
                                                 <div className="description">
-                                                    <h4>{projectList[activeProgressIndex]?.proj_desc} Description</h4>
-                                                    <p>This is a detailed description for the selected project.</p>
+                                                    <h4>{projectList[activeProgressIndex]?.project_name}</h4>
+                                                    <p>{projectList[activeProgressIndex]?.proj_desc}</p>
                                                 </div>
                                             )}
                                         </div>
@@ -191,6 +198,18 @@ const ProgressTrackerComponent = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Loading overlay */}
+                {loading && (
+                    <div className="loading-overlay d-flex justify-content-center align-items-center">
+                        <div className="text-center">
+                            <div className="spinner-border text-light" style={{ width: "5rem", height: "5rem" }} role="status">
+                            </div>
+                            <div className="text-light mt-2">Processing...</div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="footer-fixed">
                     <FooterComponent />
                 </div>
