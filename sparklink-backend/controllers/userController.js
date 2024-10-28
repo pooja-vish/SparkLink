@@ -1,10 +1,16 @@
+require('dotenv').config();
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 // Register a new user with role
+
+
+
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, role, name, user_id } = req.body;
+    const { username, email, password, role, name } = req.body;
 
     // Check if the user already exists
     const existingUser = await User.findOne({ where: { email } });
@@ -15,24 +21,53 @@ exports.register = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
-    const newUser = await User.create({
-      user_id,
+    // Generate a unique confirmation token
+    const confirmationToken = crypto.randomBytes(32).toString('hex');
+
+    // Create a new user with is_active set to 'N' initially
+    const newUser = await User.create({  
       username,
       email,
       name,
       password: hashedPassword,
-      role, // Save the user's role
-      is_active: 'Y', // Default value
-      created_by: 1, // Adjust based on your requirements
-      modified_by: 1 // Adjust based on your requirements
+      role,
+      is_active: 'N', // User initially inactive
+      created_by: 1,
+      modified_by: 1,
+      confirmation_token: confirmationToken, // Save the token to the database
     });
 
-    res.status(201).json({ message: 'User registered successfully', user: newUser });
+    // Send a confirmation email with the link
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+         user: process.env.EMAIL_USER,
+         pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+         // Do not fail on invalid certs
+         rejectUnauthorized: false
+      }
+    });
+
+    const confirmationLink = `http://localhost:5100/confirm-email?token=${confirmationToken}`;
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Confirm Your Email',
+      text: `Please click the following link to confirm your email: ${confirmationLink}`,
+    });
+
+    res.status(201).json({ message: 'User registered successfully. Please check your email to confirm your account.' });
   } catch (error) {
     res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 };
+
+
+exports.registerSupervisor= async(req,res) => {
+
+}
 
 // Login user with role
 exports.login = async (req, res) => {
