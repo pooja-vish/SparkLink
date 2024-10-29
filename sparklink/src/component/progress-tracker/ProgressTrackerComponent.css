@@ -1,247 +1,68 @@
-/* Main Container */
-.container-fluid {
-    padding-left: 0px !important;
-}
-
-/* Container for progress tracker */
-.progress-tracker {
-    padding: 20px;
-    max-width: 100%;
-    margin: 0 auto;
+.milestone_Heading {
+    background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
     font-family: "Poppins", system-ui;
-    font-weight: 300;
+    font-weight: 600 !important;
+    font-style: normal;
+    font-size: xxx-large !important;
 }
 
-/* Search Bar */
-.search-container {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 20px;
-}
-
-.search-input {
-    padding: 10px;
-    width: 100%;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-}
-
-/* Tabs */
-/* Tabs */
-.tabs-wrapper {
-    margin-bottom: 20px;
-}
-
-.tabs {
-    display: flex;
-    justify-content: flex-start;
-    gap: 5px;
-    flex-wrap: wrap;
-}
-
-.tab {
-    padding: 8px 15px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-}
-
-.tab.active {
-    background-color: #007bff;
-    color: white;
-}
-
-.tab:hover {
-    background-color: #007bff;
-    color: white;
-}
-
-/* Mobile View for Tabs */
-@media (max-width: 768px) {
-    .tabs {
-        gap: 3px; /* Reduce gap between tabs */
-    }
-
-    .tab {
-        padding: 6px 10px; /* Reduce padding */
-        font-size: 14px;   /* Decrease font size slightly */
-    }
-}
-
-@media (max-width: 576px) {
-    .tabs {
-        flex-direction: column; /* Stack tabs vertically on smaller devices */
-        gap: 10px;
-    }
-
-    .tab {
-        width: 100%; /* Make each tab take full width */
-        text-align: center;
-    }
-}
-
-
-/* Progress Card Layout */
-.progress-card-layout {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-}
-
-/* Progress Background Card */
-.progress-background-card {
-    height: auto;
-    max-width: 100% !important;
-    background-color: rgba(211, 211, 211, 0.1);
-    border-radius: 8px;
-    padding: 20px;
-    margin: 10px 0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s, box-shadow 0.2s;
-    overflow-y: auto;
-}
-
-/* Arrow Container */
-.arrow-container {
-    width: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.scroll-button {
-    background-color: transparent;
-    border: none;
-    font-size: 24px;
-    color: #007bff;
-    cursor: pointer;
-}
-
-/* Scrollable Progress Items */
-.progress-items {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto; /* Enable horizontal scrolling */
-    padding-bottom: 25px;
-    scroll-behavior: smooth;
-    transform: translateZ(0);
-    width: 100%;
-    scrollbar-color: #a9a9a9 transparent;
-}
-
-@media (max-width: 768px) {
-    .progress-items {
-        overflow-x: auto;
-        padding-bottom: 15px;
-    }
-
-    .progress-card {
-        min-width: 80%;
-    }
-
-    .arrow-container {
-        display: none;
-    }
-}
-
-/* Progress Card */
-.progress-card {
-    background-color: #f0f0f5;
-    color: #333;
-    padding: 20px;
-    border-radius: 16px;
-    width: 250px;
-    min-width: 250px;
-    position: relative;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
-    cursor: pointer !important;
-}
-
-.progress-card:hover {
-    transform: translateY(-10px);
-}
-
-/* Progress Image */
-.progress-image {
-    width: 100%;
-    height: 120px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    background-size: cover;
-    background-position: center;
-}
-
-/* Progress Content */
-.progress-category {
-    color: #999;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.progress-title {
-    color: #555;
-    font-weight: 600;
-    font-size: 15px;
-    margin-bottom: 10px;
-}
-
-/* Progress Bar */
-.progress-bar-container {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-
-.progress-bar {
-    flex-grow: 1;
-    height: 10px;
-    /* background-color: #555; */
-    border-radius: 5px;
-    position: relative;
-    margin-right: 10px;
-}
-
-.progress {
-    height: 100%;
-    background-color: #555 !important;
-    border-radius: 5px;
-}
-
-.progress-text {
-    font-weight: bold;
-    color: #555;
-}
-
-/* Description */
-.description {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #333;
-    padding: 10px;
-    border-radius: 8px;
-    /* background-color: #f9f9f9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
-}
-
-/* Progress Container */
-.progress_container {
+.milestone_container {
     padding-left: 65px !important;
 }
 
-@media (max-width: 768px) {
-    .progress_container {
-        padding-left: 45px !important;
-    }
+.milestone_text {
+    font-weight: 600 !important;
+    display: block;
+    font-size: 1.1rem;
+    font-family: "Poppins", system-ui;
+    color: #000;
 }
 
-/* .footer-fixed {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-} */
+.milestone_form input[type="text"],
+.milestone_form input[type="number"] {
+    display: block;
+    font-family: "Poppins", system-ui;
+    width: 75%;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #6a6a6a;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.milestone_form {
+    padding-left: 20px;
+}
+
+.button_container {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .milestone_container {
+        padding-left: 45px !important;
+    }
+
+    .milestone_Heading {
+        background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+        font-family: "Poppins", system-ui;
+        font-weight: 500 !important;
+        font-style: normal;
+        font-size: xx-large !important;
+        text-align: center;
+    }
+}

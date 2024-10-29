@@ -79,20 +79,20 @@ const MenuComponent = () => {
                                                         &nbsp;&nbsp;&nbsp;Create Project</Link>
                                                 </span>
                                             </li>
-                                            {role === '' && (<li className={getNavItemClass('/progress')}>
+                                            {role === '' && (<li className={getNavItemClass('/view-project')}>
                                                 <span style={{ cursor: 'pointer' }}>
-                                                    <Link className='text-menu' to='/progress'>
+                                                    <Link className='text-menu' to='/view-project'>
                                                         <img src={view_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;View Project</Link>
                                                 </span>
                                             </li>)}
-                                            {role === '' && (<li className={getNavItemClass('/view-project')}>
+                                            {role === '' && (<li className={getNavItemClass('/progress')}>
                                                 <span style={{ cursor: 'pointer' }}>
                                                     <Link style={{
                                                         fontFamily: '"Poppins", sans-serif', fontWeight: 500,
                                                         color: '#E6E6E6', fontStyle: 'normal'
-                                                    }} to='/view-project'>
+                                                    }} to='/progress'>
                                                         <img src={milestone_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;Milestone Tracker</Link>

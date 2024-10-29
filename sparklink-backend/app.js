@@ -11,6 +11,7 @@ const projectStatusRouter = require('./routes/projectStatusRoutes');
 const departmentRoutes = require('./routes/departmentRoutes');
 const projectRouter = require('./routes/projectRoutes');
 const userRouter = require('./routes/userRoutes');
+const progressTrackerRouter = require('./routes/progressTrackerRoutes');
 const app = express();
 
 // Middleware
@@ -42,6 +43,7 @@ app.use('/projectstatus', projectStatusRouter);
 app.use('/department', departmentRoutes);
 app.use('/project', projectRouter);
 app.use('',userRouter);
+app.use('/progressTracker', progressTrackerRouter);
 // Error handling middleware
 
 
