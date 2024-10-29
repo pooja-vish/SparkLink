@@ -10,6 +10,7 @@ const roleRoutes = require('./routes/roleRoutes'); // Import your role routes
 const projectStatusRouter = require('./routes/projectStatusRoutes');
 const departmentRoutes = require('./routes/departmentRoutes');
 const projectRouter = require('./routes/projectRoutes');
+const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // Middleware
@@ -40,11 +41,12 @@ app.use('/api', roleRoutes); // Route for role-related requests
 app.use('/projectstatus', projectStatusRouter);
 app.use('/department', departmentRoutes);
 app.use('/project', projectRouter);
+app.use('',userRouter);
 // Error handling middleware
 
 
 // Start the server
-const PORT = 5000; // Allow for dynamic port assignment if needed
+const PORT = 5100; // Allow for dynamic port assignment if needed
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
