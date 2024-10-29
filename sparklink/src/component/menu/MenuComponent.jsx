@@ -10,6 +10,7 @@ import contact_icon from '../../assets/contact_us.png';
 import milestone_icon from '../../assets/Milestone_Tracker.png';
 import profile_icon from '../../assets/profile.png';
 import create_icon from '../../assets/create_project.png';
+import logout_icon from '../../assets/logout.png';
 
 const MenuComponent = () => {
     // const navigate = useNavigate();
@@ -98,6 +99,15 @@ const MenuComponent = () => {
                                                         &nbsp;&nbsp;&nbsp;Milestone Tracker</Link>
                                                 </span>
                                             </li>)}
+
+                                            <li className={getNavItemClass('/logout')}>
+                                                <span style={{ cursor: 'pointer' }}>
+                                                    <Link className='text-menu' to='/logout' style={{ marginLeft: 15, marginBottom: 15, position: 'absolute', bottom: 0 }}>
+                                                        <img src={logout_icon}
+                                                            className='nav_sub_menu_icon' alt=''></img>
+                                                        &nbsp;&nbsp;&nbsp;Logout</Link>
+                                                </span>
+                                            </li>
                                         </ul>
                                     </div>
                                 </Collapse>
@@ -149,6 +159,13 @@ const MenuComponent = () => {
                                                         className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                 </span>
                                             </li>)}
+
+                                            <li className="nav-item">
+                                                <span style={{ cursor: 'pointer' }}>
+                                                    <img src={logout_icon}
+                                                        className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15, marginBottom: 15, position: 'absolute', bottom: 0 }}></img>
+                                                </span>
+                                            </li>
                                         </ul>
                                     </div>
                                 </Collapse>
