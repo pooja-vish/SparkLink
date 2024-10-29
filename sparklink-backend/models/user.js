@@ -14,6 +14,10 @@ const User = sequelize.define('User', {
     allowNull: false,
     unique: true,
   },
+  confirmation_token: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   role: {
     type: DataTypes.STRING(50), // Matches VARCHAR(50) in the table
     allowNull: false,
