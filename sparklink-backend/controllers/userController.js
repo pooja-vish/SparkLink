@@ -65,6 +65,28 @@ exports.register = async (req, res) => {
 };
 
 
+exports.confirmEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    // Find the user by confirmation token
+    const user = await User.findOne({ where: { confirmation_token: token } });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    // Activate the user account
+    user.is_active = 'Y';
+    user.confirmation_token = null; // Clear the token after confirmation
+    await user.save();
+
+    res.status(200).json({ message: 'Email confirmed successfully. You can now log in.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error confirming email', error: error.message });
+  }
+};
+
 exports.registerSupervisor= async(req,res) => {
 
 }
