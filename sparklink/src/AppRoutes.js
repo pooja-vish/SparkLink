@@ -5,6 +5,7 @@ import AboutComponent from './component/about/AboutComponent';
 import ContactComponent from './component/contact/ContactComponent';
 import ProgressTrackerComponent from './component/progress-tracker/ProgressTrackerComponent';
 import CreateProjectComponent from './component/createproject/CreateProjectComponent';
+import LoginComponent from './component/login/LoginComponent';
 
 
 const AppRoutes = () => {
@@ -14,7 +15,8 @@ const AppRoutes = () => {
         { path: '/about', element: <AboutComponent /> },
         { path: '/contact', element: <ContactComponent /> },
         { path: '/progress', element: <ProgressTrackerComponent /> },
-        { path: '/create-project', element: <CreateProjectComponent /> }
+        { path: '/create-project', element: <CreateProjectComponent /> },
+        { path: '/login', element: <LoginComponent /> }
     ]);
 
     return routes;

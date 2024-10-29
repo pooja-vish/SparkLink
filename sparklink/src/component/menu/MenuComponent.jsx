@@ -10,6 +10,7 @@ import contact_icon from '../../assets/contact_us.png';
 import milestone_icon from '../../assets/Milestone_Tracker.png';
 import profile_icon from '../../assets/profile.png';
 import create_icon from '../../assets/create_project.png';
+import LoginComponent from '../login/LoginComponent'
 
 const MenuComponent = () => {
     // const navigate = useNavigate();
@@ -96,6 +97,17 @@ const MenuComponent = () => {
                                                         <img src={milestone_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;Milestone Tracker</Link>
+                                                </span>
+                                            </li>)}
+                                            {role === '' && (<li className={getNavItemClass('/login')}>
+                                                <span style={{ cursor: 'pointer' }}>
+                                                    <Link style={{
+                                                        fontFamily: '"Poppins", sans-serif', fontWeight: 500,
+                                                        color: '#E6E6E6', fontStyle: 'normal'
+                                                    }} to='/login'>
+                                                        <img src={milestone_icon}
+                                                            className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
+                                                        &nbsp;&nbsp;&nbsp;Login</Link>
                                                 </span>
                                             </li>)}
                                         </ul>
