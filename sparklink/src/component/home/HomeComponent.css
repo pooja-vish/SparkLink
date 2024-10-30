@@ -27,7 +27,8 @@
 }
 
 .container-fluid.background {
-    background: linear-gradient(135deg, #0d1b2a, #1b263b 70%, #415a77);
+    /* background: linear-gradient(135deg, #0d1b2a, #1b263b 70%, #415a77); */
+    background: linear-gradient(to top, #5f7f9f, #2c3d5c);
     border-radius: 15px;
     height: auto;
     padding: 20px;

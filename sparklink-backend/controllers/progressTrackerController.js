@@ -14,7 +14,9 @@ exports.createMilestone = async (req, res) => {
         for (const milestone of milestoneList) {
             const {
                 proj_id,
-                milestone_desc
+                milestone_desc,
+                milestone_title,
+                end_date
             } = milestone;
 
             const projMilestoneCount = await MilestoneCounter.findOne({
@@ -40,7 +42,9 @@ exports.createMilestone = async (req, res) => {
                 const milestoneList = {
                     proj_id: proj_id,
                     milestone_id: updatedProjMilestoneCount.milestone_id,
-                    milestone_desc: milestone_desc
+                    milestone_desc: milestone_desc,
+                    milestone_title: milestone_title,
+                    end_date: end_date
                 }
                 const newMilestone = await Milestone.create(milestoneList);
 
@@ -61,7 +65,9 @@ exports.FetchMilestone = async (req, res) => {
     try {
         const { proj_id } = req.body;
 
-        const milestoneData = await Milestone.findAll({ where: { proj_id: proj_id } });
+        const milestoneData = await Milestone.findAll({ 
+            where: { proj_id: proj_id }, 
+            order: [['end_date', 'ASC']] });
         res.status(200).json({ message: "Milestone(s) fetched successfully", milestoneData });
     } catch (error) {
         console.error(error);

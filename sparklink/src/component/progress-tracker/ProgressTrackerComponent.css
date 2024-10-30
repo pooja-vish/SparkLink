@@ -14,21 +14,45 @@
     padding-left: 65px !important;
 }
 
-.milestone_text {
+.milestone_label {
     font-weight: 600 !important;
     display: block;
-    font-size: 1.1rem;
+    font-size: x-large !important;
     font-family: "Poppins", system-ui;
     color: #000;
+}
+
+.milestone_text {
+    font-family: "Poppins", system-ui;
+    font-weight: 300;
+    font-style: normal;
+    color: #F0F0F0 !important;
+    font-size: large !important;
+}
+
+.milestone_title_text {
+    font-family: "Poppins", system-ui;
+    font-weight: bold;
+    font-style: normal;
+    color: #F0F0F0 !important;
+    font-size: large !important;
+}
+
+.milestone_input_text {
+    font-family: "Poppins", system-ui;
+    font-weight: 300;
+    font-style: normal;
+    color: #000 !important;
+    font-size: medium !important;
 }
 
 .milestone_form input[type="text"],
 .milestone_form input[type="number"] {
     display: block;
     font-family: "Poppins", system-ui;
-    width: 75%;
+    width: 100%;
     padding: 10px;
-    margin: 10px;
+    margin: 10px 0;
     border: 2px solid #6a6a6a;
     border-radius: 5px;
     font-size: 16px;
@@ -65,4 +89,79 @@
         font-size: xx-large !important;
         text-align: center;
     }
+}
+
+.milestone_datepicker {
+    display: block;
+    cursor: pointer !important;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #6a6a6a;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333;
+    box-shadow: 2px 2px 5px rgba(203, 164, 164, 0.1);
+}
+
+.delete_icon {
+    height: 35px;
+    display: inline-block;
+    cursor: pointer;
+    margin-left: 12%;
+}
+
+.milestone-input-container {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.milestone_input_date {
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* Cards */
+.dashboard-container {
+    margin-top: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.box {
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+}
+
+.box h3 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    background-color: #444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+}
+
+.box p {
+    font-size: 0.8rem;
+    opacity: 0.8;
 }
