@@ -8,7 +8,7 @@ const FooterComponent = () => {
             <div className="footer-container">
                 <div className="container-fluid footer-background">
                     <div className="row mt-4">
-                        <div className="col-lg-2 col-md-2 col-sm-12 px-4">
+                        <div className="col-lg-3 col-md-3 col-sm-12 px-4">
                             <img src={UWindsor_logo} alt="Logo" className='UWindsor-footer-logo' />
                         </div>
                         <div className="col-lg-5 col-md-5 col-sm-12 text-footer text-center">
@@ -16,7 +16,7 @@ const FooterComponent = () => {
                             <br />
                             with UWindsor SparkLink
                         </div>
-                        <div className="col-lg-5 col-md-5 col-sm-12 text-end px-5">
+                        <div className="col-lg-4 col-md-4 col-sm-12 text-end px-5">
                             <div className="text-footer">Home</div>
                             <div className="text-footer mt-2">About Us</div>
                             <div className="text-footer mt-2">Contact Us</div>

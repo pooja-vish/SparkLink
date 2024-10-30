@@ -102,7 +102,7 @@ const ViewProjectComponent = () => {
                                                 options={suggestions}
                                                 placeholder="Search by Project name"
                                                 isClearable
-                                                className="search-select search-input"
+                                                className="search-select-text search-select search-input"
                                             />
                                         </div>
 

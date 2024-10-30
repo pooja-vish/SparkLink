@@ -25,6 +25,22 @@ const ProjectMilestone = sequelize.define('ProjectMilestone', {
         type: DataTypes.STRING(250),
         allowNull: false,
     },
+    is_completed: {
+        type: DataTypes.CHAR(1),
+        allowNull: false,
+        defaultValue: 'N',
+        validate: {
+            isIn: [['Y', 'N']],
+        },
+    },
+    milestone_title: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+    },
+    end_date: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    }
 }, {
     tableName: 't_proj_milestone',
     timestamps: false,
