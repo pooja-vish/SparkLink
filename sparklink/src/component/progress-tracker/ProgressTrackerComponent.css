@@ -14,7 +14,8 @@
     padding-left: 65px !important;
 }
 
-.milestone_label, .modal_text_header {
+.milestone_label,
+.modal_text_header {
     font-weight: 600 !important;
     display: block;
     font-size: x-large !important;
@@ -38,7 +39,8 @@
     font-size: large !important;
 }
 
-.milestone_input_text, .modal_text_body {
+.milestone_input_text,
+.modal_text_body {
     font-family: "Poppins", system-ui;
     font-weight: 300;
     font-style: normal;
@@ -115,7 +117,9 @@ input[type="text"] {
     margin-left: 12%;
 }
 
-.edit_icon, .cancel_icon, .complete_icon {
+.edit_icon,
+.cancel_icon,
+.complete_icon {
     height: 27px;
     cursor: pointer;
 }

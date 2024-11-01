@@ -578,9 +578,9 @@ const ProgressTrackerComponent = () => {
                                                             <div className="col-12 text-center">
                                                                 <button className="text-center button_text button-home"
                                                                     onClick={closeModal}>Close</button>
-                                                                <button className="text-center button_text button-home"
+                                                                <button className="ms-3 text-center button_text button-home"
                                                                     onClick={updateMilestoneData}>Save Changes</button>
-                                                                <button className="text-center button_text button-home"
+                                                                <button className="ms-3 text-center button_text button-delete"
                                                                     onClick={removeMilestone}>Delete Milestone</button>
                                                             </div>
                                                         </div>
