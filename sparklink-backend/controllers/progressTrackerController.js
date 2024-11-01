@@ -65,14 +65,71 @@ exports.FetchMilestone = async (req, res) => {
     try {
         const { proj_id } = req.body;
 
-        const milestoneData = await Milestone.findAll({ 
-            where: { proj_id: proj_id }, 
-            order: [['end_date', 'ASC']] });
+        const milestoneData = await Milestone.findAll({
+            where: { proj_id: proj_id, is_active: 'Y' },
+            order: [['end_date', 'ASC']]
+        });
         res.status(200).json({ message: "Milestone(s) fetched successfully", milestoneData });
     } catch (error) {
         console.error(error);
         res
             .status(500)
             .json({ message: "Error fetching project milestone(s)", error: error.message });
+    }
+}
+
+exports.UpdateMilestone = async (req, res) => {
+    try {
+        const { milestoneList } = req.body;
+
+        const updatedData = await Milestone.update({
+            milestone_title: milestoneList.milestone_title,
+            milestone_desc: milestoneList.milestone_desc,
+            end_date: milestoneList.end_date
+        }, {
+            where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id }
+        });
+        res.status(200).json({ message: "Milestone updated successfully", updatedData });
+    } catch (error) {
+        console.error(error);
+        res
+            .status(500)
+            .json({ message: "Error updating milestone", error: error.message });
+    }
+}
+
+exports.DeleteMilestone = async (req, res) => {
+    try {
+        const { milestoneList } = req.body;
+
+        const deleteData = await Milestone.update({
+            is_active: 'N'
+        }, {
+            where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id }
+        });
+        res.status(200).json({ message: "Milestone deleted succesfully", deleteData });
+    } catch (error) {
+        console.error(error);
+        res
+            .status(500)
+            .json({ message: "Error deleting milestone", error: error.message });
+    }
+}
+
+exports.CompleteMilestone = async (req, res) => {
+    try {
+        const {milestoneList} = req.body;
+
+        const completeData = await Milestone.update({
+            is_completed: 'Y'
+        }, {
+            where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id }
+        });
+        res.status(200).json({ message: "Milestone marked as complete succesfully", completeData });
+    } catch (error) {
+        console.error(error);
+        res
+            .status(500)
+            .json({ message: "Error deleting milestone", error: error.message });
     }
 }

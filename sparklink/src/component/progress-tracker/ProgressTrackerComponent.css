@@ -14,7 +14,7 @@
     padding-left: 65px !important;
 }
 
-.milestone_label {
+.milestone_label, .modal_text_header {
     font-weight: 600 !important;
     display: block;
     font-size: x-large !important;
@@ -38,7 +38,7 @@
     font-size: large !important;
 }
 
-.milestone_input_text {
+.milestone_input_text, .modal_text_body {
     font-family: "Poppins", system-ui;
     font-weight: 300;
     font-style: normal;
@@ -47,7 +47,8 @@
 }
 
 .milestone_form input[type="text"],
-.milestone_form input[type="number"] {
+.milestone_form input[type="number"],
+input[type="text"] {
     display: block;
     font-family: "Poppins", system-ui;
     width: 100%;
@@ -70,6 +71,10 @@
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.modal-footer {
+    justify-content: center !important;
 }
 
 @media (max-width: 768px) {
@@ -95,7 +100,7 @@
     display: block;
     cursor: pointer !important;
     padding: 10px;
-    margin: 10px;
+    margin: 10px 0;
     border: 2px solid #6a6a6a;
     border-radius: 5px;
     font-size: 16px;
@@ -110,6 +115,11 @@
     margin-left: 12%;
 }
 
+.edit_icon, .cancel_icon, .complete_icon {
+    height: 27px;
+    cursor: pointer;
+}
+
 .milestone-input-container {
     display: inline-block;
     white-space: nowrap;
@@ -118,6 +128,10 @@
 .milestone_input_date {
     display: inline-block;
     margin-right: 8px;
+}
+
+td {
+    vertical-align: middle !important;
 }
 
 /* Cards */
