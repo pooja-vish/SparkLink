@@ -5,6 +5,11 @@ import FooterComponent from '../footer/FooterComponent';
 import axios from 'axios';
 import Select from 'react-select';
 import delete_icon from '../../assets/delete_icon.png';
+import Modal from 'react-bootstrap/Modal';
+import Table from 'react-bootstrap/Table';
+import edit_icon from '../../assets/edit_icon.png';
+import cancel_icon from '../../assets/cancel_icon.png';
+import complete_icon from '../../assets/complete_icon.png';
 
 const ProgressTrackerComponent = () => {
     const [projectList, setProjectList] = useState([]);
@@ -20,7 +25,25 @@ const ProgressTrackerComponent = () => {
     const [fetchFlag, setFetchFlag] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const [detailsList, setDetailsList] = useState({});
+    const [copyOfDetailsList, setCopyOfDetailsList] = useState({});
+    const [triggerDetails, setTriggerDetails] = useState(false);
+    const [triggerModalFlag, setTriggerModalFlag] = useState(false);
+    const [editFlag, setEditFlag] = useState(false);
+    const [isMobileView, setIsMobileView] = useState(false);
     const currentDate = new Date();
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobileView(window.innerWidth < 768);
+        };
+
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleAddMilestone = () => {
         setMilestoneList([...milestoneList, { proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
@@ -123,12 +146,6 @@ const ProgressTrackerComponent = () => {
         }
     }, [fetchFlag]);
 
-
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
     const saveMilestone = async (query) => {
         query.preventDefault();
         setLoading(true);
@@ -147,6 +164,118 @@ const ProgressTrackerComponent = () => {
             setLoading(false);
         }
     };
+
+    const openMilestoneDetails = (milestoneId) => {
+        let filteredMilestone = null;
+
+        for (let i = 0; i < milestoneData.length; i++) {
+            if (milestoneData[i].milestone_id === milestoneId) {
+                filteredMilestone = milestoneData[i];
+                setDetailsList(filteredMilestone);
+                setTriggerModalFlag(true);
+                break;
+            }
+        }
+    }
+
+    useEffect(() => {
+        if (detailsList && triggerModalFlag) {
+            setTriggerDetails(true);
+        }
+    }, [detailsList, triggerModalFlag]);
+
+    const closeModal = () => {
+        setDetailsList(null);
+        setTriggerDetails(false);
+        setEditFlag(false);
+        // if (editFlag) {
+        //     setDetailsList({});
+        //     setEditFlag(false);
+        // }
+    }
+
+    const triggerUpdate = async (triggerKey) => {
+        if (triggerKey === 'U') {
+            setEditFlag(true);
+            setCopyOfDetailsList(detailsList);
+        } else if (triggerKey === 'C') {
+            setEditFlag(false);
+            setDetailsList(copyOfDetailsList);
+        }
+    }
+
+    const updateMilestoneData = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/progressTracker/updateMilestone', {
+                milestoneList: detailsList
+            });
+            if (response.status === 200) {
+                if (editFlag) {
+                    //setDetailsList({});
+                    setEditFlag(false);
+                }
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            fetchMilestone();
+            setMilestoneList([]);
+            setLoading(false);
+        }
+    }
+
+    const handleUpdateMilestoneChange = (event) => {
+        const { name, value } = event.target;
+        const updatedMilestones = { ...detailsList };
+        if (detailsList) {
+            updatedMilestones.proj_id = detailsList.proj_id;
+            updatedMilestones[name] = value;
+        }
+        setDetailsList(updatedMilestones);
+    };
+
+    const removeMilestone = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/progressTracker/deleteMilestone', {
+                milestoneList: detailsList
+            });
+            console.log("DELETE DATA> ", response.data);
+            if (response.status === 200) {
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            fetchMilestone();
+            setMilestoneList([]);
+            setLoading(false);
+        }
+    }
+
+    const completeMilestone = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/progressTracker/completeMilestone', {
+                milestoneList: detailsList
+            });
+
+            if (response.status === 200) {
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            fetchMilestone();
+            setMilestoneList([]);
+            setLoading(false);
+        }
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <>
@@ -198,8 +327,10 @@ const ProgressTrackerComponent = () => {
                                                             }
 
                                                             return (
-                                                                <div className="col-12 col-md-2 col-lg-2 mb-4 mt-3" key={index}> {/* 3 cards per row on large screens */}
-                                                                    <div className="box" style={{ backgroundColor }}>
+                                                                <div className="col-12 col-md-4 col-lg-2 mb-4 mt-3" key={index}> {/* 3 cards per row on large screens */}
+                                                                    <div className="box" style={{ backgroundColor, cursor: 'pointer' }}
+                                                                        title='Click to view more details'
+                                                                        onClick={() => openMilestoneDetails(milestone.milestone_id)}>
                                                                         <div className="header">
                                                                             {/* <span className="icon">{index + 1}</span>
                                                                             &nbsp; */}
@@ -265,6 +396,196 @@ const ProgressTrackerComponent = () => {
                                                         </div>
                                                     </div>
                                                 ))}
+                                                <Modal
+                                                    size="lg"
+                                                    show={triggerDetails}
+                                                    onHide={closeModal}
+                                                    onEscapeKeyDown={closeModal}
+                                                    scrollable
+                                                    aria-labelledby="milestone_details_modal"
+                                                >
+                                                    <Modal.Header closeButton>
+                                                        <Modal.Title id="milestone_details_modal" className='modal_text_header'>
+                                                            Milestone Details
+                                                        </Modal.Title>
+                                                    </Modal.Header>
+                                                    <Modal.Body>
+                                                        {detailsList && (
+                                                            <>
+                                                                {!isMobileView && (<Table responsive='sm' striped bordered hover className='modal_text_body'>
+                                                                    <thead className='text-center'>
+                                                                        <tr>
+                                                                            <th>Title</th>
+                                                                            <th>Description</th>
+                                                                            <th>End Date</th>
+                                                                            {!editFlag && (<th>Edit</th>)}
+                                                                            {editFlag && (<th>Cancel</th>)}
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            {!editFlag && (<>
+                                                                                <td className='text-center'>{detailsList.milestone_title}</td>
+                                                                                <td className='text-center'>{detailsList.milestone_desc}</td>
+                                                                                <td className='text-center'>{detailsList.end_date}</td>
+                                                                                <td className='text-center'><img
+                                                                                    src={edit_icon}
+                                                                                    className='edit_icon'
+                                                                                    title='Click to edit milestone'
+                                                                                    onClick={() => triggerUpdate('U')}
+                                                                                    alt=''
+                                                                                />
+                                                                                    &nbsp;&nbsp;
+                                                                                    {detailsList.is_completed === 'N' && (<img
+                                                                                        src={complete_icon}
+                                                                                        className='complete_icon'
+                                                                                        title='Mark Milestone Met'
+                                                                                        onClick={completeMilestone}
+                                                                                        alt=''
+                                                                                    />)}</td>
+                                                                            </>)}
+                                                                            {editFlag && (<>
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="milestone_input_text"
+                                                                                        name="milestone_title"
+                                                                                        value={detailsList.milestone_title || ""}
+                                                                                        onChange={(e) => handleUpdateMilestoneChange(e)}
+                                                                                        placeholder="Enter milestone title, e.g., Project Kickoff"
+                                                                                        maxLength={100}
+                                                                                        required
+                                                                                    />
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        className="milestone_input_text"
+                                                                                        name="milestone_desc"
+                                                                                        value={detailsList.milestone_desc}
+                                                                                        onChange={(e) => handleUpdateMilestoneChange(e)}
+                                                                                        placeholder="Describe your milestone, e.g., Prototype Development"
+                                                                                        maxLength={250}
+                                                                                        required
+                                                                                    />
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="date"
+                                                                                        className="milestone_input_date milestone_datepicker"
+                                                                                        name="end_date"
+                                                                                        value={detailsList.end_date || ""}
+                                                                                        onChange={(e) => handleUpdateMilestoneChange(e)}
+                                                                                        required
+                                                                                    />
+                                                                                </td>
+                                                                                <td className='text-center'><img
+                                                                                    src={cancel_icon}
+                                                                                    className='cancel_icon'
+                                                                                    title='Click to cancel'
+                                                                                    onClick={() => triggerUpdate('C')}
+                                                                                    alt=''
+                                                                                /></td>
+                                                                            </>)}
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </Table>)}
+
+                                                                {isMobileView && (<Table responsive='sm' striped bordered hover className='modal_text_body'>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>Title</td>
+                                                                            {!editFlag && (<td>{detailsList.milestone_title}</td>)}
+                                                                            {editFlag && (<td>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    className="milestone_input_text"
+                                                                                    name="milestone_title"
+                                                                                    value={detailsList.milestone_title || ""}
+                                                                                    onChange={(e) => handleUpdateMilestoneChange(e)}
+                                                                                    placeholder="Enter milestone title, e.g., Project Kickoff"
+                                                                                    maxLength={100}
+                                                                                    required
+                                                                                />
+                                                                            </td>)}
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td>Description</td>
+                                                                            {!editFlag && (<td>{detailsList.milestone_desc}</td>)}
+                                                                            {editFlag && (<td>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    className="milestone_input_text"
+                                                                                    name="milestone_desc"
+                                                                                    value={detailsList.milestone_desc}
+                                                                                    onChange={(e) => handleUpdateMilestoneChange(e)}
+                                                                                    placeholder="Describe your milestone, e.g., Prototype Development"
+                                                                                    maxLength={250}
+                                                                                    required
+                                                                                />
+                                                                            </td>)}
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            <td>End Date</td>
+                                                                            {!editFlag && (<td>{detailsList.end_date}</td>)}
+                                                                            {editFlag && (<td>
+                                                                                <input
+                                                                                    type="date"
+                                                                                    className="milestone_input_date milestone_datepicker"
+                                                                                    name="end_date"
+                                                                                    value={detailsList.end_date || ""}
+                                                                                    onChange={(e) => handleUpdateMilestoneChange(e)}
+                                                                                    required
+                                                                                />
+                                                                            </td>)}
+                                                                        </tr>
+
+                                                                        <tr>
+                                                                            {!editFlag && (<td>Edit</td>)}
+                                                                            {editFlag && (<td>Cancel</td>)}
+                                                                            {!editFlag && (<td><img
+                                                                                src={edit_icon}
+                                                                                className='edit_icon'
+                                                                                title='Click to edit milestone'
+                                                                                onClick={() => triggerUpdate('U')}
+                                                                                alt=''
+                                                                            />
+                                                                                &nbsp;&nbsp;
+                                                                                {detailsList.is_completed === 'N' && (<img
+                                                                                    src={complete_icon}
+                                                                                    className='complete_icon'
+                                                                                    title='Click to Mark Milestone Met'
+                                                                                    onClick={completeMilestone}
+                                                                                    alt=''
+                                                                                />)}</td>)}
+                                                                            {editFlag && (<td><img
+                                                                                src={cancel_icon}
+                                                                                className='cancel_icon'
+                                                                                title='Click to cancel'
+                                                                                onClick={() => triggerUpdate('C')}
+                                                                                alt=''
+                                                                            /></td>)}
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </Table>)}
+                                                            </>
+                                                        )}
+                                                    </Modal.Body>
+                                                    <Modal.Footer>
+                                                        <div className="row">
+                                                            <div className="col-12 text-center">
+                                                                <button className="text-center button_text button-home"
+                                                                    onClick={closeModal}>Close</button>
+                                                                <button className="text-center button_text button-home"
+                                                                    onClick={updateMilestoneData}>Save Changes</button>
+                                                                <button className="text-center button_text button-home"
+                                                                    onClick={removeMilestone}>Delete Milestone</button>
+                                                            </div>
+                                                        </div>
+                                                    </Modal.Footer>
+                                                </Modal>
 
                                                 <div className="button_container text-center">
                                                     <button className="text-center button_text button-home"

@@ -40,6 +40,14 @@ const ProjectMilestone = sequelize.define('ProjectMilestone', {
     end_date: {
         type: DataTypes.DATE,
         allowNull: false,
+    },
+    is_active: {
+        type: DataTypes.CHAR(1),
+        allowNull: false,
+        defaultValue: 'Y',
+        validate: {
+            isIn: [['Y', 'N']]
+        }
     }
 }, {
     tableName: 't_proj_milestone',
