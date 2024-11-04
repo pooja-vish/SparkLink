@@ -96,12 +96,24 @@ exports.registerSupervisor= async(req,res) => {
 // Login user with role
 exports.login = (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
-    if (err) return res.status(500).json({ message: 'Authentication error', error: err });
-    if (!user) return res.status(401).json({ message: info.message || 'Invalid credentials' });
+    if (err) {
+      return res.status(500).json({ message: 'Authentication error', error: err });
+    }
+    if (!user) {
+      return res.status(401).json({ message: info.message || 'Invalid credentials' });
+    }
 
     req.logIn(user, (err) => {
-      if (err) return res.status(500).json({ message: 'Login failed', error: err });
-      return res.status(200).json({ message: 'Login successful', user });
+      if (err) {
+        return res.status(500).json({ message: 'Login failed', error: err });
+      }
+
+      // Check for a stored redirect URL in the session
+      const redirectTo = req.session.redirectTo; // Default to dashboard
+      delete req.session.redirectTo; // Clear the redirect URL after using it
+      
+      // Instead of returning JSON, redirect the user
+      return res.redirect(redirectTo);
     });
   })(req, res, next);
 };
@@ -118,4 +130,20 @@ exports.logout = (req, res) => {
       return res.status(200).json({ message: 'Logged out successfully' });
     });
   });
+};
+
+exports.checkSession = (req, res) => {
+  if (req.isAuthenticated()) {
+    // User is authenticated, send back user details
+    const { username, email, role } = req.user; // Assuming req.user contains these fields
+    return res.status(200).json({
+      isAuthenticated: true,
+      user: { username, email, role }
+    });
+  } else {
+    // User is not authenticated
+    return res.status(200).json({
+      isAuthenticated: false
+    });
+  }
 };
