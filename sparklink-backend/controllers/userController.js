@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate a unique confirmation token
     const confirmationToken = crypto.randomBytes(32).toString('hex');
@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
       username,
       email,
       name,
-      password: hashedPassword,
+      password: password,
       role,
       is_active: 'N', // User initially inactive
       created_by: 1,
@@ -99,7 +99,7 @@ exports.login = async (req, res) => {
     // Find user by email
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(400).json({ message: 'Invalid email ' });
     }
 
     // Check password
