@@ -8,55 +8,93 @@ const crypto = require('crypto');
 
 
 
+function isPasswordValid(password) {
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return passwordRegex.test(password);
+}
+
+// Email validation function
+function isEmailValid(email) {
+  return email.endsWith('@uwindsor.ca');
+}
+
+// Check if username exists in the database
+async function isUsernameTaken(username) {
+  const user = await User.findOne({ where: { username } });
+  return !!user;
+}
+
+// Send confirmation email function
+async function sendConfirmationEmail(email, token) {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    }
+  });
+
+  const confirmationLink = `http://localhost:5100/confirm-email?token=${token}`;
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Confirm Your Email',
+    text: `Please click the following link to confirm your email: ${confirmationLink}`,
+  });
+}
+
+// Main registration function
 exports.register = async (req, res) => {
   try {
     const { username, email, password, role, name } = req.body;
 
-    // Check if the user already exists
+    // Check if email ends with @uwindsor.ca
+    if (!isEmailValid(email)) {
+      return res.status(400).json({ message: 'Email must be a University of Windsor email address (ending in @uwindsor.ca).' });
+    }
+
+    // Check if email already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'Email is already in use.' });
+    }
+
+    // Check if username already exists
+    if (await isUsernameTaken(username)) {
+      return res.status(400).json({ message: 'Username is already taken.' });
+    }
+
+    // Validate password
+    if (!isPasswordValid(password)) {
+      return res.status(400).json({
+        message: 'Password must be at least 8 characters long, contain at least one number, and one special character.',
+      });
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    
 
     // Generate a unique confirmation token
     const confirmationToken = crypto.randomBytes(32).toString('hex');
 
     // Create a new user with is_active set to 'N' initially
-    const newUser = await User.create({  
+    const newUser = await User.create({
       username,
       email,
       name,
-      password: hashedPassword,
+      password: password,
       role,
       is_active: 'N', // User initially inactive
       created_by: 1,
       modified_by: 1,
-      confirmation_token: confirmationToken, // Save the token to the database
+      confirmation_token: confirmationToken,
     });
 
-    // Send a confirmation email with the link
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-         user: process.env.EMAIL_USER,
-         pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-         // Do not fail on invalid certs
-         rejectUnauthorized: false
-      }
-    });
-
-    const confirmationLink = `http://localhost:5100/confirm-email?token=${confirmationToken}`;
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Confirm Your Email',
-      text: `Please click the following link to confirm your email: ${confirmationLink}`,
-    });
+    // Send a confirmation email
+    await sendConfirmationEmail(email, confirmationToken);
 
     res.status(201).json({ message: 'User registered successfully. Please check your email to confirm your account.' });
   } catch (error) {
@@ -105,6 +143,7 @@ exports.login = async (req, res) => {
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log("npt a match")
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
