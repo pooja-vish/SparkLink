@@ -5,9 +5,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./config/db'); // Import the database connection
+const passport = require('./config/passportConfig'); 
 const session = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
+
+
 const User = require('./models/user');
 
 // Routes
@@ -40,44 +41,44 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Passport Local Strategy
-passport.use(new LocalStrategy({
-  usernameField: 'email',
-  passwordField: 'password'
-}, async (email, password, done) => {
-  console.log(`username: ${email}`);
-  console.log(`password is : ${password}`)
-  try {
+// passport.use(new LocalStrategy({
+//   usernameField: 'email',
+//   passwordField: 'password'
+// }, async (email, password, done) => {
+//   console.log(`username: ${email}`);
+//   console.log(`password is : ${password}`)
+//   try {
 
-    const user = await User.findOne({ where: { email } });
-    if (!user) return done(null, false, { message: 'Incorrect email.' });
-    console.log(`username is correct`);
-    const isValidPassword = await user.validPassword(password.trim());
-    console.log(`isValidPassword:${isValidPassword}`);
-    if (!isValidPassword) return done(null, false, { message: 'Incorrect password.' });
-    console.log(`password is correct`);
-    return done(null, user);
-  } catch (err) {
-    return done(err);
-  }
-}));
+//     const user = await User.findOne({ where: { email } });
+//     if (!user) return done(null, false, { message: 'Incorrect email.' });
+//     console.log(`username is correct`);
+//     const isValidPassword = await user.validPassword(password.trim());
+//     console.log(`isValidPassword:${isValidPassword}`);
+//     if (!isValidPassword) return done(null, false, { message: 'Incorrect password.' });
+//     console.log(`password is correct`);
+//     return done(null, user);
+//   } catch (err) {
+//     return done(err);
+//   }
+// }));
 
-// Serialize and deserialize user for session management
-passport.serializeUser((user, done) => {
-  console.log(`Inside Serialize User`);
-  console.log(user);
-  done(null, user.user_id);
-}
+// // Serialize and deserialize user for session management
+// passport.serializeUser((user, done) => {
+//   console.log(`Inside Serialize User`);
+//   console.log(user);
+//   done(null, user.user_id);
+// }
 
-);
-passport.deserializeUser(async (user_id, done) => {
-  console.log('Insidee Deserialize');
-  try {
-    const finduser = await User.findByPk(user_id);
-    done(null, finduser);
-  } catch (err) {
-    done(err, null);
-  }
-});
+// );
+// passport.deserializeUser(async (user_id, done) => {
+//   console.log('Insidee Deserialize');
+//   try {
+//     const finduser = await User.findByPk(user_id);
+//     done(null, finduser);
+//   } catch (err) {
+//     done(err, null);
+//   }
+// });
 
 // Test database connection
 sequelize.authenticate()
@@ -98,68 +99,20 @@ app.use('/api', roleRoutes);
 app.use('/projectstatus', projectStatusRouter);
 app.use('/department', departmentRoutes);
 app.use('/project', projectRouter);
-// app.use('', userRouter);
-
-// Login route
-app.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      // Handle any authentication errors
-      return res.status(500).json({ message: 'Authentication error', error: err });
-    }
-    if (!user) {
-      // If no user is found or if the credentials are invalid
-      return res.status(401).json({ message: info.message || 'Invalid credentials' });
-    }
-
-    // If authentication is successful
-    req.logIn(user, (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'Login failed', error: err });
-      }
-
-      // Send a response back to the client
-      return res.status(200).json({ message: 'Login successful', user });
-    });
-  })(req, res, next);
-});
-
-// Logout route
-app.post('/logout', (req, res) => {
-  console.log("in logout");
-  
-  if (!req.user) {
-    // Check if the user is authenticated
-    return res.status(401).json({ message: 'User not logged in' });
-  }
-
-  req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error while logging out', error: err });
-    }
-    
-    // Successful logout
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ message: 'Error while destroying session', error: err });
-      }
-
-      return res.status(200).json({ message: 'Logged out successfully' });
-    });
-  });
-});
 
 
-// Protect routes - example middleware
-function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  res.redirect('/login');
-}
 
-// Protected route example
-app.get('/dashboard', isAuthenticated, (req, res) => {
-  res.send('Welcome to the dashboard!');
-});
+
+// // Protect routes - example middleware
+// function isAuthenticated(req, res, next) {
+//   if (req.isAuthenticated()) return next();
+//   res.redirect('/login');
+// }
+
+// // Protected route example
+// app.get('/dashboard', isAuthenticated, (req, res) => {
+//   res.send('Welcome to the dashboard!');
+// });
 
 app.get("/status",(req,res) => {
   console.log(`Inside status end point`);

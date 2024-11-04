@@ -3,6 +3,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const passport = require('passport');
 
 // Register a new user with role
 
@@ -91,33 +92,30 @@ exports.registerSupervisor= async(req,res) => {
 
 }
 
+
 // Login user with role
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+exports.login = (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return res.status(500).json({ message: 'Authentication error', error: err });
+    if (!user) return res.status(401).json({ message: info.message || 'Invalid credentials' });
 
-    // Find user by email
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid email ' });
-    }
-
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
-
-    res.status(200).json({ 
-      message: 'Login successful', 
-      user: { 
-        user_id: user.user_id, 
-        username: user.username, 
-        email: user.email, 
-        role: user.role // Include the user's role in the response
-      } 
+    req.logIn(user, (err) => {
+      if (err) return res.status(500).json({ message: 'Login failed', error: err });
+      return res.status(200).json({ message: 'Login successful', user });
     });
-  } catch (error) {
-    res.status(500).json({ message: 'Error logging in', error: error.message });
-  }
+  })(req, res, next);
+};
+
+// Logout Controller
+exports.logout = (req, res) => {
+  if (!req.user) return res.status(401).json({ message: 'User not logged in' });
+
+  req.logout((err) => {
+    if (err) return res.status(500).json({ message: 'Error while logging out', error: err });
+
+    req.session.destroy((err) => {
+      if (err) return res.status(500).json({ message: 'Error while destroying session', error: err });
+      return res.status(200).json({ message: 'Logged out successfully' });
+    });
+  });
 };
