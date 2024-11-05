@@ -130,6 +130,7 @@ const ProgressTrackerComponent = () => {
             if (response.data.milestoneData.length > 0) {
                 setMilestoneData(response.data.milestoneData);
             } else {
+                setMilestoneData([]);
                 setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
             }
         } catch (err) {
@@ -243,12 +244,12 @@ const ProgressTrackerComponent = () => {
             });
             console.log("DELETE DATA> ", response.data);
             if (response.status === 200) {
+                fetchMilestone();
                 closeModal();
             }
         } catch (err) {
             setError(err.message);
         } finally {
-            fetchMilestone();
             setMilestoneList([]);
             setLoading(false);
         }
