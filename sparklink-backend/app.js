@@ -17,9 +17,14 @@ const roleRoutes = require('./routes/roleRoutes');
 const projectStatusRouter = require('./routes/projectStatusRoutes');
 const departmentRoutes = require('./routes/departmentRoutes');
 const projectRouter = require('./routes/projectRoutes');
+<<<<<<< HEAD
 
 
 
+=======
+const userRouter = require('./routes/userRoutes');
+const progressTrackerRouter = require('./routes/progressTrackerRoutes');
+>>>>>>> 56db12d3f985e15c2763d19082d5a7ccaaf57d74
 const app = express();
 
 // Middleware
@@ -97,6 +102,18 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
   });
 
+<<<<<<< HEAD
+=======
+// Define routes
+app.use('/api/users', userRoutes); // Route for user-related requests
+app.use('/api', roleRoutes); // Route for role-related requests
+app.use('/projectstatus', projectStatusRouter);
+app.use('/department', departmentRoutes);
+app.use('/project', projectRouter);
+app.use('',userRouter);
+app.use('/progressTracker', progressTrackerRouter);
+// Error handling middleware
+>>>>>>> 56db12d3f985e15c2763d19082d5a7ccaaf57d74
 
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {

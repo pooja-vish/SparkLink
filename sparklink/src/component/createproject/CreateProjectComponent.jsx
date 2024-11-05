@@ -148,10 +148,10 @@ const CreateProjectComponent = () => {
       } catch (error) {
         setErrorMessage("Error uploading image: " + error.message);
       }
-      finally {
-        setLoading(false); 
-        return;
-      }
+      // finally {
+      //   setLoading(false); 
+      //   return;
+      // }
     }
 
     const form_data = {
