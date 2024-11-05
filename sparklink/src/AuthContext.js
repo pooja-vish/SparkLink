@@ -28,8 +28,12 @@ export const AuthProvider = ({ children }) => {
         checkAuthStatus();
     }, []);
 
+    useEffect(() => {
+        console.log("IS AUTH >?>?>?>?>?", isAuthenticated);
+    }, [isAuthenticated]);
+
     return (
-        <AuthContext.Provider value={{ isAuthenticated, loading, user }}>
+        <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading, user }}>
             {children}
         </AuthContext.Provider>
     );

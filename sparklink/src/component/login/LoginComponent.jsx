@@ -3,16 +3,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./LoginComponent.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Navigate } from "react-router-dom";
+import { useAuth } from '../../AuthContext';
+
+
 
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
 
+  const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -23,31 +25,26 @@ const LoginComponent = () => {
         withCredentials: true // Include credentials in the request
       });
 
-      // Optionally store token if your backend returns one
-      localStorage.setItem("token", response.data.token); 
+      // Optionally storing token if your backend returns one
+      localStorage.setItem("token", response.data.token);
       setSuccessMessage("Login successful!");
       setErrorMessage("");
+      
       setIsAuthenticated(true);
+
       // Redirect to the specified URL from the backend response
       const redirectPath = localStorage.getItem("redirectAfterLogin") || '/';
-      console.log("the user logged in is redirect to "+redirectPath);
-      //return <Navigate to={"/create-project"} replace />;
-      //localStorage.removeItem("redirectAfterLogin"); // Clear the redirect path
-       // Redirect to the URL sent from the backend, or fallback to dashboard
 
+      console.log("the user logged in is redirect to " + redirectPath);
+      
+      navigate(redirectPath, { replace: true });
     } catch (error) {
       setErrorMessage(error.response.data.message || "Login failed. Please try again.");
       setSuccessMessage("");
     }
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-        // Retrieve and navigate to the saved redirect path
-        const redirectPath = localStorage.getItem("redirectAfterLogin") || '/';
-        navigate(redirectPath); // Perform navigation
-    }
-}, [isAuthenticated, navigate]);
+
 
   return (
     <div style={{
