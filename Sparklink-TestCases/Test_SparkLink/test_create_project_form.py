@@ -60,7 +60,7 @@ class CreateProjectFormTest(BaseCase):
             self.send_keys('[class="form_textarea"]', "Jut WOW me please")
             self.sleep(2)
 
-            self.send_keys('[name="project_deadline"]', "002023-10-10")
+            self.send_keys('[name="project_deadline"]', "002025-10-10")
             self.sleep(3)
 
             # This field is to upload file

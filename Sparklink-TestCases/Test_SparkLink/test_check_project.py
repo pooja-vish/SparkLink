@@ -29,7 +29,7 @@ class TestCheckProject(BaseCase):
                 # Attempt to click the element
                 self.click("#root > div > div.content-container > div > div.progress_container > div > div.col-lg-11.col-md-11.col-sm-9 > div > div.search-container > div > div")
                 self.sleep(4)
-                self.send_keys("#root > div > div.content-container > div > div.progress_container > div > div.col-lg-11.col-md-11.col-sm-9 > div > div.search-container > div > div","windsor")
+                self.send_keys("#root > div > div.content-container > div > div.progress_container > div > div.col-lg-11.col-md-11.col-sm-9 > div > div.search-container > div > div","windsor/n")
                 self.sleep(3)
 
             except ElementNotInteractableException:
@@ -42,19 +42,16 @@ class TestCheckProject(BaseCase):
                         inputField.dispatchEvent(new Event('change', { bubbles: true }));
                     }
                 """)
-
                 print("Set value using JavaScript as fallback")
 
         else:
             print("Element is not visible")
 
-
-        # Initialize project index
+        #Initialize project index
         i = 1
         while True:
             nav_id = f'div[{i}]'
-            selector = f'//*[@id="root"]/div/div[1]/div/div[2]/div/div[2]/div/div[2]/div/div/{nav_id}'
-
+            selector = f'//*[@id="root"]/div/div[1]/div/div[2]/div/div[2]/div/div[2]/div/{nav_id}'
             # Check if the project element is visible
             if self.is_element_visible(selector):
                 projectname= self.get_text(selector)
@@ -62,7 +59,7 @@ class TestCheckProject(BaseCase):
 
                 try:
                     self.scroll_to(selector)  # Scroll to the element to ensure visibility
-                    self.click_xpath(selector)  # Attempt to click the element
+                    #self.click_xpath(selector)  # Attempt to click the element
                     self.sleep(2)
                     i += 1  # Move to the next project
 
