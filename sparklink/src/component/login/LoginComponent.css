@@ -1,0 +1,80 @@
+/* Centering and styling the main login container */
+
+body {
+  margin: 0;
+  height: 100vh; /* Ensure the body takes full height */
+  background-color: linear-gradient(to top, #5f7f9f, #2c3d5c) !important;; /* Set your desired background color */
+}
+
+
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling the title */
+.title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Message styles for success or error messages */
+.message {
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+}
+
+.success-message {
+  color: #28a745;
+  text-align: center;
+}
+
+/* Input group styling */
+.input-group {
+  display: flex;
+  align-items: stretch; /* Ensures icon and input align vertically */
+}
+
+.input-group .input-group-text {
+  width: 45px; /* Adjust width if needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef; /* Background color for icon area */
+  border: 1px solid #ced4da;
+  border-right: none; /* Remove double border between icon and input */
+  border-radius: 0; /* Remove rounded corners */
+  height: 100%; /* Ensures the icon container matches the input height */
+  font-size: 1.2rem; /* Adjust font size of the icon if needed */
+}
+
+.input-group .form-control {
+  border-radius: 0; /* Remove rounding on input field */
+  border-left: none; /* Remove double border between icon and input */
+  height: calc(2.25rem + 2px); /* Match Bootstrap input height */
+}
+
+/* Button styling */
+.btn-block {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Signup text */
+.signup-text {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
