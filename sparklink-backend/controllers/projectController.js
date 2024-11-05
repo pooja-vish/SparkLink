@@ -65,7 +65,7 @@ exports.createProject = async (req, res) => {
     }
 
     // Combine fields to form proj_desc
-    const proj_desc = `Purpose: ${purpose}; Product: ${product};Description: ${project_description};Features: ${features}`;
+    const proj_desc = `Purpose: ${purpose}; Product: ${product}; Description: ${project_description}; Features: ${features}`;
 
     // Prepare project data for the database
     const projectData = {

@@ -63,23 +63,28 @@
 /* Mobile View for Tabs */
 @media (max-width: 768px) {
     .tabs {
-        gap: 3px; /* Reduce gap between tabs */
+        gap: 3px;
+        /* Reduce gap between tabs */
     }
 
     .tab {
-        padding: 6px 10px; /* Reduce padding */
-        font-size: 14px;   /* Decrease font size slightly */
+        padding: 6px 10px;
+        /* Reduce padding */
+        font-size: 14px;
+        /* Decrease font size slightly */
     }
 }
 
 @media (max-width: 576px) {
     .tabs {
-        flex-direction: column; /* Stack tabs vertically on smaller devices */
+        flex-direction: column;
+        /* Stack tabs vertically on smaller devices */
         gap: 10px;
     }
 
     .tab {
-        width: 100%; /* Make each tab take full width */
+        width: 100%;
+        /* Make each tab take full width */
         text-align: center;
     }
 }
@@ -87,15 +92,18 @@
 
 /* Progress Card Layout */
 .progress-card-layout {
-    display: flex;
+    /* display: flex;
     align-items: center;
     justify-content: space-between;
-    position: relative;
+    position: relative; */
+    padding: 0 5px 0 0;
 }
 
 /* Progress Background Card */
 .progress-background-card {
-    height: auto;
+    /* height: auto; */
+    min-height: fit-content !important;
+    max-height: 100vh !important;
     max-width: 100% !important;
     background-color: rgba(211, 211, 211, 0.1);
     border-radius: 8px;
@@ -126,7 +134,8 @@
 .progress-items {
     display: flex;
     gap: 20px;
-    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
     padding-bottom: 25px;
     scroll-behavior: smooth;
     transform: translateZ(0);
@@ -155,8 +164,8 @@
     color: #333;
     padding: 20px;
     border-radius: 16px;
-    width: 250px;
-    min-width: 250px;
+    width: 250px !important;
+    max-width: 250px !important;
     position: relative;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
@@ -240,8 +249,42 @@
     }
 }
 
+@media (min-width: 769px) {
+    .progress-card {
+        margin-left: 45px;
+    }
+}
+
 /* .footer-fixed {
     position: fixed;
     bottom: 0;
     width: 100%;
 } */
+
+/* Project Details */
+.proj-details-header {
+    font-family: "Poppins", system-ui;
+    font-weight: bold;
+    font-style: normal;
+    color: #000000 !important;
+    background-color: #0000000D !important;
+    font-size: large !important;
+}
+
+.proj-details-sub-header {
+    font-family: "Poppins", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    color: #000000 !important;
+    background-color: #0000000D !important;
+    font-size: large !important;
+}
+
+.proj-details-data {
+    font-family: "Poppins", system-ui;
+    font-weight: 300;
+    font-style: normal;
+    color: #000000 !important;
+    background-color: #fff !important;
+    font-size: large !important;
+}
