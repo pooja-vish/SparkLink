@@ -3,6 +3,7 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const passport = require('passport');
 
 // Register a new user with role
 
@@ -19,7 +20,7 @@ exports.register = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate a unique confirmation token
     const confirmationToken = crypto.randomBytes(32).toString('hex');
@@ -29,7 +30,7 @@ exports.register = async (req, res) => {
       username,
       email,
       name,
-      password: hashedPassword,
+      password: password,
       role,
       is_active: 'N', // User initially inactive
       created_by: 1,
@@ -91,33 +92,73 @@ exports.registerSupervisor= async(req,res) => {
 
 }
 
+
 // Login user with role
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Find user by email
-    const user = await User.findOne({ where: { email } });
+exports.login = (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return res.status(500).json({ message: 'Authentication error', error: err });
+    }
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: info.message || 'Invalid credentials' });
     }
 
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid email or password' });
-    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return res.status(500).json({ message: 'Login failed', error: err });
+      }
 
-    res.status(200).json({ 
-      message: 'Login successful', 
-      user: { 
-        user_id: user.user_id, 
-        username: user.username, 
-        email: user.email, 
-        role: user.role // Include the user's role in the response
-      } 
+      // Send success message, user data, and redirect URL in the response
+      return res.status(200).json({
+        message: 'Login successful',
+        user: {
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        },
+        redirectTo: '/' // Adjust this to the desired path
+      });
     });
-  } catch (error) {
-    res.status(500).json({ message: 'Error logging in', error: error.message });
+  })(req, res, next);
+};
+// Logout Controller
+exports.logout = (req, res) => {
+  if (!req.user) return res.status(401).json({ message: 'User not logged in' });
+
+  req.logout((err) => {
+    if (err) return res.status(500).json({ message: 'Error while logging out', error: err });
+
+    req.session.destroy((err) => {
+      if (err) return res.status(500).json({ message: 'Error while destroying session', error: err });
+      return res.status(200).json({ message: 'Logged out successfully' });
+    });
+  });
+};
+
+exports.checkSession = (req, res) => {
+  if (req.isAuthenticated()) {
+    // User is authenticated, send back user details
+    const { username, email, role } = req.user; // Assuming req.user contains these fields
+    return res.status(200).json({
+      isAuthenticated: true,
+      user: { username, email, role }
+    });
+  } else {
+    // User is not authenticated
+    return res.status(200).json({
+      isAuthenticated: false
+    });
+  }
+};
+
+exports.authStatus = (req, res) => {
+  if (req.isAuthenticated()) {
+    console.log("hi");
+    return res.status(200).json({ isAuthenticated: true, user: req.user });
+   
+  } else {
+    console.log("heyyy");
+    return res.status(200).json({ isAuthenticated: false });
+    
   }
 };

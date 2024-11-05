@@ -1,4 +1,3 @@
-// models/user.js
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../config/db');
@@ -19,7 +18,7 @@ const User = sequelize.define('User', {
     allowNull: true,
   },
   role: {
-    type: DataTypes.STRING(50), // Matches VARCHAR(50) in the table
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
   name: {
@@ -32,7 +31,7 @@ const User = sequelize.define('User', {
     unique: true,
   },
   password: {
-    type: DataTypes.STRING(64),
+    type: DataTypes.STRING(64), // or DataTypes.TEXT
     allowNull: false,
   },
   is_active: {
@@ -58,14 +57,14 @@ const User = sequelize.define('User', {
   },
 }, {
   tableName: 't_usermst',
-  timestamps: false,
+  timestamps: false, // Change to true if you want automatic timestamps
   hooks: {
     beforeCreate: async (user) => {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(user.password, salt);
     },
     beforeUpdate: async (user) => {
-      if (user.password) {
+      if (user.changed('password')) { // Only hash if password is changing
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
       }
@@ -75,6 +74,7 @@ const User = sequelize.define('User', {
 
 // Method to validate password
 User.prototype.validPassword = async function (password) {
+  console.log(password + "Hashed password:" +this.password)
   return await bcrypt.compare(password, this.password);
 };
 

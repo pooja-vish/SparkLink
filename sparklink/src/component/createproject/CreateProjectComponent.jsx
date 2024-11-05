@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   getStorage,
   ref,
@@ -33,6 +33,10 @@ const CreateProjectComponent = () => {
   // States for success and error messages
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    console.log("CREATE PROJECT>>>>>>>>");
+  }, []);
 
   const triggerDatePicker = () => {
     if (dateInputRef.current) {
