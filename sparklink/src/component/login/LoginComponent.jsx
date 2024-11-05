@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useHistory } from "react-router-dom"; // Import useHistory hook
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./LoginComponent.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Navigate } from "react-router-dom";
 
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const history = useHistory(); // Initialize useHistory hook
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,16 +19,35 @@ const LoginComponent = () => {
       const response = await axios.post("/api/users/login", {
         email: email,
         password: password,
+      }, {
+        withCredentials: true // Include credentials in the request
       });
-      // Redirect to the intended route or dashboard
-      history.push(response.data.redirectTo || '/');
+
+      // Optionally store token if your backend returns one
+      localStorage.setItem("token", response.data.token); 
       setSuccessMessage("Login successful!");
       setErrorMessage("");
+      setIsAuthenticated(true);
+      // Redirect to the specified URL from the backend response
+      const redirectPath = localStorage.getItem("redirectAfterLogin") || '/';
+      console.log("the user logged in is redirect to "+redirectPath);
+      //return <Navigate to={"/create-project"} replace />;
+      //localStorage.removeItem("redirectAfterLogin"); // Clear the redirect path
+       // Redirect to the URL sent from the backend, or fallback to dashboard
+
     } catch (error) {
-      setErrorMessage("Login failed. Please try again.");
+      setErrorMessage(error.response.data.message || "Login failed. Please try again.");
       setSuccessMessage("");
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+        // Retrieve and navigate to the saved redirect path
+        const redirectPath = localStorage.getItem("redirectAfterLogin") || '/';
+        navigate(redirectPath); // Perform navigation
+    }
+}, [isAuthenticated, navigate]);
 
   return (
     <div style={{
@@ -52,7 +73,7 @@ const LoginComponent = () => {
               <input
                 type="text"
                 className="form-control"
-                placeholder="Username"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

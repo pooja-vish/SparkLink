@@ -108,16 +108,19 @@ exports.login = (req, res, next) => {
         return res.status(500).json({ message: 'Login failed', error: err });
       }
 
-      // Check for a stored redirect URL in the session
-      const redirectTo = req.session.redirectTo; // Default to dashboard
-      delete req.session.redirectTo; // Clear the redirect URL after using it
-      
-      // Instead of returning JSON, redirect the user
-      return res.redirect(redirectTo);
+      // Send success message, user data, and redirect URL in the response
+      return res.status(200).json({
+        message: 'Login successful',
+        user: {
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        },
+        redirectTo: '/' // Adjust this to the desired path
+      });
     });
   })(req, res, next);
 };
-
 // Logout Controller
 exports.logout = (req, res) => {
   if (!req.user) return res.status(401).json({ message: 'User not logged in' });
@@ -145,5 +148,17 @@ exports.checkSession = (req, res) => {
     return res.status(200).json({
       isAuthenticated: false
     });
+  }
+};
+
+exports.authStatus = (req, res) => {
+  if (req.isAuthenticated()) {
+    console.log("hi");
+    return res.status(200).json({ isAuthenticated: true, user: req.user });
+   
+  } else {
+    console.log("heyyy");
+    return res.status(200).json({ isAuthenticated: false });
+    
   }
 };

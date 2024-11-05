@@ -23,7 +23,11 @@ const projectRouter = require('./routes/projectRoutes');
 const app = express();
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: 'http://localhost:3100', // Specify the frontend origin
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -107,7 +111,7 @@ app.use('/api/users', userRoutes);
 app.use('/api', roleRoutes);
 app.use('/projectstatus',projectStatusRouter);
 app.use('/department', isAuthenticated,departmentRoutes);
-app.use('/project', isAuthenticated,projectRouter);
+app.use('/project',projectRouter);
 
 
 
