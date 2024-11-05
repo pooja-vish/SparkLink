@@ -115,8 +115,9 @@ exports.login = (req, res, next) => {
           username: user.username,
           email: user.email,
           role: user.role,
+          isAuthenticated: true,
         },
-        redirectTo: '/' // Adjust this to the desired path
+        // Adjust this to the desired path
       });
     });
   })(req, res, next);

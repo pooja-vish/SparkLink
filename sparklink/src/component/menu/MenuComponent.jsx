@@ -10,7 +10,7 @@ import contact_icon from '../../assets/contact_us.png';
 import milestone_icon from '../../assets/Milestone_Tracker.png';
 import profile_icon from '../../assets/profile.png';
 import create_icon from '../../assets/create_project.png';
-
+import axios from "axios";
 import LoginComponent from '../login/LoginComponent'
 
 import logout_icon from '../../assets/logout.png';
@@ -25,6 +25,11 @@ const MenuComponent = () => {
     const getNavItemClass = (path) => {
         return location.pathname === path ? 'nav-item active' : 'nav-item';
     };
+
+    const logout = async (req,res) => {
+        const response= await axios.post("/api/users/logout");
+        console.log(response.data);
+    }
 
     return (
         <>
@@ -119,10 +124,11 @@ const MenuComponent = () => {
 
                                             <li className={getNavItemClass('/logout')}>
                                                 <span style={{ cursor: 'pointer' }}>
-                                                    <Link className='text-menu' to='/logout' style={{ marginLeft: 15, marginBottom: 15, position: 'absolute', bottom: 0 }}>
+
+                                                    <span className='text-menu' onClick={logout} style={{ marginLeft: 15, marginBottom: 15, position: 'absolute', bottom: 0 }}>
                                                         <img src={logout_icon}
                                                             className='nav_sub_menu_icon' alt=''></img>
-                                                        &nbsp;&nbsp;&nbsp;Logout</Link>
+                                                        &nbsp;&nbsp;&nbsp;Logout</span>
                                                 </span>
                                             </li>
 
