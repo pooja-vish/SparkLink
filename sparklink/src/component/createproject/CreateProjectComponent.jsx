@@ -144,10 +144,10 @@ const CreateProjectComponent = () => {
       } catch (error) {
         setErrorMessage("Error uploading image: " + error.message);
       }
-      finally {
-        setLoading(false); 
-        return;
-      }
+      // finally {
+      //   setLoading(false); 
+      //   return;
+      // }
     }
 
     const form_data = {
@@ -164,7 +164,7 @@ const CreateProjectComponent = () => {
     console.log("Form Data Submitted:", form_data);
 
     try {
-      const response = await fetch("http://localhost:5000/project", {
+      const response = await fetch("http://localhost:5100/project", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
