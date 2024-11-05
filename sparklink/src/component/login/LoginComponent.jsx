@@ -3,7 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import "./LoginComponent.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Navigate } from "react-router-dom";
+
+
 
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +12,8 @@ const LoginComponent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+ 
+  
   const navigate = useNavigate(); // Initialize useNavigate
 
   const handleLogin = async (e) => {
@@ -31,7 +34,7 @@ const LoginComponent = () => {
       // Redirect to the specified URL from the backend response
       const redirectPath = localStorage.getItem("redirectAfterLogin") || '/';
       console.log("the user logged in is redirect to "+redirectPath);
-      //return <Navigate to={"/create-project"} replace />;
+      navigate(redirectPath, { replace: true }); 
       //localStorage.removeItem("redirectAfterLogin"); // Clear the redirect path
        // Redirect to the URL sent from the backend, or fallback to dashboard
 
@@ -41,13 +44,7 @@ const LoginComponent = () => {
     }
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-        // Retrieve and navigate to the saved redirect path
-        const redirectPath = localStorage.getItem("redirectAfterLogin") || '/';
-        navigate(redirectPath); // Perform navigation
-    }
-}, [isAuthenticated, navigate]);
+
 
   return (
     <div style={{
