@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');  
+const sequelize = require('../config/db');
 
 const Project = sequelize.define('Project', {
   proj_id: {
@@ -69,6 +69,22 @@ const Project = sequelize.define('Project', {
   image_url: {
     type: DataTypes.STRING,  // Store the image URL as a string
     allowNull: false,  // Ensure an image URL is always provided
+  },
+  is_active: {
+    type: DataTypes.CHAR(1),
+    allowNull: false,
+    defaultValue: 'Y',
+    validate: {
+      isIn: [['Y', 'N']]
+    }
+  },
+  is_completed: {
+    type: DataTypes.CHAR(1),
+    allowNull: false,
+    defaultValue: 'N',
+    validate: {
+      isIn: [['Y', 'N']],
+    },
   }
 }, {
   tableName: 't_project',

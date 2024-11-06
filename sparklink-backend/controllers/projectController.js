@@ -18,7 +18,7 @@ exports.createProject = async (req, res) => {
       image_url, // Add image_url field
     } = req.body;
 
-    
+
 
     // Validate required fields
     if (
@@ -97,7 +97,9 @@ exports.createProject = async (req, res) => {
 // Get all projects
 exports.getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.findAll();
+    const projects = await Project.findAll({
+      where: { is_active: 'Y' }
+    });
     res.status(200).json(projects);
   } catch (error) {
     res
@@ -171,10 +173,10 @@ exports.filterProject = async (req, res) => {
 
     const filter = projName
       ? {
-          project_name: {
-            [Op.iLike]: `%${projName}%`, // Use iLike for case-insensitive search
-          },
-        }
+        project_name: {
+          [Op.iLike]: `%${projName}%`, // Use iLike for case-insensitive search
+        },
+      }
       : {}; // If projName is not provided, no filter is applied
 
     // Fetch projects using the filter
@@ -190,3 +192,64 @@ exports.filterProject = async (req, res) => {
       .json({ message: "Error filtering projects", error: error.message });
   }
 };
+
+exports.UpdateProjDetails = async (req, res) => {
+  try {
+    const { projDetailsList } = req.body;
+
+    const updatedData = await Project.update({
+      proj_desc: projDetailsList.proj_desc,
+      skills_req: projDetailsList.skills_req,
+      budget: projDetailsList.budget,
+      status: projDetailsList.status,
+      end_date: projDetailsList.end_date
+    }, {
+      where: { proj_id: projDetailsList.proj_id }
+    });
+
+    res.status(200).json({ message: "Project Details updated successfully", updatedData });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error updating Project Details", error: error.message });
+  }
+}
+
+exports.RemoveProject = async (req, res) => {
+  try {
+    const { projData } = req.body;
+
+    const deletedData = await Project.update({
+      is_active: 'N'
+    }, {
+      where: { proj_id: projData.proj_id }
+    });
+
+    res.status(200).json({ message: "Project Deleted successfully", deletedData });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error deleting Project", error: error.message });
+  }
+}
+
+exports.CompleteProject = async (req, res) => {
+  try {
+    const { projData } = req.body;
+
+    const updatedData = await Project.update({
+      is_completed: 'Y'
+    }, {
+      where: { proj_id: projData.proj_id }
+    });
+
+    res.status(200).json(({ message: "Project Marked as Complete successfully", updatedData }))
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error Completing Project", error: error.message });
+  }
+}
