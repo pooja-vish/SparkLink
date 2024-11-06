@@ -7,6 +7,8 @@ import Select from 'react-select';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import edit_icon from '../../assets/edit_icon.png';
+import cancel_icon from '../../assets/cancel_icon.png';
+import complete_icon from '../../assets/complete_icon.png';
 
 const ViewProjectComponent = () => {
     const [projectList, setProjectList] = useState([]);
@@ -17,11 +19,14 @@ const ViewProjectComponent = () => {
     const [selectedOption, setSelectedOption] = useState(null);
     const [loading, setLoading] = useState(false);
     const [projDetailsList, setProjDetailsList] = useState({});
+    const [copyOfProjDetailsList, setCopyOfProjDetailsList] = useState({});
     const [triggerModalFlag, setTriggerModalFlag] = useState(false);
     const [triggerDetails, setTriggerDetails] = useState(false);
     const [isMobileView, setIsMobileView] = useState(false);
     const [editFlag, setEditFlag] = useState(false);
     const [projDescList, setProjDescList] = useState([]);
+    const [copyOfProjDescList, setCopyOfProjDescList] = useState([]);
+    const [tempProjDescList, setTempProjDescList] = useState([]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -35,20 +40,20 @@ const ViewProjectComponent = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    useEffect(() => {
-        const fetchProjects = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('/project');
-                setProjectList(response.data);
-                setOriginalProjectList(response.data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+    const fetchProjects = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/project');
+            setProjectList(response.data);
+            setOriginalProjectList(response.data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchProjects();
     }, []);
 
@@ -117,11 +122,12 @@ const ViewProjectComponent = () => {
                 //console.log("FILTERED DESC>>>", splitDesc[i].trim().split(":"));
             }
             setProjDescList(filterDesc);
+            console.log("DETAILS LIST>>>>>>>>", projDetailsList);
         }
     }, [projDetailsList, triggerModalFlag]);
 
     useEffect(() => {
-        if (projDescList) {
+        if (projDescList.length > 0) {
             setTriggerDetails(true);
         }
     }, [projDescList]);
@@ -130,6 +136,116 @@ const ViewProjectComponent = () => {
         setProjDetailsList(null);
         setTriggerDetails(false);
         setEditFlag(false);
+    }
+
+    const triggerUpdate = async (triggerKey) => {
+        if (triggerKey === 'U') {
+            setEditFlag(true);
+            setCopyOfProjDetailsList(projDetailsList);
+            setCopyOfProjDescList(projDescList);
+        } else if (triggerKey === 'C') {
+            setEditFlag(false);
+            setProjDetailsList(copyOfProjDetailsList);
+            setProjDescList(copyOfProjDescList);
+        }
+    }
+
+    const UpdateProjDetails = async () => {
+        setLoading(true);
+        try {
+            console.log("UPDATE QUERY>>>", projDetailsList);
+            const response = await axios.post("/project/updateProject", {
+                projDetailsList: projDetailsList
+            });
+
+            if (response.status === 200) {
+                if (editFlag) {
+                    setEditFlag(false);
+                }
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+            fetchProjects();
+        }
+    }
+
+    const handleUpdateProjDescChange = (event) => {
+        const { name, value } = event.target;
+
+        const updatedTempProjDescList = tempProjDescList.map((p) => {
+            if (p[0] === name) {
+                return [p[0], value];
+            }
+            return p;
+        });
+
+        setTempProjDescList(updatedTempProjDescList);
+    };
+
+    const handleProjDescBlur = () => {
+        const trimmedProjDescList = tempProjDescList.map(p => [p[0].trim(), p[1].trim()]);
+        setProjDescList(trimmedProjDescList);
+
+        setProjDetailsList(prevDetails => {
+            const updatedProjDescString = trimmedProjDescList
+                .map(p => `${p[0]}: ${p[1]}`)
+                .join('; ');
+            return { ...prevDetails, proj_desc: updatedProjDescString };
+        });
+    };
+
+    useEffect(() => {
+        setTempProjDescList(projDescList);
+    }, [projDescList]);
+
+    const handleUpdateProjDetailsChange = (event) => {
+        const { name, value } = event.target;
+
+        setProjDetailsList(prevDetails => {
+            return { ...prevDetails, [name]: value };
+        });
+    };
+
+
+    useEffect(() => {
+        console.log("UPDATED PROJ DESC>>>>>>>>", projDetailsList);
+    }, [projDetailsList]);
+
+    const deleteProject = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/project/deleteProject', {
+                projData: projDetailsList
+            });
+
+            if (response.status === 200) {
+                fetchProjects();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const completeProject = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/project/completeProject', {
+                projData: projDetailsList
+            });
+
+            if (response.status === 200) {
+                fetchProjects();
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     }
 
     if (error) {
@@ -176,7 +292,7 @@ const ViewProjectComponent = () => {
                                                         </div>
                                                         <div className="progress-content">
                                                             {/* <span className="progress-category">{item.project_name}</span> */}
-                                                            <span className="progress-category">Software</span>
+                                                            {/* <span className="progress-category">Software</span> */}
                                                             <div className="progress-title">{item.project_name}</div>
                                                             <div className="progress-bar-container">
                                                                 <div className="progress-bar">
@@ -216,15 +332,60 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        <span style={{float: 'right'}}><img src={edit_icon} className='edit_icon' alt="" /></span>
+                                                        {projDetailsList.is_completed === 'N' && <span className='ms-1' style={{ float: 'right' }}><img
+                                                            src={complete_icon}
+                                                            className='complete_icon'
+                                                            title='Mark Project as Complete'
+                                                            onClick={completeProject}
+                                                            alt=''
+                                                        /></span>}
+                                                        {!editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
+                                                            title='Click to edit Project Details' alt=""
+                                                            onClick={() => triggerUpdate('U')} /></span>}
+                                                        {editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
+                                                            title='Click to cancel editing' alt=''
+                                                            onClick={() => triggerUpdate('C')}
+                                                        /></span>}
                                                     </td>
                                                 </tr>
                                                 {projDescList.map((p, i) => (
                                                     <tr key={i}>
-                                                        <td className='proj-details-sub-header'>{p[0]}</td>
-                                                        <td className='proj-details-data'>{p[1]}</td>
+                                                        {!editFlag && <>
+                                                            <td className='proj-details-sub-header'>{p[0]}</td>
+                                                            <td className='proj-details-data'>{p[1]}</td>
+                                                        </>}
+                                                        {editFlag && <>
+                                                            <td className='proj-details-sub-header'>{p[0]}</td>
+                                                            <td className='proj-details-data'>
+                                                                <input
+                                                                    type="text"
+                                                                    className="milestone_input_text"
+                                                                    name={`${p[0]}`}
+                                                                    value={tempProjDescList.find(item => item[0] === p[0])?.[1] || ""}
+                                                                    onChange={(e) => handleUpdateProjDescChange(e)}
+                                                                    onBlur={handleProjDescBlur}
+                                                                    placeholder="Enter milestone title, e.g., Project Kickoff"
+                                                                    maxLength={100}
+                                                                    required
+                                                                />
+                                                            </td>
+                                                        </>}
                                                     </tr>
                                                 ))}
+                                                <tr>
+                                                    <td className='proj-details-sub-header'>End Date</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.end_date}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="date"
+                                                            className="milestone_input_date milestone_datepicker"
+                                                            name="end_date"
+                                                            value={projDetailsList.end_date || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
                                             </tbody>
                                         </Table>
                                     </>
@@ -236,9 +397,9 @@ const ViewProjectComponent = () => {
                                         <button className="text-center button_text button-home"
                                             onClick={closeModal}>Close</button>
                                         <button className="ms-3 text-center button_text button-home"
-                                        >Save Changes</button>
+                                            onClick={UpdateProjDetails}>Save Changes</button>
                                         <button className="ms-3 text-center button_text button-delete"
-                                        >Delete Milestone</button>
+                                            onClick={deleteProject}>Delete Project</button>
                                     </div>
                                 </div>
                             </Modal.Footer>

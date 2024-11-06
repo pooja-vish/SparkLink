@@ -6,6 +6,9 @@ const {
   updateProject,
   deleteProject,
   filterProject,
+  UpdateProjDetails,
+  RemoveProject,
+  CompleteProject
 } = require('../controllers/projectController');
 
 const router = express.Router();
@@ -27,5 +30,14 @@ router.put('/:id', updateProject);
 
 // DELETE route to delete a project by ID
 router.delete('/:id', deleteProject);
+
+// Update Project Details
+router.post('/updateProject', UpdateProjDetails);
+
+// Delete Project
+router.post('/deleteProject', RemoveProject);
+
+// Complete Project
+router.post('/completeProject', CompleteProject);
 
 module.exports = router;

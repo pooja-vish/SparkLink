@@ -263,12 +263,12 @@ const ProgressTrackerComponent = () => {
             });
 
             if (response.status === 200) {
+                fetchMilestone();
                 closeModal();
             }
         } catch (err) {
             setError(err.message);
         } finally {
-            fetchMilestone();
             setMilestoneList([]);
             setLoading(false);
         }
@@ -328,7 +328,7 @@ const ProgressTrackerComponent = () => {
                                                             }
 
                                                             return (
-                                                                <div className="col-12 col-md-4 col-lg-2 mb-4 mt-3" key={index}> {/* 3 cards per row on large screens */}
+                                                                <div className="col-12 col-md-4 col-lg-2 mb-4 mt-3" key={index}>
                                                                     <div className="box" style={{ backgroundColor, cursor: 'pointer' }}
                                                                         title='Click to view more details'
                                                                         onClick={() => openMilestoneDetails(milestone.milestone_id)}>
