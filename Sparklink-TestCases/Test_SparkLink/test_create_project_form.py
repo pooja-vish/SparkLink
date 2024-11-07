@@ -14,6 +14,18 @@ class CreateProjectFormTest(BaseCase):
             self.click_xpath('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[1]') #clicks the button then it navigates to the form page
             self.sleep(3)
 
+            # The project bavggates to the login page cause the user must be registered to create a project
+
+            #input the username
+            self.send_keys("#root > div > div > div > form > div:nth-child(1) > input","michael@uwindsor.ca")
+            self.sleep(3)
+            #input the password
+            self.send_keys("#root > div > div > div > form > div:nth-child(2) > input","testing01")
+            self.sleep(3)
+            #click the login button
+            self.click("#root > div > div > div > form > button")
+            self.sleep(3)
+
             self.send_keys('[name="project_name"]', "Web Design")
             self.sleep(2)
 
