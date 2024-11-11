@@ -35,7 +35,7 @@ const Role = sequelize.define('Role', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: 't_role',
+  tableName: 't_rolesmst',
   timestamps: false,
 });
 
