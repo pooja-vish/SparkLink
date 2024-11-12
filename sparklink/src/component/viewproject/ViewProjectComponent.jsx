@@ -9,6 +9,7 @@ import Table from 'react-bootstrap/Table';
 import edit_icon from '../../assets/edit_icon.png';
 import cancel_icon from '../../assets/cancel_icon.png';
 import complete_icon from '../../assets/complete_icon.png';
+import { useAuth } from '../../AuthContext';
 
 const ViewProjectComponent = () => {
     const [projectList, setProjectList] = useState([]);
@@ -29,6 +30,8 @@ const ViewProjectComponent = () => {
     const [tempProjDescList, setTempProjDescList] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const { isAuthenticated } = useAuth();
+    const [ userData, setUserData ] = useState({});
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -46,8 +49,11 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project');
-            setProjectList(response.data);
-            setOriginalProjectList(response.data);
+            setProjectList(response.data.projects);
+            setOriginalProjectList(response.data.projects);
+            if (isAuthenticated) {
+                setUserData(response.data.user);
+            }
         } catch (err) {
             setError(err.message);
         } finally {
@@ -245,6 +251,27 @@ const ViewProjectComponent = () => {
         }
     }
 
+    const submitApplication = async () => {
+        setLoading(true);
+        try {
+            const projData = {
+                proj_id: projDetailsList.proj_id,
+                role: userData.role,
+                user_id: userData.user_id,
+                created_by: userData.user_id,
+                modified_by: userData.user_id
+            }
+
+            const response = await axios.post('/apply/createApplication', {
+                projectList: projData
+            });
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     if (error) {
         return <div>Error: {error}</div>;
     }
@@ -405,6 +432,8 @@ const ViewProjectComponent = () => {
                                             onClick={UpdateProjDetails}>Save Changes</button>}
                                         <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>
+                                        <button className="ms-3 text-center button_text button-delete"
+                                            onClick={submitApplication}>Click to Apply</button>
                                     </div>
                                 </div>
                             </Modal.Footer>

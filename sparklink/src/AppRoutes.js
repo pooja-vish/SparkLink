@@ -25,20 +25,26 @@ const AppRoutes = () => {
                 <ProtectedRoute>
                     <ProgressTrackerComponent />
                 </ProtectedRoute>
-            ),
+            )
         },
         {
             path: '/create-project',
             element: (
-                
                 <ProtectedRoute>
                     <CreateProjectComponent />
                 </ProtectedRoute>
-            ),
+            )
         },
         { path: '/login', element: <LoginComponent /> },
 
-        { path: '/view-project', element: <ViewProjectComponent /> }
+        {
+            path: '/view-project',
+            element: (
+                <ProtectedRoute>
+                    <ViewProjectComponent />
+                </ProtectedRoute>
+            )
+        }
 
     ]);
 
