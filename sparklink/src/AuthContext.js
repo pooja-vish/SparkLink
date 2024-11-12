@@ -11,14 +11,14 @@ export const AuthProvider = ({ children }) => {
 
     const checkAuthStatus = async () => {
         try {
-            const response=await axios.get('/api/users/auth-status', { withCredentials: true });
-            console.log("whattt"+response.data.user);
+            const response = await axios.get('/api/users/auth-status', { withCredentials: true });
+            console.log("whattt" + response.data.user);
             setUser(response.data.user);
             setIsAuthenticated(response.data.isAuthenticated);
         } catch {
             setUser(null); // Reset user if authentication check fails
-        setIsAuthenticated(false); 
-           
+            setIsAuthenticated(false);
+
         } finally {
             setLoading(false);
         }
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     }, [isAuthenticated]);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading, user }}>
+        <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading }}>
             {children}
         </AuthContext.Provider>
     );

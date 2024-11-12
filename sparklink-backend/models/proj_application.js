@@ -52,7 +52,24 @@ const ProjApplication = sequelize.define('ProjApplication', {
     modified_on: {
         type: DataTypes.DATE,
         allowNull: false,
+        defaultValue: sequelize.literal('NOW()'),
     },
+    is_active: {
+        type: DataTypes.CHAR(1),
+        allowNull: false,
+        defaultValue: 'Y',
+        validate: {
+            isIn: [['Y', 'N']]
+        }
+    },
+    is_approved: {
+        type: DataTypes.CHAR(1),
+        allowNull: false,
+        defaultValue: 'N',
+        validate: {
+            isIn: [['Y', 'N']],
+        },
+    }
 }, {
     tableName: 't_proj_application',
     timestamps: false,
