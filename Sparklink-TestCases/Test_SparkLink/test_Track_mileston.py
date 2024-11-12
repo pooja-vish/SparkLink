@@ -1,5 +1,7 @@
 from seleniumbase import BaseCase
 from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
+from selenium.webdriver.common.keys import Keys
+
 
 class TesetrackmilestonTest(BaseCase):
     def test_track_mileston(self):
@@ -37,19 +39,23 @@ class TesetrackmilestonTest(BaseCase):
                 # Attempt to click the element
                 self.click("#root > div > div.content-container > div > div.milestone_container > div > div.col-lg-11.col-md-11.col-sm-9 > div.search-container > div > div")
                 self.sleep(4)
-                self.send_keys("#root > div > div.content-container > div > div.milestone_container > div > div.col-lg-11.col-md-11.col-sm-9 > div.search-container > div > div","windsor/n")
+                self.send_keys("#root > div > div.content-container > div > div.milestone_container > div > div.col-lg-11.col-md-11.col-sm-9 > div.search-container > div > div","windsor")
                 self.sleep(3)
 
             except ElementNotInteractableException:
+                # Focus on the field using JavaScript
                 self.execute_script("""
-                    let inputField = document.querySelector("#root > div > div.content-container > div > div.milestone_container > div > div.col-lg-11.col-md-11.col-sm-9 > div.search-container > div > div");
+                    let inputField = document.querySelector("#root > div > div.content-container > div > div.milestone_container > div > div.col-lg-11.col-md-11.col-sm-9 > div.search-container > div > div input");
                     if (inputField) {
-                        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
-                        nativeInputValueSetter.call(inputField, "windsor" );
-                        inputField.dispatchEvent(new Event('input', { bubbles: true }));
-                        inputField.dispatchEvent(new Event('change', { bubbles: true }));
+                        inputField.focus();
                     }
                 """)
+                # Now use Selenium's send_keys
+                input_selector = "#root > div > div.content-container > div > div.milestone_container > div > div.col-lg-11.col-md-11.col-sm-9 > div.search-container > div > div input"
+                self.send_keys(input_selector, "windsor")  # Send the text
+                self.sleep(1)  # Allow a moment for the text input to process
+                self.send_keys(input_selector, Keys.ENTER)  # Now press Enter separately
+                self.sleep(3)
                 print("Set value using JavaScript as fallback")
 
         else:
