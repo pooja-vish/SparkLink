@@ -97,10 +97,21 @@ exports.createProject = async (req, res) => {
 // Get all projects
 exports.getAllProjects = async (req, res) => {
   try {
+    const user = req.user;
     const projects = await Project.findAll({
       where: { is_active: 'Y' }
     });
-    res.status(200).json(projects);
+    res.status(200).json({
+      projects,
+      user: {
+        user_id: user.user_id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        isAuthenticated: true
+      }
+    }
+    );
   } catch (error) {
     res
       .status(500)
