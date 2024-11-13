@@ -42,6 +42,11 @@ const MenuComponent = () => {
 
     }
 
+    const fetchApplications = async (req,res) => {
+        const response= await axios.post("/apply/getApps");
+        console.log(response.data);
+    }
+
     return (
         <>
             <div className="container-fluid">
@@ -117,6 +122,17 @@ const MenuComponent = () => {
                                                         <img src={milestone_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;Milestone Tracker</Link>
+                                                </span>
+                                            </li>)}
+                                            {role === '' && (<li className={getNavItemClass('/projApplications')}>
+                                                <span style={{ cursor: 'pointer' }}>
+                                                    <Link style={{
+                                                        fontFamily: '"Poppins", sans-serif', fontWeight: 500,
+                                                        color: '#E6E6E6', fontStyle: 'normal'
+                                                    }} to='/projApplications'>
+                                                        <img src={milestone_icon}
+                                                            className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
+                                                        &nbsp;&nbsp;&nbsp;Notifications</Link>
                                                 </span>
                                             </li>)}
 

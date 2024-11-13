@@ -9,6 +9,7 @@ import Table from 'react-bootstrap/Table';
 import edit_icon from '../../assets/edit_icon.png';
 import cancel_icon from '../../assets/cancel_icon.png';
 import complete_icon from '../../assets/complete_icon.png';
+import { useAuth } from '../../AuthContext';
 
 const ViewProjectComponent = () => {
     const [projectList, setProjectList] = useState([]);
@@ -22,30 +23,37 @@ const ViewProjectComponent = () => {
     const [copyOfProjDetailsList, setCopyOfProjDetailsList] = useState({});
     const [triggerModalFlag, setTriggerModalFlag] = useState(false);
     const [triggerDetails, setTriggerDetails] = useState(false);
-    const [isMobileView, setIsMobileView] = useState(false);
+    //const [isMobileView, setIsMobileView] = useState(false);
     const [editFlag, setEditFlag] = useState(false);
     const [projDescList, setProjDescList] = useState([]);
     const [copyOfProjDescList, setCopyOfProjDescList] = useState([]);
     const [tempProjDescList, setTempProjDescList] = useState([]);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+    const { isAuthenticated } = useAuth();
+    const [userData, setUserData] = useState({});
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobileView(window.innerWidth < 768);
-        };
+    // useEffect(() => {
+    //     const handleResize = () => {
+    //         setIsMobileView(window.innerWidth < 768);
+    //     };
 
-        handleResize();
+    //     handleResize();
 
-        window.addEventListener('resize', handleResize);
+    //     window.addEventListener('resize', handleResize);
 
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    //     return () => window.removeEventListener('resize', handleResize);
+    // }, []);
 
     const fetchProjects = async () => {
         setLoading(true);
         try {
             const response = await axios.get('/project');
-            setProjectList(response.data);
-            setOriginalProjectList(response.data);
+            setProjectList(response.data.projects);
+            setOriginalProjectList(response.data.projects);
+            if (isAuthenticated) {
+                setUserData(response.data.user);
+            }
         } catch (err) {
             setError(err.message);
         } finally {
@@ -115,14 +123,11 @@ const ViewProjectComponent = () => {
     useEffect(() => {
         if (projDetailsList && triggerModalFlag) {
             let splitDesc = projDetailsList.proj_desc.split(";");
-            console.log("DESCRIPTION SPLIT>>>", splitDesc);
             let filterDesc = [];
             for (let i = 0; i < splitDesc.length; i++) {
                 filterDesc[i] = splitDesc[i].trim().split(":");
-                //console.log("FILTERED DESC>>>", splitDesc[i].trim().split(":"));
             }
             setProjDescList(filterDesc);
-            console.log("DETAILS LIST>>>>>>>>", projDetailsList);
         }
     }, [projDetailsList, triggerModalFlag]);
 
@@ -153,7 +158,6 @@ const ViewProjectComponent = () => {
     const UpdateProjDetails = async () => {
         setLoading(true);
         try {
-            console.log("UPDATE QUERY>>>", projDetailsList);
             const response = await axios.post("/project/updateProject", {
                 projDetailsList: projDetailsList
             });
@@ -162,6 +166,9 @@ const ViewProjectComponent = () => {
                 if (editFlag) {
                     setEditFlag(false);
                 }
+                setSuccessMessage(response.data.message);
+            } else if (response.status === 500) {
+                setErrorMessage(response.data.message);
             }
         } catch (err) {
             setError(err.message);
@@ -208,11 +215,6 @@ const ViewProjectComponent = () => {
         });
     };
 
-
-    useEffect(() => {
-        console.log("UPDATED PROJ DESC>>>>>>>>", projDetailsList);
-    }, [projDetailsList]);
-
     const deleteProject = async () => {
         setLoading(true);
         try {
@@ -226,6 +228,7 @@ const ViewProjectComponent = () => {
         } catch (err) {
             setError(err.message);
         } finally {
+            closeModal();
             setLoading(false);
         }
     }
@@ -243,6 +246,27 @@ const ViewProjectComponent = () => {
             }
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const submitApplication = async () => {
+        setLoading(true);
+        try {
+            const projData = {
+                proj_id: projDetailsList.proj_id,
+                role: userData.role,
+                user_id: userData.user_id,
+                created_by: userData.user_id,
+                modified_by: userData.user_id
+            }
+
+            const response = await axios.post('/apply/createApplication', {
+                projectList: projData
+            });
+        } catch (error) {
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -332,7 +356,7 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {projDetailsList.is_completed === 'N' && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {!editFlag && projDetailsList.is_completed === 'N' && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'
@@ -388,6 +412,14 @@ const ViewProjectComponent = () => {
                                                 </tr>
                                             </tbody>
                                         </Table>
+                                        <div className="message">
+                                            {errorMessage && (
+                                                <div className="error-message">{errorMessage}</div>
+                                            )}
+                                            {successMessage && (
+                                                <div className="success-message">{successMessage}</div>
+                                            )}
+                                        </div>
                                     </>
                                 )}
                             </Modal.Body>
@@ -396,8 +428,10 @@ const ViewProjectComponent = () => {
                                     <div className="col-12 text-center">
                                         <button className="text-center button_text button-home"
                                             onClick={closeModal}>Close</button>
+                                        {editFlag && <button className="ms-3 text-center button_text button-home"
+                                            onClick={UpdateProjDetails}>Save Changes</button>}
                                         <button className="ms-3 text-center button_text button-home"
-                                            onClick={UpdateProjDetails}>Save Changes</button>
+                                            onClick={submitApplication}>Click to Apply</button>
                                         <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>
                                     </div>

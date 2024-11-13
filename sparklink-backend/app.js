@@ -17,6 +17,7 @@ const roleRoutes = require('./routes/roleRoutes');
 const projectStatusRouter = require('./routes/projectStatusRoutes');
 const departmentRoutes = require('./routes/departmentRoutes');
 const projectRouter = require('./routes/projectRoutes');
+const projApplicationRouter = require('./routes/projectApplicationRouters');
 
 //const userRouter = require('./routes/userRoutes');
 const progressTrackerRouter = require('./routes/progressTrackerRoutes');
@@ -124,6 +125,7 @@ app.use('/api', roleRoutes);
 app.use('/projectstatus',isAuthenticated,projectStatusRouter);
 app.use('/department', isAuthenticated,departmentRoutes);
 app.use('/project',projectRouter);
+app.use('/apply', projApplicationRouter);
 
 
 

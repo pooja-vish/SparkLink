@@ -1,4 +1,5 @@
 const Project = require("../models/project");
+const ProjAllocation = require("../models/proj_allocation");
 const { Op } = require("sequelize");
 
 // Create a new project
@@ -67,24 +68,34 @@ exports.createProject = async (req, res) => {
     // Combine fields to form proj_desc
     const proj_desc = `Purpose: ${purpose}; Product: ${product}; Description: ${project_description}; Features: ${features}`;
 
-    // Prepare project data for the database
+    const user = req.user;
+
     const projectData = {
       project_name: project_name,
       proj_desc: proj_desc,
       budget: project_budget,
-      end_date: project_deadline, // Use the correct end date
-      created_by: 2, // Replace with req.user.id if you have authentication in place
-      status: 1, // Set the default status
-      user_id: 2, // Replace with req.user.id if you have authentication in place
-      modified_by: 2,
-      image_url: image_url, // Save image URL
+      end_date: project_deadline,
+      created_by: user.user_id,
+      status: 1,
+      user_id: user.user_id,
+      modified_by: user.user_id,
+      image_url: image_url,
     };
 
     // Create the project in the database
     const project = await Project.create(projectData);
 
+    const projAllocationData = {
+      proj_id: project.proj_id,
+      project_owner: user.user_id,
+      created_by: user.user_id,
+      modified_by: user.user_id
+    }
+
+    const allocation = await ProjAllocation.create(projAllocationData);
+
     // Respond with success message and the created project data
-    res.status(201).json({ message: "Project created successfully", project });
+    res.status(201).json({ message: "Project created successfully", project, allocation });
   } catch (error) {
     // Log error and respond with error message
     console.error(error);
@@ -97,10 +108,21 @@ exports.createProject = async (req, res) => {
 // Get all projects
 exports.getAllProjects = async (req, res) => {
   try {
+    const user = req.user;
     const projects = await Project.findAll({
       where: { is_active: 'Y' }
     });
-    res.status(200).json(projects);
+    res.status(200).json({
+      projects,
+      user: {
+        user_id: user.user_id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        isAuthenticated: true
+      }
+    }
+    );
   } catch (error) {
     res
       .status(500)
@@ -240,7 +262,7 @@ exports.CompleteProject = async (req, res) => {
     const { projData } = req.body;
 
     const updatedData = await Project.update({
-      is_completed: 'Y'
+      status: 7
     }, {
       where: { proj_id: projData.proj_id }
     });
@@ -251,5 +273,24 @@ exports.CompleteProject = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error Completing Project", error: error.message });
+  }
+}
+
+exports.ResumeProject = async (req, res) => {
+  try {
+    const { projData } = req.body;
+
+    const updatedData = await Project.update({
+      status: 1
+    }, {
+      where: { proj_id: projData.proj_id }
+    });
+
+    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error Resuming Project", error: error.message });
   }
 }

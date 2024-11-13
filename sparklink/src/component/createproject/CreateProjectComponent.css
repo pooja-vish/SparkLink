@@ -14,6 +14,7 @@
   }
   
   .message {
+    font-family: "Poppins", system-ui;
     text-align: center;
     font-weight: 600;
   }
