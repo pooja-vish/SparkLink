@@ -1,0 +1,94 @@
+/* AdminComponent.css */
+.container-fluid {
+  padding-left: 0px !important;
+}
+
+.section-heading {
+    padding: 20px;
+    max-width: 100%;
+    margin: 20px auto;
+    font-family: "Poppins", system-ui;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.notification-page {
+  padding: 20px;
+}
+
+.notifications-section {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.notification-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+}
+
+.notification-card:hover {
+  background-color: #eaf0ff;
+}
+
+.notification-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.notification-message {
+  font-size: 1.1em;
+  color: #555;
+}
+
+.notification-timestamp {
+  font-size: 0.8em;
+  color: #888;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-accept,
+.btn-reject {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-accept {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-accept:hover {
+  background-color: #218838;
+}
+
+.btn-reject {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-reject:hover {
+  background-color: #c82333;
+}
