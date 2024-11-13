@@ -108,7 +108,7 @@ const ProjApplicationComponent = () => {
         <div className="col-1"></div>
         <div className="col-11">
           <div className="notification-page">
-            <h2 className="section-heading">Project Applications </h2>
+            <h1 className="section-heading">Project Applications </h1>
             <div className="notifications-section">
               <div className="notifications-list">
                 {applications.map((application, index) => (
