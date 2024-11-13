@@ -10,6 +10,7 @@ import { storage } from "../../firebase_script"; // Your Firebase config file
 import "./CreateProjectComponent.css";
 import MenuComponent from "../../component/menu/MenuComponent";
 import FooterComponent from "../footer/FooterComponent";
+import axios from 'axios';
 
 const CreateProjectComponent = () => {
   const dateInputRef = useRef(null);
@@ -168,21 +169,23 @@ const CreateProjectComponent = () => {
     console.log("Form Data Submitted:", form_data);
 
     try {
-      const response = await fetch("http://localhost:5100/project", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form_data),
-      });
+      // const response = await fetch("http://localhost:5100/project", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(form_data),
+      // });
 
-      if (response.ok) {
-        const project = await response.json();
+      const response = await axios.post("/project", form_data);
+
+      if (response) {
+        const project = response.data;
         setSuccessMessage("Project created successfully!");
         console.log("Project created successfully:", project);
       } else {
-        const errorResponse = await response.json();
-        setErrorMessage(errorResponse.message || " Failed to create project " );
+        //const errorResponse = await response.json();
+        //setErrorMessage(errorResponse.message || " Failed to create project " );
       }
     } catch (error) {
       setErrorMessage("Error submitting form: " + error.message);
