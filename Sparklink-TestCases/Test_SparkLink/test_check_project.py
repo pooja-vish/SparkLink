@@ -8,6 +8,8 @@ class TestCheckProject(BaseCase):
         self.driver.maximize_window()
         self.sleep(3)  # Sleep for 3 seconds
 
+
+
         # Open up the navigation bar
         self.click(".navBackground.collapse.show")
         self.sleep(3)
@@ -20,6 +22,15 @@ class TestCheckProject(BaseCase):
 
         # Click on the element if visible
         self.click_xpath('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[2]')
+        self.sleep(3)
+
+        self.send_keys("#root > div > div > div > form > div:nth-child(1) > input", "michael@uwindsor.ca")
+        self.sleep(3)
+        # input the password
+        self.send_keys("#root > div > div > div > form > div:nth-child(2) > input", "testing01")
+        self.sleep(3)
+        # click the login button
+        self.click("#root > div > div > div > form > button")
         self.sleep(3)
 
         #Initialize project index
