@@ -11,6 +11,8 @@ const {
   CompleteProject
 } = require('../controllers/projectController');
 
+const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
+
 const router = express.Router();
 
 // Search Filter project with Proj name
@@ -39,5 +41,9 @@ router.post('/deleteProject', RemoveProject);
 
 // Complete Project
 router.post('/completeProject', CompleteProject);
+
+router.post('/accept', acceptProject);
+
+router.post('/reject', rejectProject);
 
 module.exports = router;
