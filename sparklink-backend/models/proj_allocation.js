@@ -59,6 +59,7 @@ const ProjAllocation = sequelize.define('ProjAllocation', {
     modified_on: {
         type: DataTypes.DATE,
         allowNull: false,
+        defaultValue: sequelize.literal('NOW()'),
     },
 }, {
     tableName: 't_proj_allocation',
