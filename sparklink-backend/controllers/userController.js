@@ -1,5 +1,7 @@
 require('dotenv').config();
 const User = require('../models/user');
+const SupervisorProfile = require('../models/supervisor');
+
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
@@ -11,7 +13,7 @@ const passport = require('passport');
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, role, name } = req.body;
+    const { username, email, password, name, isSupervisor, isBusinessOwner } = req.body;
 
     // Check if the user already exists
     const existingUser = await User.findOne({ where: { email } });
@@ -31,13 +33,28 @@ exports.register = async (req, res) => {
       email,
       name,
       password: password,
-      role,
+      role: isSupervisor && isBusinessOwner ? '2,3' : (isSupervisor ? '2' : (isBusinessOwner ? '3' : '4')),
       is_active: 'N', // User initially inactive
-      created_by: 1,
-      modified_by: 1,
+      created_by:  isSupervisor && isBusinessOwner ? '2,3' : (isSupervisor ? '2' : (isBusinessOwner ? '3' : '4')),
+      modified_by:  isSupervisor && isBusinessOwner ? '2,3' : (isSupervisor ? '2' : (isBusinessOwner ? '3' : '4')),
       confirmation_token: confirmationToken, // Save the token to the database
     });
 
+
+    if (isSupervisor && isBusinessOwner) {
+      await SupervisorProfile.create({
+        user_id: newUser.user_id,
+        is_verified: false,
+        is_project_owner: true
+      });
+    }
+    else if (isSupervisor){
+      await SupervisorProfile.create({
+        user_id: newUser.user_id,
+        is_verified: false,
+        is_project_owner: false,
+      });
+    }
     // Send a confirmation email with the link
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -51,14 +68,14 @@ exports.register = async (req, res) => {
       }
     });
 
-    const confirmationLink = `http://localhost:5100/confirm-email?token=${confirmationToken}`;
+    const confirmationLink = `http://localhost:5100/api/users/confirm-email?token=${confirmationToken}`;
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Confirm Your Email',
       text: `Please click the following link to confirm your email: ${confirmationLink}`,
     });
-
+    
     res.status(201).json({ message: 'User registered successfully. Please check your email to confirm your account.' });
   } catch (error) {
     res.status(500).json({ message: 'Error registering user', error: error.message });
@@ -82,7 +99,8 @@ exports.confirmEmail = async (req, res) => {
     user.confirmation_token = null; // Clear the token after confirmation
     await user.save();
 
-    res.status(200).json({ message: 'Email confirmed successfully. You can now log in.' });
+  //  res.status(200).json({ message: 'Email confirmed successfully. You can now log in.' });
+    return res.redirect("http://localhost:3100/login?message=Email confirmed successfully. You can now log in.");
   } catch (error) {
     res.status(500).json({ message: 'Error confirming email', error: error.message });
   }
@@ -154,6 +172,24 @@ exports.checkSession = (req, res) => {
 
 exports.authStatus = (req, res) => {
   if (req.isAuthenticated()) {
+    if(req.user.role === '1' || req.user.role === '2' || req.user.role === '1,2'){
+    console.log("hi");
+    return res.status(200).json({ isAuthenticated: true, user: req.user });
+    }
+    else{
+      return res.status(501).json({ isAuthenticated: false, user: req.user });
+    }
+  } else {
+    console.log("heyyy");
+    return res.status(200).json({ isAuthenticated: false });
+    
+  }
+};
+
+
+exports.authStatusSupervisorOrAdmin = (req, res) => {
+  if (req.isAuthenticated()) {
+    if(req.user.role === '1' || req.user.role === '2')
     console.log("hi");
     return res.status(200).json({ isAuthenticated: true, user: req.user });
    
@@ -163,3 +199,62 @@ exports.authStatus = (req, res) => {
     
   }
 };
+
+exports.forgotPassword= async (req, res) =>{
+  try{
+  const {email} = req.body;
+  const user = await User.findOne({where : { email }});
+  if(!user){
+    return res.status(404).json({message: 'User With TThis Email Does not Exist'});
+  }
+  const reset_token = crypto.randomBytes(32).toString('hex');
+  const reset_token_expires = new Date(Date.now + 3600000);
+
+  user.resetPasswordToken = reset_token;
+  user.resetPasswordExpires = reset_token_expires;
+  user.save();
+  const resetLink = `http://localhost:5100/reset-password?token=${resetToken}`;
+
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: 'Password Reset Request',
+    text: `Please click on this link to reset your password: ${resetLink}`,
+  })
+  res.status(200).json({message: 'Password reet link snet. check your emial'});
+}
+  catch(error){
+    res.status(500).json({ message: 'Error in password reset', error: error.message });
+  }
+};
+
+exports.resetPassword = async(req, res)=>{
+  try{
+    const { token } = req.query;
+    const { newPassword }= req.body;
+
+    const user = await User.findOne({
+      where: {
+        resetPasswordToken : token,
+        resetPasswordExpires: {[Op.gt]: new Date()},
+      },
+    });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset token' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword,
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+    res.status(200).json({ message: 'Password reset successfully. You can now log in.' });
+  }catch (error) {
+    res.status(500).json({ message: 'Error resetting password', error: error.message });
+  }
+
+};
+
+
