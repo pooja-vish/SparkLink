@@ -31,7 +31,7 @@ const ViewProjectComponent = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const { isAuthenticated } = useAuth();
-    const [ userData, setUserData ] = useState({});
+    const [userData, setUserData] = useState({});
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -430,10 +430,10 @@ const ViewProjectComponent = () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-home"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
+                                        <button className="ms-3 text-center button_text button-home"
+                                            onClick={submitApplication}>Click to Apply</button>
                                         <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>
-                                        <button className="ms-3 text-center button_text button-delete"
-                                            onClick={submitApplication}>Click to Apply</button>
                                     </div>
                                 </div>
                             </Modal.Footer>

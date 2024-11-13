@@ -77,14 +77,6 @@ const Project = sequelize.define('Project', {
     validate: {
       isIn: [['Y', 'N']]
     }
-  },
-  is_completed: {
-    type: DataTypes.CHAR(1),
-    allowNull: false,
-    defaultValue: 'N',
-    validate: {
-      isIn: [['Y', 'N']],
-    },
   }
 }, {
   tableName: 't_project',
