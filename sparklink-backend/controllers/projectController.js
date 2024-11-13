@@ -66,18 +66,19 @@ exports.createProject = async (req, res) => {
 
     // Combine fields to form proj_desc
     const proj_desc = `Purpose: ${purpose}; Product: ${product}; Description: ${project_description}; Features: ${features}`;
-
-    // Prepare project data for the database
+    
+    const user = req.user;
+    
     const projectData = {
       project_name: project_name,
       proj_desc: proj_desc,
       budget: project_budget,
-      end_date: project_deadline, // Use the correct end date
-      created_by: 2, // Replace with req.user.id if you have authentication in place
-      status: 1, // Set the default status
-      user_id: 2, // Replace with req.user.id if you have authentication in place
-      modified_by: 2,
-      image_url: image_url, // Save image URL
+      end_date: project_deadline,
+      created_by: user.user_id, 
+      status: 1,
+      user_id: user.user_id, 
+      modified_by: user.user_id,
+      image_url: image_url,
     };
 
     // Create the project in the database
