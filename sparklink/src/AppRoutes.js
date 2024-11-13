@@ -10,7 +10,7 @@ import LoginComponent from './component/login/LoginComponent';
 import ProtectedRoute from './component/ProtectedRoute';
 
 import ViewProjectComponent from './component/viewproject/ViewProjectComponent';
-
+import RegisterComponent from './component/register/RegisterComponent';
 
 
 const AppRoutes = () => {
@@ -18,6 +18,7 @@ const AppRoutes = () => {
         { path: '/', element: <HomeComponent /> },
         { path: '/about', element: <AboutComponent /> },
         { path: '/contact', element: <ContactComponent /> },
+        { path: '/register', element: <RegisterComponent />},
 
         {
             path: '/progress',
@@ -38,7 +39,13 @@ const AppRoutes = () => {
         },
         { path: '/login', element: <LoginComponent /> },
 
-        { path: '/view-project', element: <ViewProjectComponent /> }
+        { path: '/view-project', element:( 
+        
+        
+            <ProtectedRoute>
+        <ViewProjectComponent /> 
+        </ProtectedRoute>
+        )}
 
     ]);
 
