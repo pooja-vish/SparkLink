@@ -9,14 +9,17 @@ const ProjApplicationComponent = () => {
   const [error, setError] = useState(null);
   const [applications, setApplications] = useState([]);
 
+  // States for success and error messages
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-
-  // Function to handle accepting a project
   const handleAccept = async (proj_id, user_id, role) => {
     console.log(proj_id, user_id, role);
+
     try {
       // Send a POST request to the backend API with proj_id, user_id, and role
-      const response = await axios.post("/api/projects/accept", {
+      setLoading(true);
+      const response = await axios.post("/alloc/accept", {
         proj_id,
         user_id,
         role,
@@ -24,16 +27,61 @@ const ProjApplicationComponent = () => {
 
       if (response.status === 200 || response.status === 201) {
         // Update the state to reflect the accepted project
-        setAcceptedProjects((prevAccepted) => [...prevAccepted, proj_id]);
+        setApplications((prevApplications) =>
+          prevApplications.filter(
+            (application) => application.proj_id !== proj_id
+          )
+        );
+
+        setSuccessMessage("Project application accepted successfully!"); // Success message
+        setErrorMessage(""); // Clear any previous error message
       } else {
-        console.error("Failed to accept project:", response.data);
+        setErrorMessage("Failed to accept project: " + response.data); // Error message
+        setSuccessMessage(""); // Clear any previous success message
       }
     } catch (error) {
       console.error("Error accepting project:", error);
+      setErrorMessage("Error accepting project: " + error.message); // Error message
+      setSuccessMessage(""); // Clear any previous success message
+    } finally {
+      setLoading(false); // Hide loading indicator after the operation completes
     }
   };
 
+  const handleReject = async (proj_id, user_id, role) => {
+    console.log(proj_id, user_id, role);
 
+    try {
+      // Send a POST request to the backend API with proj_id, user_id, and role
+      setLoading(true);
+      const response = await axios.post("/alloc/reject", {
+        proj_id,
+        user_id,
+        role,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        // Update the state to reflect the rejected project
+        setApplications((prevApplications) =>
+          prevApplications.filter(
+            (application) => application.proj_id !== proj_id
+          )
+        );
+
+        setSuccessMessage("Project application rejected successfully!"); // Success message
+        setErrorMessage(""); // Clear any previous error message
+      } else {
+        setErrorMessage("Failed to reject project: " + response.data); // Error message
+        setSuccessMessage(""); // Clear any previous success message
+      }
+    } catch (error) {
+      console.error("Error rejecting project:", error);
+      setErrorMessage("Error rejecting project: " + error.message); // Error message
+      setSuccessMessage(""); // Clear any previous success message
+    } finally {
+      setLoading(false); // Hide loading indicator after the operation completes
+    }
+  };
 
   const fetchApps = async () => {
     setLoading(true);
@@ -63,7 +111,7 @@ const ProjApplicationComponent = () => {
             <h2 className="section-heading">Project Applications </h2>
             <div className="notifications-section">
               <div className="notifications-list">
-                {applications.map((application,index) => (
+                {applications.map((application, index) => (
                   <div className="notification-card" key={index}>
                     <div className="notification-details">
                       <p className="notification-message">
@@ -84,8 +132,8 @@ const ProjApplicationComponent = () => {
                           className="btn-accept"
                           onClick={() =>
                             handleAccept(
-                              application.user_id,
                               application.proj_id,
+                              application.user_id,
                               application.role
                             )
                           }
@@ -93,15 +141,46 @@ const ProjApplicationComponent = () => {
                           Accept
                         </button>
                       )}
-                      <button className="btn-reject">Reject</button>
+                      <button
+                        className="btn-reject"
+                        onClick={() =>
+                          handleReject(
+                            application.proj_id,
+                            application.user_id,
+                            application.role
+                          )
+                        }
+                      >
+                        Reject
+                      </button>
                     </div>
                   </div>
                 ))}
+              </div>
+              <div className="message">
+                {errorMessage && (
+                  <div className="error-message">{errorMessage}</div>
+                )}
+                {successMessage && (
+                  <div className="success-message">{successMessage}</div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
+      {loading && (
+        <div className="loading-overlay d-flex justify-content-center align-items-center">
+          <div className="text-center">
+            <div
+              className="spinner-border text-light"
+              style={{ width: "5rem", height: "5rem" }}
+              role="status"
+            ></div>
+            <div className="text-light mt-2">Processing...</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
