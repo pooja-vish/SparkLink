@@ -114,14 +114,14 @@ function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
       return next();
     }
-    req.session.redirectTo = req.originalUrl; // Store the path the user tried to access
-    res.redirect('/api/users/login'); 
+    // Store the path the user tried to access
+   return  res.status(200).json({ isAuthenticated: false });
   }
   
 // Define routes
 app.use('/api/users', userRoutes);
 app.use('/api', roleRoutes);
-app.use('/projectstatus',projectStatusRouter);
+app.use('/projectstatus',isAuthenticated,projectStatusRouter);
 app.use('/department', isAuthenticated,departmentRoutes);
 app.use('/project',projectRouter);
 
