@@ -134,6 +134,7 @@ exports.login = (req, res, next) => {
           email: user.email,
           role: user.role,
           isAuthenticated: true,
+          user_id:user.user_id,
         },
         // Adjust this to the desired path
       });
