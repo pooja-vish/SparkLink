@@ -11,7 +11,7 @@ const LoginComponent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { isAuthenticated, setIsAuthenticated } = useAuth();
-
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation(); // Use useLocation to access query parameters
 
@@ -41,7 +41,8 @@ const LoginComponent = () => {
       setErrorMessage("");
 
       setIsAuthenticated(true);
-
+      
+      setUser(response.data.user);
       // Redirect to the specified URL from the backend response
       const redirectPath = localStorage.getItem("redirectAfterLogin") || '/';
 
