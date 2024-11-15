@@ -9,6 +9,9 @@ import Table from 'react-bootstrap/Table';
 import edit_icon from '../../assets/edit_icon.png';
 import cancel_icon from '../../assets/cancel_icon.png';
 import complete_icon from '../../assets/complete_icon.png';
+import resume_icon from '../../assets/resume_icon.png';
+import delay_icon from '../../assets/delay_icon.png';
+import fail_icon from '../../assets/fail_icon.png';
 import { useAuth } from '../../AuthContext';
 
 const ViewProjectComponent = () => {
@@ -32,6 +35,8 @@ const ViewProjectComponent = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const { isAuthenticated } = useAuth();
     const [userData, setUserData] = useState({});
+    const [role, setRole] = useState([]);
+    const [userRole, setUserRole] = useState({});
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -251,6 +256,60 @@ const ViewProjectComponent = () => {
         }
     }
 
+    const resumeProject = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/project/resumeProject', {
+                projData: projDetailsList
+            });
+
+            if (response.status === 200) {
+                fetchProjects();
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const failProject = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/project/failProject', {
+                projData: projDetailsList
+            });
+
+            if (response.status === 200) {
+                fetchProjects();
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const delayProject = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/project/delayProject', {
+                projData: projDetailsList
+            });
+
+            if (response.status === 200) {
+                fetchProjects();
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const submitApplication = async () => {
         setLoading(true);
         try {
@@ -271,6 +330,52 @@ const ViewProjectComponent = () => {
             setLoading(false);
         }
     }
+
+    const fetchRoles = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/project/getRole');
+            console.log("ROLE DATA>>>", response.data);
+            setRole(response.data.roleData);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchRoles();
+    }, []);
+
+    // useEffect(() => {
+    //     for(let i = 0; i < role.length; i++) {
+    //         if(role[i].id === userRole && userRole === 2) {
+               
+    //         }
+    //     }
+    // }, [role]);
+
+    const fetchUserRoles = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/project/getUserRole');
+            console.log("USER ROLE DATA>>>", response.data);
+            setUserRole(response.data.userRoleData);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchUserRoles();
+    }, []);
+
+    useEffect(() => {
+        console.log("USER R>>>", userRole);
+    }, [userRole]);
 
     if (error) {
         return <div>Error: {error}</div>;
@@ -356,11 +461,32 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {!editFlag && projDetailsList.is_completed === 'N' && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {!editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                            src={delay_icon}
+                                                            className='complete_icon'
+                                                            title='Mark Project as Delayed'
+                                                            onClick={delayProject}
+                                                            alt=''
+                                                        /></span>}
+                                                        {!editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                            src={fail_icon}
+                                                            className='complete_icon'
+                                                            title='Mark Project as Failed'
+                                                            onClick={failProject}
+                                                            alt=''
+                                                        /></span>}
+                                                        {!editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'
                                                             onClick={completeProject}
+                                                            alt=''
+                                                        /></span>}
+                                                        {!editFlag && projDetailsList.status === 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                            src={resume_icon}
+                                                            className='complete_icon'
+                                                            title='Resume Project'
+                                                            onClick={resumeProject}
                                                             alt=''
                                                         /></span>}
                                                         {!editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
@@ -432,8 +558,8 @@ const ViewProjectComponent = () => {
                                             onClick={UpdateProjDetails}>Save Changes</button>}
                                         <button className="ms-3 text-center button_text button-home"
                                             onClick={submitApplication}>Click to Apply</button>
-                                        <button className="ms-3 text-center button_text button-delete"
-                                            onClick={deleteProject}>Delete Project</button>
+                                        {userRole.role === '2' && <button className="ms-3 text-center button_text button-delete"
+                                            onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
                             </Modal.Footer>

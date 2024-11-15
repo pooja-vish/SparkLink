@@ -1,5 +1,7 @@
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
+const Role = require("../models/role");
+const User = require("../models/user");
 const { Op } = require("sequelize");
 
 // Create a new project
@@ -292,5 +294,69 @@ exports.ResumeProject = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error Resuming Project", error: error.message });
+  }
+}
+
+exports.FailProject = async (req, res) => {
+  try {
+    const { projData } = req.body;
+
+    const updatedData = await Project.update({
+      status: 9
+    }, {
+      where: { proj_id: projData.proj_id }
+    });
+
+    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error Resuming Project", error: error.message });
+  }
+}
+
+exports.DelayProject = async (req, res) => {
+  try {
+    const { projData } = req.body;
+
+    const updatedData = await Project.update({
+      status: 8
+    }, {
+      where: { proj_id: projData.proj_id }
+    });
+
+    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error Resuming Project", error: error.message });
+  }
+}
+
+exports.getRoles = async (req, res) => {
+  try {
+    const roleData = await Role.findAll();
+
+    res.status(200).json({ message: "Roles Fetched successfully", roleData });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error Fetching roles", error: error.message });
+  }
+}
+
+exports.getUserRole = async (req, res) => {
+  try {
+    const userRoleData = await User.findOne({ where: { user_id: req.user.user_id } });
+
+    res.status(200).json({ message: "User Role Fetched successfully", userRoleData });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error fetching user roles", error: error.message });
   }
 }
