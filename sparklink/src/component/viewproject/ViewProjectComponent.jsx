@@ -34,6 +34,7 @@ const ViewProjectComponent = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const { isAuthenticated } = useAuth();
+    const { user } = useAuth();
     const [userData, setUserData] = useState({});
     const [role, setRole] = useState([]);
     const [userRole, setUserRole] = useState({});
@@ -54,6 +55,7 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project');
+            console.log("the logged in user is:"+ user);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
