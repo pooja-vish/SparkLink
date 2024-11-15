@@ -12,22 +12,38 @@ import profile_icon from '../../assets/profile.png';
 import create_icon from '../../assets/create_project.png';
 import axios from "axios";
 import LoginComponent from '../login/LoginComponent'
-
+import { useNavigate } from "react-router-dom";
 import logout_icon from '../../assets/logout.png';
+import { useAuth } from '../../AuthContext';
 
 
 const MenuComponent = () => {
-    // const navigate = useNavigate();
+     const navigate = useNavigate();
     const location = useLocation();
     const [open, setOpen] = useState(false); // MouseEvent
     const [role, setRole] = useState(''); // UserRole
-
+    const { isAuthenticated, setIsAuthenticated } = useAuth()
     const getNavItemClass = (path) => {
         return location.pathname === path ? 'nav-item active' : 'nav-item';
     };
 
     const logout = async (req,res) => {
+        
         const response= await axios.post("/api/users/logout");
+        if (response.status === 401){
+            window.alert("User is logged out");
+            console.log("hiiiiii")
+        }
+        else{
+        console.log(response.data);
+        setIsAuthenticated(false);
+        navigate('/');
+        }
+
+    }
+
+    const fetchApplications = async (req,res) => {
+        const response= await axios.post("/apply/getApps");
         console.log(response.data);
     }
 
@@ -106,6 +122,17 @@ const MenuComponent = () => {
                                                         <img src={milestone_icon}
                                                             className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
                                                         &nbsp;&nbsp;&nbsp;Milestone Tracker</Link>
+                                                </span>
+                                            </li>)}
+                                            {role === '' && (<li className={getNavItemClass('/projApplications')}>
+                                                <span style={{ cursor: 'pointer' }}>
+                                                    <Link style={{
+                                                        fontFamily: '"Poppins", sans-serif', fontWeight: 500,
+                                                        color: '#E6E6E6', fontStyle: 'normal'
+                                                    }} to='/projApplications'>
+                                                        <img src={milestone_icon}
+                                                            className='nav_sub_menu_icon' alt='' style={{ marginLeft: 15 }}></img>
+                                                        &nbsp;&nbsp;&nbsp;Notifications</Link>
                                                 </span>
                                             </li>)}
 

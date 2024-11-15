@@ -8,9 +8,11 @@ const ProtectedRoute = ({ children, redirectPath = '/login' }) => {
     const [redirectFlag, setRedirectFlag] = useState(false);
     const location = useLocation();
 
+   
     useEffect(() => {
         if (!isAuthenticated) {
             console.log("not authenticated")
+            
             //Saving the path they were trying to access
             setRedirectFlag(true);
             localStorage.setItem("redirectAfterLogin", location.pathname);
@@ -18,7 +20,7 @@ const ProtectedRoute = ({ children, redirectPath = '/login' }) => {
             console.log("authenticateddd");
         }
     }, [isAuthenticated]);
-
+    
     if (redirectFlag) {
         return <Navigate to={redirectPath} replace />;
     }

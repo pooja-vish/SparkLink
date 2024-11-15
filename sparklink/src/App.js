@@ -7,7 +7,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function App() {
   return (
-    <AuthProvider> {/* Wrap the application with AuthProvider */}
+    <AuthProvider  > {/* Wrap the application with AuthProvider */}
       <Router>
         <AppRoutes />
       </Router>

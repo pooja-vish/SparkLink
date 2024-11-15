@@ -36,7 +36,7 @@ const ProjAllocation = sequelize.define('ProjAllocation', {
         },
     },
     student: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(250),
         allowNull: true,
         references: {
             model: 't_usermst',

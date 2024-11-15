@@ -16,6 +16,8 @@ const {
   getUserRole
 } = require('../controllers/projectController');
 
+const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
+
 const router = express.Router();
 
 router.get('/getRole', getRoles);

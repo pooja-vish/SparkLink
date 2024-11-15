@@ -1,4 +1,6 @@
 const ProjApplication = require('../models/proj_application');
+const User = require('../models/user');
+const Project = require('../models/project');
 
 exports.createApplication = async (req, res) => {
     try {
@@ -18,7 +20,16 @@ exports.fetchApplication = async (req, res) => {
     try {
         const user = req.user;
         const applicationData = await ProjApplication.findAll({
-            where: { is_active: 'Y', is_approved: 'N' }
+            where: { is_active: 'Y', is_approved: 'N' },
+            include: [{
+                model: User,
+                attributes: ['username'],
+                as: 'user'
+            }, {
+                model: Project,
+                attributes: ['project_name'],
+                as: 'project'
+            }]
         });
 
         res.status(201).json({
