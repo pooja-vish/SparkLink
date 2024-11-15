@@ -58,4 +58,8 @@ router.post('/failProject', FailProject);
 //Delay Project
 router.post('/delayProject', DelayProject);
 
+router.post('/accept', acceptProject);
+
+router.post('/reject', rejectProject);
+
 module.exports = router;
