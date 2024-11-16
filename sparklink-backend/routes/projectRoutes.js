@@ -12,17 +12,17 @@ const {
   ResumeProject,
   FailProject,
   DelayProject,
-  getRoles,
-  getUserRole
+  getUserRoleAccess,
+  applyProject
 } = require('../controllers/projectController');
 
 const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
 
 const router = express.Router();
 
-router.get('/getRole', getRoles);
+router.post('/getUserRoleAccess', getUserRoleAccess);
 
-router.get('/getUserRole', getUserRole);
+router.post('/applyProject', applyProject);
 
 //Search Filter project with Proj name
 router.get('/filter', filterProject);
