@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../config/db');
+const ProjAllocation = require('../models/proj_allocation');
 
 const User = sequelize.define('User', {
   user_id: {
@@ -55,6 +56,15 @@ const User = sequelize.define('User', {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  resetpasswordtoken:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  resetpasswordexpires:{
+    type: DataTypes.DATE,
+    allowNull: true,
+  }
+  
 }, {
   tableName: 't_usermst',
   timestamps: false, // Change to true if you want automatic timestamps
@@ -78,4 +88,11 @@ User.prototype.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+User.hasMany(ProjAllocation, {
+  foreignKey: 'userId', // Foreign key in ProjAllocation
+  as: 'projectAllocations', // Alias for the association
+});
+
+
 module.exports = User;
+

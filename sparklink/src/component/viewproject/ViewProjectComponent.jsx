@@ -9,6 +9,9 @@ import Table from 'react-bootstrap/Table';
 import edit_icon from '../../assets/edit_icon.png';
 import cancel_icon from '../../assets/cancel_icon.png';
 import complete_icon from '../../assets/complete_icon.png';
+import resume_icon from '../../assets/resume_icon.png';
+import delay_icon from '../../assets/delay_icon.png';
+import fail_icon from '../../assets/fail_icon.png';
 import { useAuth } from '../../AuthContext';
 
 const ViewProjectComponent = () => {
@@ -31,7 +34,9 @@ const ViewProjectComponent = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const { isAuthenticated } = useAuth();
+    const { user } = useAuth();
     const [userData, setUserData] = useState({});
+    const [accessVal, setAccessVal] = useState('');
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -49,6 +54,7 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project');
+            console.log("the logged in user is:"+ user);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -134,6 +140,7 @@ const ViewProjectComponent = () => {
     useEffect(() => {
         if (projDescList.length > 0) {
             setTriggerDetails(true);
+            fetchUserRoles();
         }
     }, [projDescList]);
 
@@ -251,20 +258,91 @@ const ViewProjectComponent = () => {
         }
     }
 
-    const submitApplication = async () => {
+    const resumeProject = async () => {
         setLoading(true);
         try {
-            const projData = {
-                proj_id: projDetailsList.proj_id,
-                role: userData.role,
-                user_id: userData.user_id,
-                created_by: userData.user_id,
-                modified_by: userData.user_id
-            }
-
-            const response = await axios.post('/apply/createApplication', {
-                projectList: projData
+            const response = await axios.post('/project/resumeProject', {
+                projData: projDetailsList
             });
+
+            if (response.status === 200) {
+                fetchProjects();
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const failProject = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/project/failProject', {
+                projData: projDetailsList
+            });
+
+            if (response.status === 200) {
+                fetchProjects();
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const delayProject = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/project/delayProject', {
+                projData: projDetailsList
+            });
+
+            if (response.status === 200) {
+                fetchProjects();
+                closeModal();
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const submitApplication = async () => {
+        setLoading(true);
+        console.log("projDetailsList>>>>>", projDetailsList.proj_id);
+        try {
+            const response = await axios.post('/project/applyProject', {
+                proj_id: projDetailsList.proj_id
+            });
+            console.log(response);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // useEffect(() => {
+    //     for(let i = 0; i < role.length; i++) {
+    //         if(role[i].id === userRole && userRole === 2) {
+
+    //         }
+    //     }
+    // }, [role]);
+
+    const fetchUserRoles = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/project/getUserRoleAccess', {
+                proj_id: projDetailsList.proj_id
+            });
+            console.log("USER ACCESS>>>", response.data.access_val);
+            setAccessVal(response.data.access_val);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -356,17 +434,38 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {!editFlag && projDetailsList.is_completed === 'N' && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                            src={delay_icon}
+                                                            className='complete_icon'
+                                                            title='Mark Project as Delayed'
+                                                            onClick={delayProject}
+                                                            alt=''
+                                                        /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                            src={fail_icon}
+                                                            className='complete_icon'
+                                                            title='Mark Project as Failed'
+                                                            onClick={failProject}
+                                                            alt=''
+                                                        /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'
                                                             onClick={completeProject}
                                                             alt=''
                                                         /></span>}
-                                                        {!editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status === 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                            src={resume_icon}
+                                                            className='complete_icon'
+                                                            title='Resume Project'
+                                                            onClick={resumeProject}
+                                                            alt=''
+                                                        /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
                                                             title='Click to edit Project Details' alt=""
                                                             onClick={() => triggerUpdate('U')} /></span>}
-                                                        {editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
+                                                        {accessVal === 'E' && editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
                                                             title='Click to cancel editing' alt=''
                                                             onClick={() => triggerUpdate('C')}
                                                         /></span>}
@@ -430,10 +529,10 @@ const ViewProjectComponent = () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-home"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        <button className="ms-3 text-center button_text button-home"
-                                            onClick={submitApplication}>Click to Apply</button>
-                                        <button className="ms-3 text-center button_text button-delete"
-                                            onClick={deleteProject}>Delete Project</button>
+                                        {(accessVal === 'A' || accessVal === 'S') && <button className="ms-3 text-center button_text button-home"
+                                            onClick={submitApplication}>Click to Apply</button>}
+                                        {(accessVal === 'B' || accessVal === 'S') && <button className="ms-3 text-center button_text button-delete"
+                                            onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
                             </Modal.Footer>

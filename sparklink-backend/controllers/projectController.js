@@ -1,6 +1,9 @@
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
+const Role = require("../models/role");
+const User = require("../models/user");
 const { Op } = require("sequelize");
+const sequelize = require('../config/db');
 
 // Create a new project
 exports.createProject = async (req, res) => {
@@ -294,3 +297,192 @@ exports.ResumeProject = async (req, res) => {
       .json({ message: "Error Resuming Project", error: error.message });
   }
 }
+
+exports.FailProject = async (req, res) => {
+  try {
+    const { projData } = req.body;
+
+    const updatedData = await Project.update({
+      status: 9
+    }, {
+      where: { proj_id: projData.proj_id }
+    });
+
+    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error Resuming Project", error: error.message });
+  }
+}
+
+exports.DelayProject = async (req, res) => {
+  try {
+    const { projData } = req.body;
+
+    const updatedData = await Project.update({
+      status: 8
+    }, {
+      where: { proj_id: projData.proj_id }
+    });
+
+    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error Resuming Project", error: error.message });
+  }
+}
+
+exports.applyProject = async (req, res) => {
+  try {
+    const { proj_id } = req.body;
+    const user = req.user;
+    const user_id = user.user_id;
+    const role = Number(user.role);
+    let supervisor_count = 0;
+
+    const allocationList = {
+      proj_id: proj_id,
+      user_id: user_id,
+      role: role,
+      created_by: user_id,
+      modified_by: user_id
+    }
+
+    if (role === 3) {
+      supervisor_count = await ProjAllocation.count({
+        where: {
+          proj_id: proj_id,
+          role: role
+        }
+      });
+
+      if (supervisor_count < 2) {
+        const supervisor_exists = await ProjAllocation.count({
+          where: {
+            proj_id: proj_id,
+            user_id: user_id,
+            role: role
+          }
+        });
+
+        if (supervisor_exists === 0) {
+          const supervisor = await ProjAllocation.create(allocationList, {
+            returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
+          });
+          return res.status(200).json({ success: true, message: "Project application successful", supervisor });
+        } else {
+          return res.status(200).json({ success: false, message: "You are already supervising this project" });
+        }
+      } else {
+        return res.status(200).json({ success: false, message: "This project already has the maximum number of supervisors." });
+      }
+    } else if (role === 4) {
+      const student = await ProjAllocation.create(allocationList, {
+        returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
+      });
+
+      return res.status(200).json({ message: "Project application successful", student });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Error creating a project application", error: error.message });
+  }
+}
+
+/**
+ * access_val === 'S' -> User has admin access can take every action on the Project
+ * access_val === 'E' -> User has supervisor role and edit access on the Project
+ * access_val === 'A' -> User has access to Apply to the Project
+ * access_val === 'B' -> User has access to Edit and Delete access to the Project
+ * access_val === 'I' -> User has no access to any action on the Project
+ */
+
+exports.getUserRoleAccess = async (req, res) => {
+  try {
+    const { proj_id } = req.body;
+
+    const user = req.user;
+    const user_id = user.user_id;
+    const role = Number(user.role);
+
+    let supervisor_count = 0;
+
+    const projStatus = await Project.findOne({
+      where: {
+        proj_id: proj_id
+      },
+      attributes: ['proj_id', 'status']
+    });
+
+    if (role === 3) { //Managing Supervisor Access
+      supervisor_count = await ProjAllocation.count({
+        where: {
+          proj_id: proj_id,
+          role: role
+        }
+      });
+
+      const supervisor_exists = await ProjAllocation.count({
+        where: {
+          proj_id: proj_id,
+          user_id: user_id,
+          role: role
+        }
+      });
+
+      //Supervisor Edit
+      if (supervisor_exists === 1) {
+        return res.status(200).json({ success: false, message: "Valid User", access_val: 'E' });
+      } else {
+        //Supervisor Apply
+        if (supervisor_count < 2) {
+          if (projStatus.status !== 7 || projStatus.status !== 8 || projStatus.status !== 9) {
+            return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
+          }
+        } else {
+          return res.status(200).json({ succes: false, message: "Invalid User", access_val: 'I' });
+        }
+      }
+    } else if (role === 2) { //Managing Business Owner Access
+      const business_owner = await ProjAllocation.count({
+        where: {
+          proj_id: proj_id,
+          user_id: user_id,
+          role: role
+        }
+      });
+
+      if (business_owner === 1) {
+        return res.status(200).json({ success: true, message: "Valid User", access_val: 'B' });
+      } else {
+        return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+      }
+    } else if (role === 4) { //Managing Student Access
+      const student = await ProjAllocation.count({
+        where: {
+          proj_id: proj_id,
+          user_id: user_id,
+          role: role
+        }
+      });
+
+      //Remove projStatus.status === 1
+      if (projStatus.status === 1 || projStatus.status === 3 || projStatus.status === 4 || projStatus === 5) {
+        if (student === 0) {
+          return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
+        } else {
+          return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+        }
+      }
+    } else if (role === 1) { //Managing Admin Access
+      return res.status(200).json({ success: true, message: "Valid User", access_val: 'S' });
+    } else {
+      return res.status(200).json({ success: true, message: "Invalid User", access_val: 'I' });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Error verifying User Access", error: error.message });
+  }
+} 

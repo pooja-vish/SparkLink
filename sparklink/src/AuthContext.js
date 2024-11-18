@@ -1,4 +1,3 @@
-// AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,17 +9,20 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const checkAuthStatus = async () => {
+        // Set loading to true before starting the request
+        setLoading(true);
         try {
             const response = await axios.get('/api/users/auth-status', { withCredentials: true });
-            console.log("whattt" + response.data.user);
+            console.log("Auth Response:", response.data);
+            
             setUser(response.data.user);
             setIsAuthenticated(response.data.isAuthenticated);
-        } catch {
+        } catch (error) {
+            console.error("Error fetching auth status:", error);
             setUser(null); // Reset user if authentication check fails
             setIsAuthenticated(false);
-
         } finally {
-            setLoading(false);
+            setLoading(false); // Set loading to false regardless of success or failure
         }
     };
 
@@ -29,11 +31,17 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        console.log("IS AUTH >?>?>?>?>?", isAuthenticated);
+        console.log("Authentication Status Changed:", isAuthenticated);
     }, [isAuthenticated]);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, loading }}>
+        <AuthContext.Provider value={{ 
+            isAuthenticated, 
+            user, 
+            setUser, 
+            setIsAuthenticated, 
+            loading 
+        }}>
             {children}
         </AuthContext.Provider>
     );

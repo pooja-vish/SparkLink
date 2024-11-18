@@ -8,14 +8,23 @@ const {
   filterProject,
   UpdateProjDetails,
   RemoveProject,
-  CompleteProject
+  CompleteProject,
+  ResumeProject,
+  FailProject,
+  DelayProject,
+  getUserRoleAccess,
+  applyProject
 } = require('../controllers/projectController');
 
 const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
 
 const router = express.Router();
 
-// Search Filter project with Proj name
+router.post('/getUserRoleAccess', getUserRoleAccess);
+
+router.post('/applyProject', applyProject);
+
+//Search Filter project with Proj name
 router.get('/filter', filterProject);
 
 // POST route to create a new project
@@ -25,22 +34,31 @@ router.post('/', createProject);
 router.get('/', getAllProjects);
 
 // GET route to fetch a single project by ID
-router.get('/:id', getProjectById);
+//router.get('/:id', getProjectById);
 
 // PUT route to update a project by ID
-router.put('/:id', updateProject);
+//router.put('/:id', updateProject);
 
 // DELETE route to delete a project by ID
-router.delete('/:id', deleteProject);
+//router.delete('/:id', deleteProject);
 
-// Update Project Details
+//Update Project Details
 router.post('/updateProject', UpdateProjDetails);
 
-// Delete Project
+//Delete Project
 router.post('/deleteProject', RemoveProject);
 
-// Complete Project
+//Complete Project
 router.post('/completeProject', CompleteProject);
+
+//Resume Project
+router.post('/resumeProject', ResumeProject);
+
+//Fail Project
+router.post('/failProject', FailProject);
+
+//Delay Project
+router.post('/delayProject', DelayProject);
 
 router.post('/accept', acceptProject);
 

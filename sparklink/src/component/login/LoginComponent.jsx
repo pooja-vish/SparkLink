@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, useLocation } from "react-router-dom";
 import "./LoginComponent.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useAuth } from '../../AuthContext';
-
-
 
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
@@ -13,8 +11,20 @@ const LoginComponent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { isAuthenticated, setIsAuthenticated } = useAuth();
-
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // Use useLocation to access query parameters
+
+  useEffect(() => {
+    // Extract message query parameter from URL
+    const params = new URLSearchParams(location.search);
+    const message = params.get("message");
+
+    if (message) {
+      setSuccessMessage(message);
+    }
+  }, [location.search]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -29,22 +39,21 @@ const LoginComponent = () => {
       localStorage.setItem("token", response.data.token);
       setSuccessMessage("Login successful!");
       setErrorMessage("");
-      
-      setIsAuthenticated(true);
 
+      setIsAuthenticated(true);
+      
+      setUser(response.data.user);
       // Redirect to the specified URL from the backend response
       const redirectPath = localStorage.getItem("redirectAfterLogin") || '/';
 
       console.log("the user logged in is redirect to " + redirectPath);
-      
+
       navigate(redirectPath, { replace: true });
     } catch (error) {
-      setErrorMessage(error.response.data.message || "Login failed. Please try again.");
+      setErrorMessage(error.response?.data?.message || "Login failed. Please try again.");
       setSuccessMessage("");
     }
   };
-
-
 
   return (
     <div style={{
