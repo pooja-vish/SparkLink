@@ -36,8 +36,7 @@ const ViewProjectComponent = () => {
     const { isAuthenticated } = useAuth();
     const { user } = useAuth();
     const [userData, setUserData] = useState({});
-    const [role, setRole] = useState([]);
-    const [userRole, setUserRole] = useState({});
+    const [accessVal, setAccessVal] = useState('');
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -141,6 +140,7 @@ const ViewProjectComponent = () => {
     useEffect(() => {
         if (projDescList.length > 0) {
             setTriggerDetails(true);
+            fetchUserRoles();
         }
     }, [projDescList]);
 
@@ -314,46 +314,23 @@ const ViewProjectComponent = () => {
 
     const submitApplication = async () => {
         setLoading(true);
+        console.log("projDetailsList>>>>>", projDetailsList.proj_id);
         try {
-            const projData = {
-                proj_id: projDetailsList.proj_id,
-                role: userData.role,
-                user_id: userData.user_id,
-                created_by: userData.user_id,
-                modified_by: userData.user_id
-            }
-
-            const response = await axios.post('/apply/createApplication', {
-                projectList: projData
+            const response = await axios.post('/project/applyProject', {
+                proj_id: projDetailsList.proj_id
             });
+            console.log(response);
         } catch (error) {
             setError(error.message);
         } finally {
             setLoading(false);
         }
     }
-
-    const fetchRoles = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get('/project/getRole');
-            console.log("ROLE DATA>>>", response.data);
-            setRole(response.data.roleData);
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        fetchRoles();
-    }, []);
 
     // useEffect(() => {
     //     for(let i = 0; i < role.length; i++) {
     //         if(role[i].id === userRole && userRole === 2) {
-               
+
     //         }
     //     }
     // }, [role]);
@@ -361,23 +338,17 @@ const ViewProjectComponent = () => {
     const fetchUserRoles = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('/project/getUserRole');
-            console.log("USER ROLE DATA>>>", response.data);
-            setUserRole(response.data.userRoleData);
+            const response = await axios.post('/project/getUserRoleAccess', {
+                proj_id: projDetailsList.proj_id
+            });
+            console.log("USER ACCESS>>>", response.data.access_val);
+            setAccessVal(response.data.access_val);
         } catch (error) {
             setError(error.message);
         } finally {
             setLoading(false);
         }
     }
-
-    useEffect(() => {
-        fetchUserRoles();
-    }, []);
-
-    useEffect(() => {
-        console.log("USER R>>>", userRole);
-    }, [userRole]);
 
     if (error) {
         return <div>Error: {error}</div>;
@@ -463,38 +434,38 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {!editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={delay_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Delayed'
                                                             onClick={delayProject}
                                                             alt=''
                                                         /></span>}
-                                                        {!editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={fail_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Failed'
                                                             onClick={failProject}
                                                             alt=''
                                                         /></span>}
-                                                        {!editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'
                                                             onClick={completeProject}
                                                             alt=''
                                                         /></span>}
-                                                        {!editFlag && projDetailsList.status === 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status === 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={resume_icon}
                                                             className='complete_icon'
                                                             title='Resume Project'
                                                             onClick={resumeProject}
                                                             alt=''
                                                         /></span>}
-                                                        {!editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
+                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
                                                             title='Click to edit Project Details' alt=""
                                                             onClick={() => triggerUpdate('U')} /></span>}
-                                                        {editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
+                                                        {accessVal === 'E' && editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
                                                             title='Click to cancel editing' alt=''
                                                             onClick={() => triggerUpdate('C')}
                                                         /></span>}
@@ -558,9 +529,9 @@ const ViewProjectComponent = () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-home"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        <button className="ms-3 text-center button_text button-home"
-                                            onClick={submitApplication}>Click to Apply</button>
-                                        {userRole.role === '2' && <button className="ms-3 text-center button_text button-delete"
+                                        {(accessVal === 'A' || accessVal === 'S') && <button className="ms-3 text-center button_text button-home"
+                                            onClick={submitApplication}>Click to Apply</button>}
+                                        {(accessVal === 'B' || accessVal === 'S') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
