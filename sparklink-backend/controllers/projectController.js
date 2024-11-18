@@ -397,6 +397,7 @@ exports.applyProject = async (req, res) => {
  * access_val === 'E' -> User has supervisor role and edit access on the Project
  * access_val === 'A' -> User has access to Apply to the Project
  * access_val === 'B' -> User has access to Edit and Delete access to the Project
+ * access_val === 'M' -> User has access to View the Milestones of the Project
  * access_val === 'I' -> User has no access to any action on the Project
  */
 
@@ -470,9 +471,16 @@ exports.getUserRoleAccess = async (req, res) => {
       });
 
       //Remove projStatus.status === 1
-      if (projStatus.status === 1 || projStatus.status === 3 || projStatus.status === 4 || projStatus === 5) {
-        if (student === 0) {
+      if (student === 0) {
+        if (projStatus.status === 3 || projStatus.status === 4 || projStatus.status === 5) {
           return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
+        } else {
+          return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+        }
+      } else if (student === 1) {
+        if (projStatus.status === 5 || projStatus.status === 6 || projStatus.status === 7 || projStatus.status === 8 ||
+          projStatus.status === 9) {
+          return res.status(200).json({ success: true, message: "Valid User", access_val: 'M' });
         } else {
           return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
         }

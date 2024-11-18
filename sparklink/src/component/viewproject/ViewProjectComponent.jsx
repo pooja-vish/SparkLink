@@ -54,7 +54,7 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project');
-            console.log("the logged in user is:"+ user);
+            console.log("the logged in user is:" + user);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -529,9 +529,11 @@ const ViewProjectComponent = () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-home"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {(accessVal === 'A' || accessVal === 'S') && <button className="ms-3 text-center button_text button-home"
+                                        {(accessVal === 'S' || accessVal === 'A') && <button className="ms-3 text-center button_text button-home"
                                             onClick={submitApplication}>Click to Apply</button>}
-                                        {(accessVal === 'B' || accessVal === 'S') && <button className="ms-3 text-center button_text button-delete"
+                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B') && <button className="ms-3 text-center button_text button-home"
+                                            onClick={submitApplication}>View Milestones</button>}
+                                        {(accessVal === 'S' || accessVal === 'B') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
