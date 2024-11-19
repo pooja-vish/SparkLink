@@ -11,7 +11,8 @@ import ProtectedRoute from "./component/ProtectedRoute";
 import ProjApplicationComponent from "./component/project-applications/projApplicationComponent";
 import ViewProjectComponent from "./component/viewproject/ViewProjectComponent";
 import ViewUserComponent from "./component/admin/viewUsers";
-
+import ResetPasswordComponent from "./component/resetpassword/ResetPasswordComponent"
+import ResetPasswordEmailComponent from "./component/resetpasswordemail/ResetPasswordEmailComponent";
 
 
 const AppRoutes = () => {
@@ -22,6 +23,9 @@ const AppRoutes = () => {
         { path: "/register", element: <RegisterComponent /> },
         { path: "/login", element: <LoginComponent /> },
         { path:"/admin/viewusers", element: <ViewUserComponent/>},
+
+        { path: "/reset-password", element: <ResetPasswordComponent /> },
+        { path: "/reset-password-email", element: <ResetPasswordEmailComponent /> },
         // Protected parent route
         {
             path: "/", // Protected routes parent path

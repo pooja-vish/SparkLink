@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const passport = require('passport');
+const { Op } = require("sequelize");
 
 // Register a new user with role
 
@@ -201,21 +202,40 @@ exports.authStatusSupervisorOrAdmin = (req, res) => {
   }
 };
 
+
+
 exports.forgotPassword= async (req, res) =>{
   try{
   const {email} = req.body;
   const user = await User.findOne({where : { email }});
   if(!user){
-    return res.status(404).json({message: 'User With TThis Email Does not Exist'});
+    return res.status(404).json({message: 'User With This Email Does not Exist'});
   }
   const reset_token = crypto.randomBytes(32).toString('hex');
-  const reset_token_expires = new Date(Date.now + 3600000);
+  const reset_token_expires = new Date(Date.now() + 3600000);
 
-  user.resetPasswordToken = reset_token;
-  user.resetPasswordExpires = reset_token_expires;
-  user.save();
-  const resetLink = `http://localhost:5100/reset-password?token=${resetToken}`;
+  console.log("date",reset_token_expires);
 
+  user.resetpasswordtoken = reset_token;
+  user.resetpasswordexpires = reset_token_expires;
+  await user.save();
+
+  const resetLink = `http://localhost:3100/reset-password?token=${reset_token}`;
+
+  // Send a confirmation email with the link
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+       user: process.env.EMAIL_USER,
+       pass: process.env.EMAIL_PASS,
+    },
+    tls: {
+       // Do not fail on invalid certs
+       rejectUnauthorized: false
+    }
+  });
+
+  
 
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
@@ -226,37 +246,64 @@ exports.forgotPassword= async (req, res) =>{
   res.status(200).json({message: 'Password reet link snet. check your emial'});
 }
   catch(error){
+    console.log("error ", error.message);
     res.status(500).json({ message: 'Error in password reset', error: error.message });
   }
 };
 
-exports.resetPassword = async(req, res)=>{
-  try{
+// Verify the token (GET)
+exports.verifyToken = async (req, res) => {
+  try {
     const { token } = req.query;
-    const { newPassword }= req.body;
+    const user = await User.findOne({
+      where: {
+        resetpasswordtoken: token,
+        resetpasswordexpires: { [Op.gt]: new Date() }, // Ensure token hasn't expired
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token." });
+    }
+
+    res.status(200).json({ message: "Token is valid." });
+  } catch (error) {
+    console.log("error ", error.message);
+    res.status(500).json({ message: "Error verifying token.", error: error.message });
+  }
+};
+
+// Reset the password (POST)
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
 
     const user = await User.findOne({
       where: {
-        resetPasswordToken : token,
-        resetPasswordExpires: {[Op.gt]: new Date()},
+        resetpasswordtoken: token,
+        resetpasswordexpires: { [Op.gt]: new Date() }, // Ensure token hasn't expired
       },
     });
+
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired reset token' });
+      return res.status(400).json({ message: "Invalid or expired token." });
     }
 
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword,
-    user.resetPasswordToken = null;
-    user.resetPasswordExpires = null;
-    await user.save();
-    res.status(200).json({ message: 'Password reset successfully. You can now log in.' });
-  }catch (error) {
-    res.status(500).json({ message: 'Error resetting password', error: error.message });
-  }
+    // Update the user's password
+    user.password = newPassword; // The `beforeUpdate` hook will handle hashing
 
+    // Clear reset token fields
+    user.resetpasswordtoken = null;
+    user.resetpasswordexpires = null;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password has been successfully reset." });
+  } catch (error) {
+    res.status(500).json({ message: "Error resetting password.", error: error.message });
+  }
 };
+
 
 exports.getallusers = async (req, res) => {
   try {
@@ -266,6 +313,5 @@ exports.getallusers = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 
 
