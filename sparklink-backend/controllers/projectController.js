@@ -1,5 +1,6 @@
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
+const Milestone = require("../models/proj_milestone");
 const Role = require("../models/role");
 const User = require("../models/user");
 const { Op } = require("sequelize");
@@ -115,6 +116,37 @@ exports.getAllProjects = async (req, res) => {
     const projects = await Project.findAll({
       where: { is_active: 'Y' }
     });
+
+    if (projects && projects.length > 0) {
+
+      for (let i = 0; i < projects.length; i++) {
+        let proj_id = projects[i].proj_id;
+
+        const activeMilestoneCount = await Milestone.count({
+          where: {
+            proj_id: proj_id,
+            is_active: 'Y'
+          }
+        });
+
+        const completedMilestoneCount = await Milestone.count({
+          where: {
+            proj_id: proj_id,
+            is_active: 'Y',
+            is_completed: 'Y'
+          }
+        });
+
+        const progress = activeMilestoneCount > 0 
+        ? Math.round(((completedMilestoneCount / activeMilestoneCount) * 100)) : 0;
+
+        if(isNaN(progress)) {
+          progress=0;
+        }
+
+        projects[i].setDataValue('progress', progress);
+      }
+    }
     res.status(200).json({
       projects,
       user: {

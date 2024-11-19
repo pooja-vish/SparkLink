@@ -13,8 +13,10 @@ import resume_icon from '../../assets/resume_icon.png';
 import delay_icon from '../../assets/delay_icon.png';
 import fail_icon from '../../assets/fail_icon.png';
 import { useAuth } from '../../AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const ViewProjectComponent = () => {
+    const navigate = useNavigate();
     const [projectList, setProjectList] = useState([]);
     const [originalProjectList, setOriginalProjectList] = useState([]);
     const [error, setError] = useState(null);
@@ -37,6 +39,7 @@ const ViewProjectComponent = () => {
     const { user } = useAuth();
     const [userData, setUserData] = useState({});
     const [accessVal, setAccessVal] = useState('');
+    const [progressList, setProgressList] = useState([]);
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -55,6 +58,8 @@ const ViewProjectComponent = () => {
         try {
             const response = await axios.get('/project');
             console.log("the logged in user is:" + user);
+
+            console.log("PROJ DATA TABLE>>>>>", response.data.projects);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -350,6 +355,11 @@ const ViewProjectComponent = () => {
         }
     }
 
+    const viewMilestones = async () => {
+        console.log("VIEW PROJ", projDetailsList.proj_id);
+        navigate("/progress", { state: { projId: projDetailsList.proj_id } });
+    }
+
     if (error) {
         return <div>Error: {error}</div>;
     }
@@ -398,11 +408,10 @@ const ViewProjectComponent = () => {
                                                             <div className="progress-title">{item.project_name}</div>
                                                             <div className="progress-bar-container">
                                                                 <div className="progress-bar">
-                                                                    {/* <div className="progress" style={{ width: `${item.progress}%` }}></div> */}
-                                                                    <div className="progress" style={{ width: `75%` }}></div>
+                                                                    <div className="progress" style={{ width: `${item.progress}%` }}></div>
                                                                 </div>
                                                                 {/* <span className="progress-text">{item.progress}%</span> */}
-                                                                <span className="progress-text">75%</span>
+                                                                <span className="progress-text">{item.progress}%</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -434,38 +443,38 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={delay_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Delayed'
                                                             onClick={delayProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={fail_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Failed'
                                                             onClick={failProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'
                                                             onClick={completeProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && projDetailsList.status === 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status === 7 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={resume_icon}
                                                             className='complete_icon'
                                                             title='Resume Project'
                                                             onClick={resumeProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'S') && !editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
                                                             title='Click to edit Project Details' alt=""
                                                             onClick={() => triggerUpdate('U')} /></span>}
-                                                        {accessVal === 'E' && editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
                                                             title='Click to cancel editing' alt=''
                                                             onClick={() => triggerUpdate('C')}
                                                         /></span>}
@@ -529,10 +538,10 @@ const ViewProjectComponent = () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-home"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {(accessVal === 'S' || accessVal === 'A') && <button className="ms-3 text-center button_text button-home"
+                                        {(accessVal === 'A') && <button className="ms-3 text-center button_text button-home"
                                             onClick={submitApplication}>Click to Apply</button>}
                                         {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B') && <button className="ms-3 text-center button_text button-home"
-                                            onClick={submitApplication}>View Milestones</button>}
+                                            onClick={viewMilestones}>View Milestones</button>}
                                         {(accessVal === 'S' || accessVal === 'B') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
