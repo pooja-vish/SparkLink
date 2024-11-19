@@ -4,7 +4,8 @@ const {
   FetchMilestone,
   UpdateMilestone,
   DeleteMilestone,
-  CompleteMilestone
+  CompleteMilestone,
+  ProjMilestones
 } = require('../controllers/progressTrackerController');
 
 const router = express.Router();
@@ -23,5 +24,8 @@ router.post('/deleteMilestone', DeleteMilestone);
 
 // Complete Milestone
 router.post('/completeMilestone', CompleteMilestone);
+
+// Fetch Project Milestone(s) by proj_id
+router.get('/projMilestones', ProjMilestones);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
+const Milestone = require("../models/proj_milestone");
 const Role = require("../models/role");
 const User = require("../models/user");
 const { Op } = require("sequelize");
@@ -115,6 +116,37 @@ exports.getAllProjects = async (req, res) => {
     const projects = await Project.findAll({
       where: { is_active: 'Y' }
     });
+
+    if (projects && projects.length > 0) {
+
+      for (let i = 0; i < projects.length; i++) {
+        let proj_id = projects[i].proj_id;
+
+        const activeMilestoneCount = await Milestone.count({
+          where: {
+            proj_id: proj_id,
+            is_active: 'Y'
+          }
+        });
+
+        const completedMilestoneCount = await Milestone.count({
+          where: {
+            proj_id: proj_id,
+            is_active: 'Y',
+            is_completed: 'Y'
+          }
+        });
+
+        const progress = activeMilestoneCount > 0 
+        ? Math.round(((completedMilestoneCount / activeMilestoneCount) * 100)) : 0;
+
+        if(isNaN(progress)) {
+          progress=0;
+        }
+
+        projects[i].setDataValue('progress', progress);
+      }
+    }
     res.status(200).json({
       projects,
       user: {
@@ -397,6 +429,7 @@ exports.applyProject = async (req, res) => {
  * access_val === 'E' -> User has supervisor role and edit access on the Project
  * access_val === 'A' -> User has access to Apply to the Project
  * access_val === 'B' -> User has access to Edit and Delete access to the Project
+ * access_val === 'M' -> User has access to View the Milestones of the Project
  * access_val === 'I' -> User has no access to any action on the Project
  */
 
@@ -470,9 +503,16 @@ exports.getUserRoleAccess = async (req, res) => {
       });
 
       //Remove projStatus.status === 1
-      if (projStatus.status === 1 || projStatus.status === 3 || projStatus.status === 4 || projStatus === 5) {
-        if (student === 0) {
+      if (student === 0) {
+        if (projStatus.status === 3 || projStatus.status === 4 || projStatus.status === 5) {
           return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
+        } else {
+          return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+        }
+      } else if (student === 1) {
+        if (projStatus.status === 5 || projStatus.status === 6 || projStatus.status === 7 || projStatus.status === 8 ||
+          projStatus.status === 9) {
+          return res.status(200).json({ success: true, message: "Valid User", access_val: 'M' });
         } else {
           return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
         }
