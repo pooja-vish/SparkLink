@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import "./ResetPasswordEmailComponent.css";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const ResetPasswordEmailComponent = () => {
   const [email, setEmail] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const [errorMessage, setErrorMessage] = useState(location.state?.message || "");
 
   const handleEmail = async (e) => {
     e.preventDefault();
