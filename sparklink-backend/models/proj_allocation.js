@@ -2,68 +2,66 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
 /**
- * Composite Primary key (proj_id, project_owner)
+ * Composite Primary key (proj_id, user_id)
  * Foreign key (proj_id)
- * Foreign key (project_owner)
- * Foreign key (student)
- * Foreign key (supervisor)
+ * Foreign key (user_id)
+ * Foreign key (role)
  */
 
 const ProjAllocation = sequelize.define('ProjAllocation', {
     proj_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        references: {
-            model: 't_project',
-            key: 'proj_id',
-        },
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 't_project',
+        key: 'proj_id' 
+      },
+      onUpdate: 'NO ACTION',
+      onDelete: 'NO ACTION',
+      primaryKey: true 
     },
-    project_owner: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 't_usermst',
-            key: 'user_id',
-        },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 't_usermst',
+        key: 'user_id'
+      },
+      onUpdate: 'NO ACTION',
+      onDelete: 'NO ACTION',
+      primaryKey: true
     },
-    supervisor: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 't_usermst',
-            key: 'user_id',
-        },
-    },
-    student: {
-        type: DataTypes.STRING(250),
-        allowNull: true,
-        references: {
-            model: 't_usermst',
-            key: 'user_id',
-        },
+    role: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 't_rolesmst',
+        key: 'id'
+      },
+      onUpdate: 'NO ACTION',
+      onDelete: 'NO ACTION'
     },
     created_by: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
     created_on: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: sequelize.literal('NOW()'),
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.literal('NOW()')
     },
     modified_by: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
     modified_on: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: sequelize.literal('NOW()'),
-    },
-}, {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.literal('NOW()')
+    }
+  }, {
     tableName: 't_proj_allocation',
-    timestamps: false,
-});
+    timestamps: false
+  });
 
-module.exports = ProjAllocation;
+  module.exports = ProjAllocation;
