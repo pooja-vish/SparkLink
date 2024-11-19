@@ -56,11 +56,7 @@ const LoginComponent = () => {
   };
 
   return (
-    <div style={{
-      height: "100vh",
-      background: "linear-gradient(to top, #5f7f9f, #2c3d5c)"
-    }}>
-      <div className="container-fluid login-backend">
+      <div className="container-fluid login-page-container">
         <div className="login-container">
           <div className="message">
             {errorMessage && <div className="error-message">{errorMessage}</div>}
@@ -105,11 +101,13 @@ const LoginComponent = () => {
             </button>
           </form>
           <p className="signup-text">
-            Don't have an account? <a href="/signup">Sign up</a>
+            Don't have an account? <a href="/register">Sign up</a>
+          </p>
+          <p className="forgetpassword-text">
+            Don't have an account? <a href="/reset-password-email ">Forget password</a>
           </p>
         </div>
       </div>
-    </div>
   );
 };
 

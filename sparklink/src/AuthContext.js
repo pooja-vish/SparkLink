@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -8,31 +8,24 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const checkAuthStatus = async () => {
-        // Set loading to true before starting the request
+    const checkAuthStatus = useCallback(async () => {
         setLoading(true);
         try {
             const response = await axios.get('/api/users/auth-status', { withCredentials: true });
-            console.log("Auth Response:", response.data);
-            
             setUser(response.data.user);
             setIsAuthenticated(response.data.isAuthenticated);
         } catch (error) {
             console.error("Error fetching auth status:", error);
-            setUser(null); // Reset user if authentication check fails
+            setUser(null);
             setIsAuthenticated(false);
         } finally {
-            setLoading(false); // Set loading to false regardless of success or failure
+            setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        checkAuthStatus();
     }, []);
 
     useEffect(() => {
-        console.log("Authentication Status Changed:", isAuthenticated);
-    }, [isAuthenticated]);
+        checkAuthStatus();
+    }, [checkAuthStatus]);
 
     return (
         <AuthContext.Provider value={{ 
@@ -40,7 +33,8 @@ export const AuthProvider = ({ children }) => {
             user, 
             setUser, 
             setIsAuthenticated, 
-            loading 
+            loading, 
+            refreshAuth: checkAuthStatus 
         }}>
             {children}
         </AuthContext.Provider>
