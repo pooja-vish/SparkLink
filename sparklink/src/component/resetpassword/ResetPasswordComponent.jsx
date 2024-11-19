@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./ResetPasswordComponent.css";
 
@@ -12,6 +13,7 @@ const ResetPasswordComponent = () => {
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const token = searchParams.get("token");
+  const navigate = useNavigate();
 
   // Verify token on component load
   useEffect(() => {
@@ -19,12 +21,15 @@ const ResetPasswordComponent = () => {
     const verifyToken = async () => {
       try {
         await axios.get(`/api/users/reset-password?token=${token}`);
+
         setTokenValid(true);
       } catch (error) {
         setTokenValid(false);
-        setErrorMessage(
-          error.response?.data?.message || "Token is invalid or expired."
-        );
+        const message = error.response?.data?.message || "Token is invalid or expired.";
+        setErrorMessage(message);
+
+        // Redirect to /reset-password-email with the error message
+        navigate("/reset-password-email", { state: { message } });
       }
     };
 
@@ -92,7 +97,7 @@ const ResetPasswordComponent = () => {
             <div>
               <div className="success-message">{successMessage}</div>
               <p className="forgetpassword-text">
-                Try Login? <a href="/reset-password-email ">Click here</a>
+                Try Login? <a href="/login ">Click here</a>
               </p>
             </div>
           )}
