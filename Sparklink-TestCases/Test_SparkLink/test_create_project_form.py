@@ -9,8 +9,21 @@ class CreateProjectFormTest(BaseCase):
         self.click(".navBackground.collapse.show")#open up the navigation bar
         self.sleep(3)
         if self.is_element_visible('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[1]'): #checks if the element we want to click is present
+
             print("element is visible") # gives the confirmation message
             self.click_xpath('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[1]') #clicks the button then it navigates to the form page
+            self.sleep(3)
+
+            # The project bavggates to the login page cause the user must be registered to create a project
+
+            #input the username
+            self.send_keys("#root > div > div > div > form > div:nth-child(1) > input","michael@uwindsor.ca")
+            self.sleep(3)
+            #input the password
+            self.send_keys("#root > div > div > div > form > div:nth-child(2) > input","testing01")
+            self.sleep(3)
+            #click the login button
+            self.click("#root > div > div > div > form > button")
             self.sleep(3)
 
             self.send_keys('[name="project_name"]', "Web Design")
@@ -19,23 +32,23 @@ class CreateProjectFormTest(BaseCase):
             E_Commerce='[value="E-Commerce"]'
             SocialMedia='[value="Social Media"]'
             internal_tool='[value="Internal Tool"]'
-            #Other="#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(4) > div:nth-child(4) > input[type=checkbox]"
+            Other="#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(4) > div:nth-child(4) > input[type=checkbox]"
             Website ='[value="Website"]'
             AndroidApp ='[value="Android App"]'
             IOSApp ='[value="IOS App"]'
             WindowsSoftware ='[value="Windows Software"]'
-            #Other2 ="#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(6) > div:nth-child(5) > input[type=checkbox]"
+            Other2 ="#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(6) > div:nth-child(5) > input[type=checkbox]"
 
-            first_selection=[E_Commerce,SocialMedia,internal_tool]
-            second_selection=[Website,AndroidApp,IOSApp,WindowsSoftware]
+            first_selection=[E_Commerce,SocialMedia,internal_tool,Other]
+            second_selection=[Website,AndroidApp,IOSApp,WindowsSoftware,Other2]
             first_choice=random.sample(first_selection,2)
             self.sleep(3)
             for choice in first_choice:
                 self.click(choice)  # Click each randomly selected checkbox
                 self.sleep(1)  # Optional: pause between clicks if needed
 
-                # if choice == Other:
-                #     self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(4) > input[type=text]", "Testing if the other section works")
+                if choice == Other:
+                    self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(4) > input[type=text]", "Testing if the other section works")
 
             #self.click(Other)#this is for the option button when it if functional
 
@@ -45,21 +58,21 @@ class CreateProjectFormTest(BaseCase):
                 self.click(choice)
                 self.sleep(1)
 
-                # if choice == Other2:
-                #     self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(6) > input[type=text]", "Testing if the other section works")
+                if choice == Other2:
+                    self.send_keys("#root > div > div.row > div.col-11 > div > div.createproject_layout > div > form > div:nth-child(6) > input[type=text]", "Testing if the other section works")
 
 
             self.send_keys('[name="project_budget"]', "$50,000")
             self.sleep(2)
 
-            self.send_keys('[name="project_audience"]', "The Students, The Teachers")
+            self.send_keys('[name="project_Description"]', "The Students, The Teachers")
             self.sleep(2)
 
             # raise this the selector is same as the project timeline selector
-            self.send_keys('[name="features"]', "Jut WOW me please")
+            self.send_keys('[class="form_textarea"]', "Jut WOW me please")
             self.sleep(2)
 
-            self.send_keys('[name="project_deadline"]', "002026-10-10")
+            self.send_keys('[name="project_deadline"]', "002025-10-10")
             self.sleep(3)
 
             # This field is to upload file
@@ -70,6 +83,8 @@ class CreateProjectFormTest(BaseCase):
 
             self.click(".submit.button-home")
             self.sleep(10)
+
+            #self.assert_text()
 
         else:
             print("element is not visible")
