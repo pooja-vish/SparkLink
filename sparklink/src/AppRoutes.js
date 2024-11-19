@@ -10,6 +10,9 @@ import LoginComponent from "./component/login/LoginComponent";
 import ProtectedRoute from "./component/ProtectedRoute";
 import ProjApplicationComponent from "./component/project-applications/projApplicationComponent";
 import ViewProjectComponent from "./component/viewproject/ViewProjectComponent";
+import ViewUserComponent from "./component/admin/viewUsers";
+
+
 
 const AppRoutes = () => {
     let routes = useRoutes([
@@ -18,7 +21,7 @@ const AppRoutes = () => {
         { path: "/contact", element: <ContactComponent /> },
         { path: "/register", element: <RegisterComponent /> },
         { path: "/login", element: <LoginComponent /> },
-
+        { path:"/admin/viewusers", element: <ViewUserComponent/>},
         // Protected parent route
         {
             path: "/", // Protected routes parent path
