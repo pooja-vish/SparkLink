@@ -1,20 +1,35 @@
 /* Centering and styling the main login container */
 
-body {
-  margin: 0;
-  height: 100vh; /* Ensure the body takes full height */
-  background-color: linear-gradient(to top, #5f7f9f, #2c3d5c) !important;; /* Set your desired background color */
-}
+/* .login-backend { */
+  /* margin: 0; */
+  /* height: 100vh;  */
+  /* background-color: "linear-gradient(to top, #5f7f9f, #2c3d5c)" !important; */
+  /* background-color: #f8f9fa; */
+/* } */
 
+
+.login-page-container {
+  height: 100vh;
+  background: linear-gradient(to top, #5f7f9f, #2c3d5c);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .login-container {
   max-width: 400px;
-  margin: auto;
   padding: 2rem;
+  margin:auto;
   background-color: #f8f9fa;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* .custom-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
 
 /* Styling the title */
 .title {
@@ -73,8 +88,9 @@ body {
 }
 
 /* Signup text */
-.signup-text {
+.signup-text, .forgetpassword-text {
   text-align: center;
   margin-top: 1rem;
   font-size: 0.9rem;
 }
+
