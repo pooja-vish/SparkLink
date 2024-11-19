@@ -1,5 +1,5 @@
 const express = require('express');
-const { register, login, confirmEmail, logout, checkSession, authStatus, forgotPassword, resetPassword} = require('../controllers/userController');
+const { register, login, confirmEmail, logout, checkSession, authStatus, forgotPassword, resetPassword, getallusers} = require('../controllers/userController');
 const router = express.Router();
 
 // POST route for user registration
@@ -11,7 +11,7 @@ router.post('/login', login);
 router.post('/logout', logout);
 router.get('/auth-status',authStatus);
 router.post('/forgot-password', forgotPassword);
-
+router.get('/allusers',getallusers);
 
 router.post('/reset-password', resetPassword);
 
