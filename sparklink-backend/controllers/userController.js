@@ -134,6 +134,7 @@ exports.login = (req, res, next) => {
           email: user.email,
           role: user.role,
           isAuthenticated: true,
+          user_id:user.user_id,
         },
         // Adjust this to the desired path
       });
@@ -256,5 +257,15 @@ exports.resetPassword = async(req, res)=>{
   }
 
 };
+
+exports.getallusers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    return res.status(200).json(users);
+  } catch (error) { 
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 
 
