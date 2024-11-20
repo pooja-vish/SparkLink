@@ -345,6 +345,7 @@ const ViewProjectComponent = () => {
             const response = await axios.post('/project/getUserRoleAccess', {
                 proj_id: projDetailsList.proj_id
             });
+            console.log("VIEW PROJ ROLE>>>", response.data.access_val);
             if(response.status === 200) {
                 setTriggerDetails(true);
             }

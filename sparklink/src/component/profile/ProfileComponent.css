@@ -112,11 +112,11 @@ body{
 .text-center {
     text-align: center!important;
 }
-img {
+/* img {
     max-width: 100%;
     height: auto;
     padding-left: 10px;
-}
+} */
 
 
 .list-style9 {

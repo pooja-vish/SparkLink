@@ -84,7 +84,7 @@ exports.createProject = async (req, res) => {
     const projAllocationData = {
       proj_id: project.proj_id,
       user_id: user.user_id,
-      role: 1,
+      role: 2,
       created_by: user.user_id,
       modified_by: user.user_id,
     };
