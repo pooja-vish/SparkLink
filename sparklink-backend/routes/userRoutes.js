@@ -11,7 +11,7 @@ router.get("/confirm-email", confirmEmail);
 // POST route for user login
 router.post('/login', login);
 router.post('/logout', logout);
-router.get('/auth-status',authStatus);
+router.get('/auth-status',checkSession);
 router.post('/forgot-password', forgotPassword);
 router.get('/allusers',getallusers);
 
