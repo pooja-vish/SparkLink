@@ -24,13 +24,13 @@ class TestCheckProject(BaseCase):
         self.click_xpath('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[2]')
         self.sleep(3)
 
-        self.send_keys("#root > div > div > div > form > div:nth-child(1) > input", "michael@uwindsor.ca")
+        self.send_keys('[placeholder="Email"]', "michael@uwindsor.ca")
         self.sleep(3)
         # input the password
-        self.send_keys("#root > div > div > div > form > div:nth-child(2) > input", "testing01")
+        self.send_keys('[placeholder="Password"]', "testing01")
         self.sleep(3)
         # click the login button
-        self.click("#root > div > div > div > form > button")
+        self.click('[type="submit"]')
         self.sleep(3)
 
         #Initialize project index
