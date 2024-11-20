@@ -8,6 +8,7 @@ const sequelize = require('../config/db');
 
 // Create a new project
 exports.createProject = async (req, res) => {
+  const t = await sequelize.transaction(); // Start a transaction
   try {
     console.log("Request received");
     const today = new Date().toISOString().split("T")[0];
@@ -23,8 +24,6 @@ exports.createProject = async (req, res) => {
       image_url, // Add image_url field
     } = req.body;
 
-
-
     // Validate required fields
     if (
       !project_name ||
@@ -37,24 +36,18 @@ exports.createProject = async (req, res) => {
     ) {
       return res.status(400).json({
         message:
-          "Please provide all required fields: project name, purpose, product,descriptio, budget and deadline",
+          "Please provide all required fields: project name, purpose, product, description, budget, and deadline",
       });
     }
 
-    //Validations
-    // //if image_url is empty
-    // if (image_url === "") {
-    //   image_url = "defaultImage";
-    // }
-    // console.log("image url : " + image_url);
+    // Validations
     if (project_name.length > 150) {
       console.log("project_name length : " + project_name.length);
       return res
         .status(500)
-        .json({ message: "Project name should be less than 10 characters" });
+        .json({ message: "Project name should be less than 150 characters" });
     }
     if (project_budget < 0) {
-      console.log("project_name length : " + project_name.length);
       return res
         .status(500)
         .json({
@@ -63,7 +56,6 @@ exports.createProject = async (req, res) => {
     }
 
     if (project_deadline < today) {
-      console.log("project_name length : " + project_deadline);
       return res
         .status(500)
         .json({ message: "The project deadline must be a future date." });
@@ -87,20 +79,28 @@ exports.createProject = async (req, res) => {
     };
 
     // Create the project in the database
-    const project = await Project.create(projectData);
+    const project = await Project.create(projectData, { transaction: t });
 
     const projAllocationData = {
       proj_id: project.proj_id,
-      project_owner: user.user_id,
+      user_id: user.user_id,
+      role: user.role,
       created_by: user.user_id,
-      modified_by: user.user_id
-    }
+      modified_by: user.user_id,
+    };
 
-    const allocation = await ProjAllocation.create(projAllocationData);
+    // Create the project allocation record in the database
+    const allocation = await ProjAllocation.create(projAllocationData, { transaction: t });
+
+    // Commit the transaction
+    await t.commit();
 
     // Respond with success message and the created project data
     res.status(201).json({ message: "Project created successfully", project, allocation });
   } catch (error) {
+    // If any error occurs, roll back the transaction
+    await t.rollback();
+
     // Log error and respond with error message
     console.error(error);
     res
@@ -108,7 +108,6 @@ exports.createProject = async (req, res) => {
       .json({ message: "Error creating project", error: error.message });
   }
 };
-
 // Get all projects
 exports.getAllProjects = async (req, res) => {
   try {

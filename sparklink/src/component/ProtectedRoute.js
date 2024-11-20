@@ -7,8 +7,19 @@ const ProtectedRoute = ({ redirectPath = '/login' }) => {
     const location = useLocation();
 
     // While checking authentication, show a loading indicator
+
+    console.log("ProtectedRoute called.. loading - ",loading," isAuthenticated- ",isAuthenticated);
+    
     if (loading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="loading-overlay d-flex justify-content-center align-items-center">
+              <div className="text-center">
+                <div className="spinner-border text-light" style={{ width: "5rem", height: "5rem" }} role="status">
+                </div>
+                <div className="text-light mt-2">Loading</div>
+              </div>
+            </div>
+          );
     }
 
     // Redirect to login if not authenticated
