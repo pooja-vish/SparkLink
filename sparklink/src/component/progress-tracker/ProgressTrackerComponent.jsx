@@ -651,11 +651,11 @@ const ProgressTrackerComponent = () => {
                                                 </Modal>
 
                                                 <div className="button_container text-center">
-                                                    <button className="text-center button_text button-home"
-                                                        onClick={handleAddMilestone}>Add More</button>
+                                                    {(accessVal === 'S' || accessVal === 'SU' || accessVal === 'ST') && <button className="text-center button_text button-home"
+                                                        onClick={handleAddMilestone}>Add More</button>}
 
-                                                    <button className="ms-3 text-center button_text button-home"
-                                                        onClick={saveMilestone}>Submit</button>
+                                                    {(accessVal === 'S' || accessVal === 'SU' || accessVal === 'ST') && <button className="ms-3 text-center button_text button-home"
+                                                        onClick={saveMilestone}>Submit</button>}
                                                 </div>
                                                 <div className="message">
                                                     {errorMessage && (
