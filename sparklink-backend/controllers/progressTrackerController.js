@@ -1,5 +1,6 @@
 const Milestone = require('../models/proj_milestone');
 const MilestoneCounter = require('../models/milestone_counter');
+const ProjectAllocation = require('../models/proj_allocation');
 
 exports.createMilestone = async (req, res) => {
     try {
@@ -118,7 +119,7 @@ exports.DeleteMilestone = async (req, res) => {
 
 exports.CompleteMilestone = async (req, res) => {
     try {
-        const {milestoneList} = req.body;
+        const { milestoneList } = req.body;
 
         const completeData = await Milestone.update({
             is_completed: 'Y'
@@ -131,5 +132,108 @@ exports.CompleteMilestone = async (req, res) => {
         res
             .status(500)
             .json({ message: "Error deleting milestone", error: error.message });
+    }
+}
+
+exports.ProjMilestones = async (req, res) => {
+    try {
+        const { proj_id } = req.query;
+
+        const projMilestoneData = await Milestone.findAll({
+            where: {
+                proj_id: proj_id
+            }
+        });
+
+        return res.status(200).json({ message: 'Project Milestone(s) fetched successfully', projMilestoneData });
+    } catch (error) {
+        console.log("View Milestones>>>>>", error);
+        return res.status(500).json({ message: 'Error fetching Project Milestone(s)', error: error.message });
+    }
+}
+
+/**
+ * access_val === 'S' -> User has Admin role and has access to Manage milestone(s)
+ * access_val === 'SU' -> User is has supervisor role and has access to Manage milestone(s)
+ * access_val === 'ST' -> User is has student role and has access to Create milestone(s) 
+ * access_val === 'I' -> User is invalid
+ */
+exports.getUserRoleAccess = async (req, res) => {
+    try {
+        const { proj_id } = req.query;
+
+        const user = req.user;
+        const user_id = user.user_id;
+        const role = Number(user.role);
+
+        if (role === 1) {
+            return res.status(200).json({ success: true, message: "Valid User", access_val: 'S' });
+        } if (role === 3) {
+            const supervisor_exists = await ProjectAllocation.count({
+                where: {
+                    proj_id: proj_id,
+                    user_id: user_id,
+                    role: role
+                }
+            });
+
+            if (supervisor_exists === 1) {
+                return res.status(200).json({ success: true, message: "Valid User", access_val: 'SU' });
+            } else {
+                return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+            }
+        } else if (role === 4) {
+            const student = await ProjectAllocation.count({
+                where: {
+                    proj_id: proj_id,
+                    user_id: user_id,
+                    role: role
+                }
+            });
+
+            if (student === 1) {
+                return res.status(200).json({ success: true, message: "Valid User", access_val: 'ST' });
+            } else {
+                return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+            }
+        } else {
+            return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching user role access', error: error.message });
+    }
+}
+
+exports.ProjectProgress = async (req, res) => {
+    try {
+        const { proj_id } = req.query;
+
+        const activeMilestoneCount = await Milestone.count({
+            where: {
+                proj_id: proj_id,
+                is_active: 'Y'
+            }
+        });
+
+        const completedMilestoneCount = await Milestone.count({
+            where: {
+                proj_id: proj_id,
+                is_active: 'Y',
+                is_completed: 'Y'
+            }
+        });
+
+        const progress = Math.round(((completedMilestoneCount / activeMilestoneCount) * 100));
+
+        console.log(Number(progress));
+
+        const projProgressData = {
+            proj_id: proj_id,
+            progress: Number(progress)
+        }
+
+        return res.status(200).json({ message: "Project Milestone Progress fetched successfully", projProgressData });
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching milestone progress", error: error.message });
     }
 }

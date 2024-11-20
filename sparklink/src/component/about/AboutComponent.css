@@ -1,0 +1,59 @@
+/* General container styling to add spacing from the side navbar */
+.container {
+    margin-left: 250px; /* Adjust this value based on your navbar width */
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Styling for the cards */
+  /* General card styling */
+  .card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 320px; /* Increase width */
+    height: 460px; /* Increase height */
+    display: flex;
+    flex-direction: column; /* Ensure vertical alignment */
+    justify-content: space-between; /* Space out content */
+    background-color: #fff; /* Keep the background as is */
+  }
+  
+  /* Styling for the images */
+  .card img {
+    width: 150px; /* Increase image width */
+    height: 150px; /* Increase image height */
+    border-radius: 0; /* Keep circular image */
+    margin: 0 auto; /* Center the image */
+    object-fit: cover;
+  }
+  
+  .card input[type="file"] {
+    margin-top: 10px;
+  }
+  
+  /* Flexbox styling for the team section */
+  .team-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Adds space between the cards */
+    justify-content: space-evenly; /* Even spacing between rows */
+  }
+  
+  /* Styling for the overall page layout */
+  h1, h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  p {
+    line-height: 1.5;
+    color: #555;
+  }
+
+  
+
+  
+  

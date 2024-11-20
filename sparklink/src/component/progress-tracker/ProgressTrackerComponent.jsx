@@ -10,8 +10,11 @@ import Table from 'react-bootstrap/Table';
 import edit_icon from '../../assets/edit_icon.png';
 import cancel_icon from '../../assets/cancel_icon.png';
 import complete_icon from '../../assets/complete_icon.png';
+import { useLocation } from 'react-router-dom';
 
 const ProgressTrackerComponent = () => {
+    const location = useLocation();
+    const { projId } = location.state || {};
     const [projectList, setProjectList] = useState([]);
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -32,6 +35,28 @@ const ProgressTrackerComponent = () => {
     const [editFlag, setEditFlag] = useState(false);
     const [isMobileView, setIsMobileView] = useState(false);
     const currentDate = new Date();
+
+    useEffect(() => {
+        if (projId) {
+            ProjMilestones();
+        }
+    }, [projId]);
+
+    const ProjMilestones = async () => {
+        console.log(projId);
+        setLoading(true);
+        try {
+            const response = await axios.get("/progressTracker/projMilestones", {
+                params: { proj_id: projId }
+            });
+
+            console.log("View Milestone(s)>>>>>", response.data);
+        } catch (error) {
+            //setError(error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     useEffect(() => {
         const handleResize = () => {
