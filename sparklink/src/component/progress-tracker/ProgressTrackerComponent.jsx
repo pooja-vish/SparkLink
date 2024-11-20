@@ -34,10 +34,12 @@ const ProgressTrackerComponent = () => {
     const [triggerModalFlag, setTriggerModalFlag] = useState(false);
     const [editFlag, setEditFlag] = useState(false);
     const [isMobileView, setIsMobileView] = useState(false);
+    const [accessVal, setAccessVal] = useState('');
     const currentDate = new Date();
 
     useEffect(() => {
         if (projId) {
+            getUserRoleAccess(projId);
             ProjMilestones();
         }
     }, [projId]);
@@ -50,13 +52,34 @@ const ProgressTrackerComponent = () => {
                 params: { proj_id: projId }
             });
 
-            console.log("View Milestone(s)>>>>>", response.data);
+            if (response.data.projMilestoneData.length > 0) {
+                setMilestoneData(response.data.projMilestoneData);
+                setProjectList([]);
+                projectList.push(response.data.projData);
+                const optionSelect = {
+                    label: response.data.projData.project_name,
+                    value: response.data.projData.project_name
+                }
+                handleSelectChange(optionSelect);
+            } else {
+                projectList.push(response.data.projData);
+                const optionSelect = {
+                    label: response.data.projData.project_name,
+                    value: response.data.projData.project_name
+                }
+                handleSelectChange(optionSelect);
+                setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+            }
         } catch (error) {
             //setError(error);
         } finally {
             setLoading(false);
         }
     }
+
+    useEffect(() => {
+        console.log("SETMILESTONE DATA>>>>>", filteredProjList);
+    }, [milestoneData, filteredProjList]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -122,7 +145,6 @@ const ProgressTrackerComponent = () => {
     };
 
     const handleSelectChange = (selectedOption) => {
-
         setSelectedOption(selectedOption);
 
         if (selectedOption) {
@@ -134,6 +156,8 @@ const ProgressTrackerComponent = () => {
 
             //setMilestoneList([{ proj_id: '', milestone_desc: '' }]);
             setFilteredProjList(filteredProjects);
+            console.log("hmm>>>>>>>>>", filteredProjects[0].proj_id);
+            getUserRoleAccess(filteredProjects[0].proj_id);
             setProj_id(filteredProjects[0].proj_id);
             setMilestoneData([]);
             setFetchFlag(true);
@@ -267,7 +291,7 @@ const ProgressTrackerComponent = () => {
             const response = await axios.post('/progressTracker/deleteMilestone', {
                 milestoneList: detailsList
             });
-            console.log("DELETE DATA> ", response.data);
+            
             if (response.status === 200) {
                 fetchMilestone();
                 closeModal();
@@ -295,6 +319,22 @@ const ProgressTrackerComponent = () => {
             setError(err.message);
         } finally {
             setMilestoneList([]);
+            setLoading(false);
+        }
+    }
+
+    const getUserRoleAccess = async (proj_id) => {
+        setLoading(true);
+        console.log("getUserRoleAccess>>>", proj_id);
+        try {
+            const response = await axios.post('/progressTracker/getUserRoleAccess', {
+                proj_id: proj_id
+            });
+            console.log("ACCESS>>>", response.data.accessVal);
+            setAccessVal(response.data.access_val);
+        } catch (error) {
+            setError(error.message);
+        } finally {
             setLoading(false);
         }
     }
@@ -328,9 +368,6 @@ const ProgressTrackerComponent = () => {
                                         />
                                     </div>
                                     {filteredProjList.length > 0 && (<div className="createproject_layout">
-                                        {/* Card start */}
-
-                                        {/* Card end */}
 
                                         <div className="milestone_form">
                                             <form>
@@ -444,8 +481,8 @@ const ProgressTrackerComponent = () => {
                                                                             <th>Title</th>
                                                                             <th>Description</th>
                                                                             <th>End Date</th>
-                                                                            {!editFlag && (<th>Edit</th>)}
-                                                                            {editFlag && (<th>Cancel</th>)}
+                                                                            {(accessVal === 'S' || accessVal === 'SU') && !editFlag && (<th>Edit</th>)}
+                                                                            {(accessVal === 'S' || accessVal === 'SU') && editFlag && (<th>Cancel</th>)}
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -454,7 +491,7 @@ const ProgressTrackerComponent = () => {
                                                                                 <td className='text-center'>{detailsList.milestone_title}</td>
                                                                                 <td className='text-center'>{detailsList.milestone_desc}</td>
                                                                                 <td className='text-center'>{detailsList.end_date}</td>
-                                                                                <td className='text-center'><img
+                                                                                {(accessVal === 'S' || accessVal === 'SU') && (<td className='text-center'><img
                                                                                     src={edit_icon}
                                                                                     className='edit_icon'
                                                                                     title='Click to edit milestone'
@@ -468,7 +505,7 @@ const ProgressTrackerComponent = () => {
                                                                                         title='Mark Milestone Met'
                                                                                         onClick={completeMilestone}
                                                                                         alt=''
-                                                                                    />)}</td>
+                                                                                    />)}</td>)}
                                                                             </>)}
                                                                             {editFlag && (<>
                                                                                 <td>
@@ -505,13 +542,13 @@ const ProgressTrackerComponent = () => {
                                                                                         required
                                                                                     />
                                                                                 </td>
-                                                                                <td className='text-center'><img
+                                                                                {(accessVal === 'S' || accessVal === 'SU') && <td className='text-center'><img
                                                                                     src={cancel_icon}
                                                                                     className='cancel_icon'
                                                                                     title='Click to cancel'
                                                                                     onClick={() => triggerUpdate('C')}
                                                                                     alt=''
-                                                                                /></td>
+                                                                                /></td>}
                                                                             </>)}
                                                                         </tr>
                                                                     </tbody>
@@ -569,9 +606,9 @@ const ProgressTrackerComponent = () => {
                                                                         </tr>
 
                                                                         <tr>
-                                                                            {!editFlag && (<td>Edit</td>)}
-                                                                            {editFlag && (<td>Cancel</td>)}
-                                                                            {!editFlag && (<td><img
+                                                                            {(accessVal === 'S' || accessVal === 'SU') && !editFlag && (<td>Edit</td>)}
+                                                                            {(accessVal === 'S' || accessVal === 'SU') && editFlag && (<td>Cancel</td>)}
+                                                                            {(accessVal === 'S' || accessVal === 'SU') && !editFlag && (<td><img
                                                                                 src={edit_icon}
                                                                                 className='edit_icon'
                                                                                 title='Click to edit milestone'
@@ -586,7 +623,7 @@ const ProgressTrackerComponent = () => {
                                                                                     onClick={completeMilestone}
                                                                                     alt=''
                                                                                 />)}</td>)}
-                                                                            {editFlag && (<td><img
+                                                                            {(accessVal === 'S' || accessVal === 'SU') && editFlag && (<td><img
                                                                                 src={cancel_icon}
                                                                                 className='cancel_icon'
                                                                                 title='Click to cancel'
@@ -604,10 +641,10 @@ const ProgressTrackerComponent = () => {
                                                             <div className="col-12 text-center">
                                                                 <button className="text-center button_text button-home"
                                                                     onClick={closeModal}>Close</button>
-                                                                <button className="ms-3 text-center button_text button-home"
-                                                                    onClick={updateMilestoneData}>Save Changes</button>
-                                                                <button className="ms-3 text-center button_text button-delete"
-                                                                    onClick={removeMilestone}>Delete Milestone</button>
+                                                                {(accessVal === 'S' || accessVal === 'SU') && <button className="ms-3 text-center button_text button-home"
+                                                                    onClick={updateMilestoneData}>Save Changes</button>}
+                                                                {(accessVal === 'S' || accessVal === 'SU') && <button className="ms-3 text-center button_text button-delete"
+                                                                    onClick={removeMilestone}>Delete Milestone</button>}
                                                             </div>
                                                         </div>
                                                     </Modal.Footer>
