@@ -2,13 +2,13 @@ const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../config/db');
 
-const SupervisorProfile = sequelize.define('SupervisorProfile', {
+const Supervisor_Profile = sequelize.define('Supervisor_Profile', {
     user_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
       references: {
-        model: 't_usermst', // Assuming 'UserMst' is the model for 't_usermst'
+        model: 't_usermst',
         key: 'user_id'
       }
     },
@@ -29,11 +29,26 @@ const SupervisorProfile = sequelize.define('SupervisorProfile', {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false   
-  
-    }
+      },
+      bio: {
+        type: DataTypes.STRING(500),
+        allowNull: true,
+      },
+      expertise: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
+      },
+      education: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
+      },
+      experience: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
+      },
   }, {
     tableName: 't_supervisor_profile',
-    timestamps: true,
+    timestamps: false,
   });
   
-module.exports = SupervisorProfile;
+module.exports = Supervisor_Profile;
