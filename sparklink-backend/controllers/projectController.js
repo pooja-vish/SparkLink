@@ -1,5 +1,6 @@
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
+const Milestone = require("../models/proj_milestone");
 const Role = require("../models/role");
 const User = require("../models/user");
 const { Op } = require("sequelize");
@@ -7,6 +8,7 @@ const sequelize = require('../config/db');
 
 // Create a new project
 exports.createProject = async (req, res) => {
+  const t = await sequelize.transaction(); // Start a transaction
   try {
     console.log("Request received");
     const today = new Date().toISOString().split("T")[0];
@@ -22,8 +24,6 @@ exports.createProject = async (req, res) => {
       image_url, // Add image_url field
     } = req.body;
 
-
-
     // Validate required fields
     if (
       !project_name ||
@@ -36,24 +36,18 @@ exports.createProject = async (req, res) => {
     ) {
       return res.status(400).json({
         message:
-          "Please provide all required fields: project name, purpose, product,descriptio, budget and deadline",
+          "Please provide all required fields: project name, purpose, product, description, budget, and deadline",
       });
     }
 
-    //Validations
-    // //if image_url is empty
-    // if (image_url === "") {
-    //   image_url = "defaultImage";
-    // }
-    // console.log("image url : " + image_url);
+    // Validations
     if (project_name.length > 150) {
       console.log("project_name length : " + project_name.length);
       return res
         .status(500)
-        .json({ message: "Project name should be less than 10 characters" });
+        .json({ message: "Project name should be less than 150 characters" });
     }
     if (project_budget < 0) {
-      console.log("project_name length : " + project_name.length);
       return res
         .status(500)
         .json({
@@ -62,7 +56,6 @@ exports.createProject = async (req, res) => {
     }
 
     if (project_deadline < today) {
-      console.log("project_name length : " + project_deadline);
       return res
         .status(500)
         .json({ message: "The project deadline must be a future date." });
@@ -86,20 +79,28 @@ exports.createProject = async (req, res) => {
     };
 
     // Create the project in the database
-    const project = await Project.create(projectData);
+    const project = await Project.create(projectData, { transaction: t });
 
     const projAllocationData = {
       proj_id: project.proj_id,
-      project_owner: user.user_id,
+      user_id: user.user_id,
+      role: user.role,
       created_by: user.user_id,
-      modified_by: user.user_id
-    }
+      modified_by: user.user_id,
+    };
 
-    const allocation = await ProjAllocation.create(projAllocationData);
+    // Create the project allocation record in the database
+    const allocation = await ProjAllocation.create(projAllocationData, { transaction: t });
+
+    // Commit the transaction
+    await t.commit();
 
     // Respond with success message and the created project data
     res.status(201).json({ message: "Project created successfully", project, allocation });
   } catch (error) {
+    // If any error occurs, roll back the transaction
+    await t.rollback();
+
     // Log error and respond with error message
     console.error(error);
     res
@@ -107,7 +108,6 @@ exports.createProject = async (req, res) => {
       .json({ message: "Error creating project", error: error.message });
   }
 };
-
 // Get all projects
 exports.getAllProjects = async (req, res) => {
   try {
@@ -115,6 +115,37 @@ exports.getAllProjects = async (req, res) => {
     const projects = await Project.findAll({
       where: { is_active: 'Y' }
     });
+
+    if (projects && projects.length > 0) {
+
+      for (let i = 0; i < projects.length; i++) {
+        let proj_id = projects[i].proj_id;
+
+        const activeMilestoneCount = await Milestone.count({
+          where: {
+            proj_id: proj_id,
+            is_active: 'Y'
+          }
+        });
+
+        const completedMilestoneCount = await Milestone.count({
+          where: {
+            proj_id: proj_id,
+            is_active: 'Y',
+            is_completed: 'Y'
+          }
+        });
+
+        const progress = activeMilestoneCount > 0 
+        ? Math.round(((completedMilestoneCount / activeMilestoneCount) * 100)) : 0;
+
+        if(isNaN(progress)) {
+          progress=0;
+        }
+
+        projects[i].setDataValue('progress', progress);
+      }
+    }
     res.status(200).json({
       projects,
       user: {
@@ -397,6 +428,7 @@ exports.applyProject = async (req, res) => {
  * access_val === 'E' -> User has supervisor role and edit access on the Project
  * access_val === 'A' -> User has access to Apply to the Project
  * access_val === 'B' -> User has access to Edit and Delete access to the Project
+ * access_val === 'M' -> User has access to View the Milestones of the Project
  * access_val === 'I' -> User has no access to any action on the Project
  */
 
@@ -470,9 +502,16 @@ exports.getUserRoleAccess = async (req, res) => {
       });
 
       //Remove projStatus.status === 1
-      if (projStatus.status === 1 || projStatus.status === 3 || projStatus.status === 4 || projStatus === 5) {
-        if (student === 0) {
+      if (student === 0) {
+        if (projStatus.status === 3 || projStatus.status === 4 || projStatus.status === 5) {
           return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
+        } else {
+          return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+        }
+      } else if (student === 1) {
+        if (projStatus.status === 5 || projStatus.status === 6 || projStatus.status === 7 || projStatus.status === 8 ||
+          projStatus.status === 9) {
+          return res.status(200).json({ success: true, message: "Valid User", access_val: 'M' });
         } else {
           return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
         }
