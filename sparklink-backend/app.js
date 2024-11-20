@@ -29,6 +29,12 @@ const corsOptions = {
   origin: 'http://localhost:3100', // Specify the frontend origin
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
+
+app.use(cors({
+  origin: 'http://10.0.2.2:5100', // Replace with your Flutter app's URL
+  credentials: true, // Allow cookies to be sent
+}));
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,7 +45,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // Set `secure: true` if using HTTPS in production
+  cookie: { secure: false , sameSite: 'None'} // Set `secure: true` if using HTTPS in production
 }));
 
 // Passport middleware
