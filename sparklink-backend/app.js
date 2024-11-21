@@ -28,25 +28,26 @@ const app = express();
 
 
 const allowedOrigins = [
-  'http://localhost:3100/', // React frontend
-  'http://10.0.2.2:5100', // Flutter app in emulator
-  'http://localhost:5100/', // Replace with your production frontend domain
+  'http://localhost:3100', // React frontend
+  'http://10.0.2.2:5100', // Flutter emulator
+  'http://localhost:5100/',
 ];
-// Middleware
+
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log('Incoming origin:', origin); // Debugging
+    console.log('Incoming Origin:', origin);
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
+      callback(null, true); // Allow
     } else {
-      console.error('Blocked by CORS:', origin); // Debugging
+      console.error('Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true,
+  credentials: true, // Allow cookies or authentication headers
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -56,7 +57,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false , sameSite: 'None'} // Set `secure: true` if using HTTPS in production
+  cookie: { secure: false , sameSite: 'Lax'} // Set `secure: true` if using HTTPS in production
 }));
 
 // Passport middleware
