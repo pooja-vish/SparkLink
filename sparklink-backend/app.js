@@ -24,16 +24,26 @@ const progressTrackerRouter = require('./routes/progressTrackerRoutes');
 
 const app = express();
 
+
+
+const allowedOrigins = [
+  'http://localhost:3100/', // React frontend
+  'http://10.0.2.2:5100', // Flutter app in emulator
+  'http://localhost:5100/', // Replace with your production frontend domain
+];
 // Middleware
 const corsOptions = {
-  origin: 'http://localhost:3100', // Specify the frontend origin
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  origin: (origin, callback) => {
+    console.log('Incoming origin:', origin); // Debugging
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.error('Blocked by CORS:', origin); // Debugging
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 };
-
-app.use(cors({
-  origin: 'http://10.0.2.2:5100', // Replace with your Flutter app's URL
-  credentials: true, // Allow cookies to be sent
-}));
 
 app.use(cors(corsOptions));
 app.use(express.json());
