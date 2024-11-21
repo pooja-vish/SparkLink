@@ -16,12 +16,13 @@ const ProfileComponent = () => {
     const [error, setError] = useState(null);
 
     const fetchProfile = async () => {
-        console.log('user = ', user, user.user_id);
+        // console.log('user = ', user);
+        // console.log('user id = ', user.user_id);
+        const user_id  = user.user_id;
         if (user) {
             try {
-                const response = await axios.get("/profile", {
-                    params: { user_id: user.user_id }
-                });
+                const response = await axios.get("/profile");
+                // const response = await axios.get("/profile");
                 console.log('profile data = ', response.data);
                 setRole(response.data.role);
                 setProfile(response.data.profile);
@@ -60,7 +61,7 @@ const ProfileComponent = () => {
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
                                 <div className="team-single-img">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
+                                    <img className = "image" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
                                     {/* <img src="/m3.jpg"></img> */}
                                 </div>
                                 <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
@@ -163,7 +164,7 @@ const ProfileComponent = () => {
                                                 {projects.map((project, index) => (
                                                     <div className="progress-card" key={index}>
                                                         <div className="progress-image">
-                                                            <img src="/img2.jpg" alt="project" />
+                                                            <img className = " image" src="/img2.jpg" alt="project" />
                                                         </div>
                                                         <div className="progress-content">
                                                             <span className="progress-category">{project.category}</span>
@@ -198,7 +199,7 @@ const ProfileComponent = () => {
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
                                 <div className="team-single-img">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
+                                    <img className = "image" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
                                     {/* <img src="/m3.jpg"></img> */}
                                 </div>
                                 <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
@@ -301,7 +302,7 @@ const ProfileComponent = () => {
                                                 {projects.map((project, index) => (
                                                     <div className="progress-card" key={index}>
                                                         <div className="progress-image">
-                                                            <img src="/img2.jpg" alt="project" />
+                                                            <img className = "image" src="/img2.jpg" alt="project" />
                                                         </div>
                                                         <div className="progress-content">
                                                             <span className="progress-category">{project.category}</span>
@@ -336,7 +337,7 @@ const ProfileComponent = () => {
                         <div className="row">
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
                                 <div className="team-single-img">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
+                                    <img className = "image" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
                                     {/* <img src="/m3.jpg"></img> */}
                                 </div>
                                 <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
@@ -439,7 +440,7 @@ const ProfileComponent = () => {
                                                 {projects.map((project, index) => (
                                                     <div className="progress-card" key={index}>
                                                         <div className="progress-image">
-                                                            <img src="/img2.jpg" alt="project" />
+                                                            <img className = "image" src="/img2.jpg" alt="project" />
                                                         </div>
                                                         <div className="progress-content">
                                                             <span className="progress-category">{project.category}</span>
