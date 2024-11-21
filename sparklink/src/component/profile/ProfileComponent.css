@@ -112,7 +112,7 @@ body{
 .text-center {
     text-align: center!important;
 }
-img {
+.image {
     max-width: 100%;
     height: auto;
     padding-left: 10px;

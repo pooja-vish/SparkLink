@@ -5,7 +5,7 @@ const SupervisorProfile = require("../models/supervisor_profile");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-const passport = require("passport");
+const passport = require("../config/passportConfig");
 const { Op } = require("sequelize");
 
 // Register a new user with role
