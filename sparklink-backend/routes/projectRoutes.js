@@ -2,18 +2,15 @@ const express = require('express');
 const {
   createProject,
   getAllProjects,
-  getProjectById,
-  updateProject,
-  deleteProject,
   filterProject,
   UpdateProjDetails,
   RemoveProject,
   CompleteProject,
   ResumeProject,
-  FailProject,
+  CancelProject,
   DelayProject,
   getUserRoleAccess,
-  applyProject
+  applyProject,
 } = require('../controllers/projectController');
 
 const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
@@ -33,15 +30,6 @@ router.post('/', createProject);
 // GET route to fetch all projects
 router.get('/', getAllProjects);
 
-// GET route to fetch a single project by ID
-//router.get('/:id', getProjectById);
-
-// PUT route to update a project by ID
-//router.put('/:id', updateProject);
-
-// DELETE route to delete a project by ID
-//router.delete('/:id', deleteProject);
-
 //Update Project Details
 router.post('/updateProject', UpdateProjDetails);
 
@@ -55,7 +43,7 @@ router.post('/completeProject', CompleteProject);
 router.post('/resumeProject', ResumeProject);
 
 //Fail Project
-router.post('/failProject', FailProject);
+router.post('/cancelProject', CancelProject);
 
 //Delay Project
 router.post('/delayProject', DelayProject);

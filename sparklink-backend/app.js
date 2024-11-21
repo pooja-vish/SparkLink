@@ -146,6 +146,8 @@ app.use('/api', roleRoutes);
 app.use('/projectstatus',isAuthenticated,projectStatusRouter);
 app.use('/department', isAuthenticated,departmentRoutes);
 app.use('/project',projectRouter);
+app.use('/profile', profileRouter);
+app.use('/editProfile', EditProfileRouter);
 app.use('/apply', projApplicationRouter);
 app.use('/alloc', projAllocationRouter);
 

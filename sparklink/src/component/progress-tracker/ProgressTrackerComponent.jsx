@@ -10,7 +10,9 @@ import Table from 'react-bootstrap/Table';
 import edit_icon from '../../assets/edit_icon.png';
 import cancel_icon from '../../assets/cancel_icon.png';
 import complete_icon from '../../assets/complete_icon.png';
+import resume_icon from '../../assets/resume_icon.png';
 import { useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ProgressTrackerComponent = () => {
     const location = useLocation();
@@ -45,7 +47,6 @@ const ProgressTrackerComponent = () => {
     }, [projId]);
 
     const ProjMilestones = async () => {
-        console.log(projId);
         setLoading(true);
         try {
             const response = await axios.get("/progressTracker/projMilestones", {
@@ -76,10 +77,6 @@ const ProgressTrackerComponent = () => {
             setLoading(false);
         }
     }
-
-    useEffect(() => {
-        console.log("SETMILESTONE DATA>>>>>", filteredProjList);
-    }, [milestoneData, filteredProjList]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -129,7 +126,8 @@ const ProgressTrackerComponent = () => {
             }));
             setSuggestions(formattedSuggestions);
         } catch (err) {
-            setError(err.message);
+            Swal.fire({title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok'});
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -156,7 +154,6 @@ const ProgressTrackerComponent = () => {
 
             //setMilestoneList([{ proj_id: '', milestone_desc: '' }]);
             setFilteredProjList(filteredProjects);
-            console.log("hmm>>>>>>>>>", filteredProjects[0].proj_id);
             getUserRoleAccess(filteredProjects[0].proj_id);
             setProj_id(filteredProjects[0].proj_id);
             setMilestoneData([]);
@@ -183,7 +180,8 @@ const ProgressTrackerComponent = () => {
                 setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok'});
+            //setError(err.message);
         } finally {
             setFetchFlag(false);
             setLoading(false);
@@ -209,7 +207,8 @@ const ProgressTrackerComponent = () => {
                 setMilestoneList([]);
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok'});
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -267,7 +266,8 @@ const ProgressTrackerComponent = () => {
                 }
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok'});
+            //setError(err.message);
         } finally {
             fetchMilestone();
             setMilestoneList([]);
@@ -297,7 +297,8 @@ const ProgressTrackerComponent = () => {
                 closeModal();
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok'});
+            //setError(err.message);
         } finally {
             setMilestoneList([]);
             setLoading(false);
@@ -316,7 +317,28 @@ const ProgressTrackerComponent = () => {
                 closeModal();
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok'});
+            //setError(err.message);
+        } finally {
+            setMilestoneList([]);
+            setLoading(false);
+        }
+    }
+
+    const resumeMilestone = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/progressTracker/resumeMilestone', {
+                milestoneList: detailsList
+            });
+
+            if (response.status === 200) {
+                fetchMilestone();
+                closeModal();
+            }
+        } catch (err) {
+            Swal.fire({title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok'});
+            //setError(err.message);
         } finally {
             setMilestoneList([]);
             setLoading(false);
@@ -325,15 +347,14 @@ const ProgressTrackerComponent = () => {
 
     const getUserRoleAccess = async (proj_id) => {
         setLoading(true);
-        console.log("getUserRoleAccess>>>", proj_id);
         try {
             const response = await axios.post('/progressTracker/getUserRoleAccess', {
                 proj_id: proj_id
             });
-            console.log("ACCESS>>>", response.data.accessVal);
             setAccessVal(response.data.access_val);
         } catch (error) {
-            setError(error.message);
+            Swal.fire({title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok'});
+            //setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -505,7 +526,16 @@ const ProgressTrackerComponent = () => {
                                                                                         title='Mark Milestone Met'
                                                                                         onClick={completeMilestone}
                                                                                         alt=''
-                                                                                    />)}</td>)}
+                                                                                    />)}
+                                                                                    &nbsp;&nbsp;
+                                                                                    {detailsList.is_completed === 'Y' && (<img
+                                                                                        src={resume_icon}
+                                                                                        className='complete_icon'
+                                                                                        title='Resume Milestone'
+                                                                                        onClick={resumeMilestone}
+                                                                                        alt=''
+                                                                                    />)}
+                                                                                    </td>)}
                                                                             </>)}
                                                                             {editFlag && (<>
                                                                                 <td>
