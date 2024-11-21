@@ -1,6 +1,7 @@
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
 const Milestone = require("../models/proj_milestone");
+const ProjectStatus = require("../models/proj_status");
 const Role = require("../models/role");
 const User = require("../models/user");
 const { Op } = require("sequelize");
@@ -117,9 +118,48 @@ exports.getAllProjects = async (req, res) => {
     });
 
     if (projects && projects.length > 0) {
-
       for (let i = 0; i < projects.length; i++) {
         let proj_id = projects[i].proj_id;
+
+        const status_query = `select ps.status_desc
+          from t_project pr, t_proj_status ps
+          where pr.status = ps.status_id
+          and pr.proj_id = :proj_id;`;
+
+        const [statusResult] = await sequelize.query(status_query, {
+          replacements: { proj_id }, // Replaces :projId with the actual value
+          type: sequelize.QueryTypes.SELECT, // Specifies the query type
+        });
+
+        const status_desc = statusResult ? statusResult.status_desc : null;
+
+        projects[i].setDataValue('status_desc', status_desc || '');
+
+        const stakeholder_query = `
+        select u.name, 'business_owner' AS role
+          from t_usermst u, t_proj_allocation pa
+          where u.user_id = pa.user_id
+          and pa.role = 2
+          and pa.proj_id = :proj_id
+        UNION 
+        select u.name, 'supervisor' AS role
+          from t_usermst u, t_proj_allocation pa
+          where u.user_id = pa.user_id
+          and pa.role = 3
+          and pa.proj_id = :proj_id
+        UNION
+        select u.name, 'student' AS role
+          from t_usermst u, t_proj_allocation pa
+          where u.user_id = pa.user_id
+          and pa.role = 4
+          and pa.proj_id = :proj_id;`;
+
+        const stakeholder = await sequelize.query(stakeholder_query, {
+          replacements: { proj_id },
+          type: sequelize.QueryTypes.SELECT,
+        });
+
+        projects[i].setDataValue('stakeholder', stakeholder || '');
 
         const activeMilestoneCount = await Milestone.count({
           where: {
@@ -136,12 +176,13 @@ exports.getAllProjects = async (req, res) => {
           }
         });
 
-        const progress = activeMilestoneCount > 0 
-        ? Math.round(((completedMilestoneCount / activeMilestoneCount) * 100)) : 0;
+        const progress = activeMilestoneCount > 0
+          ? Math.round(((completedMilestoneCount / activeMilestoneCount) * 100)) : 0;
 
-        if(isNaN(progress)) {
-          progress=0;
+        if (isNaN(progress)) {
+          progress = 0;
         }
+
 
         projects[i].setDataValue('progress', progress);
       }
@@ -158,6 +199,7 @@ exports.getAllProjects = async (req, res) => {
     }
     );
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json({ message: "Error fetching projects", error: error.message });
@@ -296,7 +338,7 @@ exports.CompleteProject = async (req, res) => {
     const { projData } = req.body;
 
     const updatedData = await Project.update({
-      status: 7
+      status: 5
     }, {
       where: { proj_id: projData.proj_id }
     });
@@ -315,7 +357,7 @@ exports.ResumeProject = async (req, res) => {
     const { projData } = req.body;
 
     const updatedData = await Project.update({
-      status: 1
+      status: 4
     }, {
       where: { proj_id: projData.proj_id }
     });
@@ -329,12 +371,12 @@ exports.ResumeProject = async (req, res) => {
   }
 }
 
-exports.FailProject = async (req, res) => {
+exports.CancelProject = async (req, res) => {
   try {
     const { projData } = req.body;
 
     const updatedData = await Project.update({
-      status: 9
+      status: 7
     }, {
       where: { proj_id: projData.proj_id }
     });
@@ -353,7 +395,7 @@ exports.DelayProject = async (req, res) => {
     const { projData } = req.body;
 
     const updatedData = await Project.update({
-      status: 8
+      status: 6
     }, {
       where: { proj_id: projData.proj_id }
     });
@@ -404,6 +446,15 @@ exports.applyProject = async (req, res) => {
           const supervisor = await ProjAllocation.create(allocationList, {
             returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
           });
+          const statusUpdate = await Project.update({
+            status: 3,
+            modified_by: user_id
+          }, {
+            where: {
+              proj_id: proj_id
+            }
+          });
+
           return res.status(200).json({ success: true, message: "Project application successful", supervisor });
         } else {
           return res.status(200).json({ success: false, message: "You are already supervising this project" });
@@ -416,7 +467,16 @@ exports.applyProject = async (req, res) => {
         returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
       });
 
-      return res.status(200).json({ message: "Project application successful", student });
+      const statusUpdate = await Project.update({
+        status: 3,
+        modified_by: user_id
+      }, {
+        where: {
+          proj_id: proj_id
+        }
+      });
+
+      return res.status(200).json({ success: true, message: "Project application successful", student });
     }
   } catch (error) {
     return res.status(500).json({ message: "Error creating a project application", error: error.message });
@@ -467,12 +527,14 @@ exports.getUserRoleAccess = async (req, res) => {
 
       //Supervisor Edit
       if (supervisor_exists === 1) {
-        return res.status(200).json({ success: false, message: "Valid User", access_val: 'E' });
+        return res.status(200).json({ success: true, message: "Valid User", access_val: 'E' });
       } else {
         //Supervisor Apply
         if (supervisor_count < 2) {
-          if (projStatus.status !== 7 || projStatus.status !== 8 || projStatus.status !== 9) {
+          if (projStatus.status !== 5 || projStatus.status !== 7) {
             return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
+          } else {
+            return res.status(200).json({ success: true, message: "Valid User", access_val: 'I' });
           }
         } else {
           return res.status(200).json({ succes: false, message: "Invalid User", access_val: 'I' });
@@ -503,14 +565,13 @@ exports.getUserRoleAccess = async (req, res) => {
 
       //Remove projStatus.status === 1
       if (student === 0) {
-        if (projStatus.status === 3 || projStatus.status === 4 || projStatus.status === 5) {
+        if (projStatus.status === 1 || projStatus.status === 2 || projStatus.status === 3) {
           return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
         } else {
           return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
         }
       } else if (student === 1) {
-        if (projStatus.status === 5 || projStatus.status === 6 || projStatus.status === 7 || projStatus.status === 8 ||
-          projStatus.status === 9) {
+        if (projStatus.status === 4 || projStatus.status === 5 || projStatus.status === 6 || projStatus.status === 7) {
           return res.status(200).json({ success: true, message: "Valid User", access_val: 'M' });
         } else {
           return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
@@ -524,4 +585,5 @@ exports.getUserRoleAccess = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Error verifying User Access", error: error.message });
   }
-} 
+}
+

@@ -14,6 +14,7 @@ import delay_icon from '../../assets/delay_icon.png';
 import fail_icon from '../../assets/fail_icon.png';
 import { useAuth } from '../../AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ViewProjectComponent = () => {
     const navigate = useNavigate();
@@ -57,16 +58,15 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project');
-            console.log("the logged in user is:" + user);
-
-            console.log("PROJ DATA TABLE>>>>>", response.data.projects);
+            console.log(response.data.projects);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
                 setUserData(response.data.user);
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -88,7 +88,8 @@ const ViewProjectComponent = () => {
             }));
             setSuggestions(formattedSuggestions);
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         }
     };
 
@@ -177,12 +178,13 @@ const ViewProjectComponent = () => {
                 if (editFlag) {
                     setEditFlag(false);
                 }
-                setSuccessMessage(response.data.message);
+                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
-                setErrorMessage(response.data.message);
+                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setLoading(false);
             fetchProjects();
@@ -235,9 +237,13 @@ const ViewProjectComponent = () => {
 
             if (response.status === 200) {
                 fetchProjects();
+                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+            } else if (response.status === 500) {
+                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             closeModal();
             setLoading(false);
@@ -254,9 +260,13 @@ const ViewProjectComponent = () => {
             if (response.status === 200) {
                 fetchProjects();
                 closeModal();
+                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+            } else if (response.status === 500) {
+                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -272,27 +282,35 @@ const ViewProjectComponent = () => {
             if (response.status === 200) {
                 fetchProjects();
                 closeModal();
+                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+            } else if (response.status === 500) {
+                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
     }
 
-    const failProject = async () => {
+    const cancelProject = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('/project/failProject', {
+            const response = await axios.post('/project/cancelProject', {
                 projData: projDetailsList
             });
 
             if (response.status === 200) {
                 fetchProjects();
                 closeModal();
+                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+            } else if (response.status === 500) {
+                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -308,9 +326,13 @@ const ViewProjectComponent = () => {
             if (response.status === 200) {
                 fetchProjects();
                 closeModal();
+                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+            } else if (response.status === 500) {
+                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -318,26 +340,26 @@ const ViewProjectComponent = () => {
 
     const submitApplication = async () => {
         setLoading(true);
-        console.log("projDetailsList>>>>>", projDetailsList.proj_id);
         try {
             const response = await axios.post('/project/applyProject', {
                 proj_id: projDetailsList.proj_id
             });
-            console.log(response);
+            if (response.status === 200 && response.data.success) {
+                fetchProjects();
+                closeModal();
+                Swal.fire({ title: 'Application Successful', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+            } else if (response.status === 200 && !response.data.success) {
+                fetchProjects();
+                closeModal();
+                Swal.fire({ title: 'Application Unsuccessful', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+            }
         } catch (error) {
-            setError(error.message);
+            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(error.message);
         } finally {
             setLoading(false);
         }
     }
-
-    // useEffect(() => {
-    //     for(let i = 0; i < role.length; i++) {
-    //         if(role[i].id === userRole && userRole === 2) {
-
-    //         }
-    //     }
-    // }, [role]);
 
     const fetchUserRoles = async () => {
         setLoading(true);
@@ -345,20 +367,19 @@ const ViewProjectComponent = () => {
             const response = await axios.post('/project/getUserRoleAccess', {
                 proj_id: projDetailsList.proj_id
             });
-            console.log("VIEW PROJ ROLE>>>", response.data.access_val);
-            if(response.status === 200) {
+            if (response.status === 200) {
                 setTriggerDetails(true);
             }
             setAccessVal(response.data.access_val);
         } catch (error) {
-            setError(error.message);
+            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(error.message);
         } finally {
             setLoading(false);
         }
     }
 
     const viewMilestones = async () => {
-        console.log("VIEW PROJ", projDetailsList.proj_id);
         navigate("/progress", { state: { projId: projDetailsList.proj_id } });
     }
 
@@ -396,9 +417,9 @@ const ViewProjectComponent = () => {
                                                         key={index} onClick={() => openProjectDetails(item.proj_id)}>
                                                         <div className="progress-image"
                                                             style={{
-                                                                backgroundImage: item.image_url === null
+                                                                backgroundImage: item.image_url === ''
                                                                     ? 'linear-gradient(to bottom right, #007BFF, #00BFFF)'
-                                                                    : `url(${item.image_url})`,
+                                                                    : `url(${encodeURI(item.image_url)})`,
                                                                 backgroundSize: 'cover',
                                                                 backgroundPosition: 'center'
                                                             }}
@@ -426,7 +447,7 @@ const ViewProjectComponent = () => {
                         </div>
 
                         <Modal
-                            size="lg"
+                            size="xl"
                             show={triggerDetails}
                             onHide={closeModal}
                             onEscapeKeyDown={closeModal}
@@ -445,31 +466,39 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 5 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                            src={fail_icon}
+                                                            className='complete_icon'
+                                                            title='Mark Project as Cancelled'
+                                                            onClick={cancelProject}
+                                                            alt=''
+                                                        /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && (projDetailsList.status != 5) && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={delay_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Delayed'
                                                             onClick={delayProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
-                                                            src={fail_icon}
-                                                            className='complete_icon'
-                                                            title='Mark Project as Failed'
-                                                            onClick={failProject}
-                                                            alt=''
-                                                        /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 5 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'
                                                             onClick={completeProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status === 7 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
+                                                            (projDetailsList.status === 5 || projDetailsList.status === 6 || projDetailsList.status === 7) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                                src={resume_icon}
+                                                                className='complete_icon'
+                                                                title='Resume Project'
+                                                                onClick={resumeProject}
+                                                                alt=''
+                                                            /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status === 3 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={resume_icon}
                                                             className='complete_icon'
-                                                            title='Resume Project'
+                                                            title='Start Project'
                                                             onClick={resumeProject}
                                                             alt=''
                                                         /></span>}
@@ -520,6 +549,34 @@ const ViewProjectComponent = () => {
                                                         />
                                                     </td>}
                                                 </tr>
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Status</td>
+                                                    <td className="proj-details-data">{projDetailsList.status_desc}</td>
+                                                </tr>
+                                                {['business_owner', 'supervisor', 'student'].map((role) => {
+                                                    const stakeholdersByRole = (projDetailsList?.stakeholder || [])
+                                                        .filter((stakeholder) => stakeholder.role === role)
+                                                        .map((stakeholder) => stakeholder.name);
+
+                                                    if (stakeholdersByRole.length > 0) {
+                                                        return (
+                                                            <tr key={role}>
+                                                                <td className='proj-details-sub-header'>
+                                                                    {role === 'business_owner' && 'Business Owner'}
+                                                                    {role === 'supervisor' && 'Supervisor(s)'}
+                                                                    {role === 'student' && 'Student(s)'}
+                                                                </td>
+                                                                <td className='proj-details-data'>
+                                                                    {stakeholdersByRole.join(', ')}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    }
+                                                    return null; // Skip rendering if no stakeholders for the role
+                                                })}
+
+
+
                                             </tbody>
                                         </Table>
                                         <div className="message">

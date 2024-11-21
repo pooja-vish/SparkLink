@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const ProjectStatus = require('./proj_status');
 
 const Project = sequelize.define('Project', {
   proj_id: {
@@ -81,6 +82,11 @@ const Project = sequelize.define('Project', {
 }, {
   tableName: 't_project',
   timestamps: false,  // If you're not using Sequelize's automatic timestamps
+});
+
+Project.belongsTo(ProjectStatus, {
+  foreignKey: 'status', // Matches the `status` field in Project model
+  targetKey: 'status_id', // Matches the `status_id` field in ProjectStatus model
 });
 
 module.exports = Project;
