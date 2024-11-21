@@ -5,7 +5,8 @@ const {
   UpdateMilestone,
   DeleteMilestone,
   CompleteMilestone,
-  ProjMilestones
+  ProjMilestones,
+  getUserRoleAccess
 } = require('../controllers/progressTrackerController');
 
 const router = express.Router();
@@ -27,5 +28,8 @@ router.post('/completeMilestone', CompleteMilestone);
 
 // Fetch Project Milestone(s) by proj_id
 router.get('/projMilestones', ProjMilestones);
+
+// Fetch User Role Access
+router.post('/getUserRoleAccess', getUserRoleAccess);
 
 module.exports = router;

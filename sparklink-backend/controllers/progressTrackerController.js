@@ -1,6 +1,7 @@
 const Milestone = require('../models/proj_milestone');
 const MilestoneCounter = require('../models/milestone_counter');
 const ProjectAllocation = require('../models/proj_allocation');
+const Project = require('../models/project');
 
 exports.createMilestone = async (req, res) => {
     try {
@@ -145,7 +146,13 @@ exports.ProjMilestones = async (req, res) => {
             }
         });
 
-        return res.status(200).json({ message: 'Project Milestone(s) fetched successfully', projMilestoneData });
+        const projData = await Project.findOne({
+            where: {
+                proj_id: proj_id
+            }
+        });
+
+        return res.status(200).json({ message: 'Project Milestone(s) fetched successfully', projMilestoneData, projData });
     } catch (error) {
         console.log("View Milestones>>>>>", error);
         return res.status(500).json({ message: 'Error fetching Project Milestone(s)', error: error.message });
@@ -160,7 +167,7 @@ exports.ProjMilestones = async (req, res) => {
  */
 exports.getUserRoleAccess = async (req, res) => {
     try {
-        const { proj_id } = req.query;
+        const { proj_id } = req.body;
 
         const user = req.user;
         const user_id = user.user_id;
@@ -200,6 +207,7 @@ exports.getUserRoleAccess = async (req, res) => {
             return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
         }
     } catch (error) {
+        console.log("OK>>>>>", error);
         return res.status(500).json({ message: 'Error fetching user role access', error: error.message });
     }
 }
