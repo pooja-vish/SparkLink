@@ -34,30 +34,25 @@ exports.register = async (req, res) => {
       name,
       password: password,
       role:
-        isSupervisor && isBusinessOwner
-          ? "2,3"
-          : isSupervisor
-          ? "2"
-          : isBusinessOwner
+        isSupervisor 
           ? "3"
+          : isBusinessOwner
+          ? "2"
           : "4",
       is_active: "N", // User initially inactive
       created_by:
-        isSupervisor && isBusinessOwner
-          ? "2,3"
-          : isSupervisor
-          ? "2"
-          : isBusinessOwner
-          ? "3"
-          : "4",
+        isSupervisor 
+        ? "3"
+        : isBusinessOwner
+        ? "2"
+        : "4",
       modified_by:
-        isSupervisor && isBusinessOwner
-          ? "2,3"
-          : isSupervisor
-          ? "2"
-          : isBusinessOwner
-          ? "3"
-          : "4",
+       
+        isSupervisor 
+        ? "3"
+        : isBusinessOwner
+        ? "2"
+        : "4",
       confirmation_token: confirmationToken, // Save the token to the database
     });
 
@@ -367,5 +362,36 @@ exports.getallusers = async (req, res) => {
     return res.status(200).json(users);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updateusers = async (req, res) => {
+  try {
+    const { id } = req.params; // User ID from the route
+    const { username, email, name, role, is_active, modified_by } = req.body; // Data from request
+
+    // Find the user by ID and update
+    const [updated] = await User.update(
+      {
+        username,
+        email,
+        name,
+        role,
+        is_active,
+        modified_by: req.user.user_id
+         // Optional: Track who modified
+      },
+      { where: { user_id: id }, returning: true }
+    );
+
+    if (updated === 0) {
+      return res.status(404).json({ message: 'User not found or no changes made.' });
+    }
+
+    // Return the updated user
+    const updatedUser = await User.findByPk(id);
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating user', error: error.message });
   }
 };
