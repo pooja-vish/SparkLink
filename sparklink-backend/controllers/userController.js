@@ -1,6 +1,6 @@
 require("dotenv").config();
 const User = require("../models/user");
-const SupervisorProfile = require("../models/supervisor");
+const SupervisorProfile = require("../models/supervisor_profile");
 
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");

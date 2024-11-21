@@ -17,6 +17,7 @@ const roleRoutes = require('./routes/roleRoutes');
 const projectStatusRouter = require('./routes/projectStatusRoutes');
 const departmentRoutes = require('./routes/departmentRoutes');
 const projectRouter = require('./routes/projectRoutes');
+const profileRouter = require('./routes/profileRoutes');
 const projApplicationRouter = require('./routes/projectApplicationRoutes');
 const projAllocationRouter = require('./routes/projectAllocationRoutes');
 //const userRouter = require('./routes/userRoutes');
@@ -122,6 +123,7 @@ app.use('/api', roleRoutes); // Route for role-related requests
 app.use('/projectstatus', projectStatusRouter);
 app.use('/department', departmentRoutes);
 app.use('/project', projectRouter);
+app.use('/profile', profileRouter);
 //app.use('',userRouter);
 app.use('/progressTracker', progressTrackerRouter);
 // Error handling middleware

@@ -144,7 +144,6 @@ const ViewProjectComponent = () => {
 
     useEffect(() => {
         if (projDescList.length > 0) {
-            setTriggerDetails(true);
             fetchUserRoles();
         }
     }, [projDescList]);
@@ -346,7 +345,9 @@ const ViewProjectComponent = () => {
             const response = await axios.post('/project/getUserRoleAccess', {
                 proj_id: projDetailsList.proj_id
             });
-            console.log("USER ACCESS>>>", response.data.access_val);
+            if(response.status === 200) {
+                setTriggerDetails(true);
+            }
             setAccessVal(response.data.access_val);
         } catch (error) {
             setError(error.message);

@@ -21,11 +21,16 @@ export const AuthProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
+    });
+
+    useEffect(() => {
+        console.log("First time check Auth Status :", isAuthenticated);
+        checkAuthStatus();
     }, []);
 
     useEffect(() => {
-        checkAuthStatus();
-    }, [checkAuthStatus]);
+        console.log("Authentication Status Changed:", isAuthenticated);
+    }, [isAuthenticated]);
 
     return (
         <AuthContext.Provider value={{ 

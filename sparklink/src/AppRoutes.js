@@ -10,6 +10,8 @@ import LoginComponent from "./component/login/LoginComponent";
 import ProtectedRoute from "./component/ProtectedRoute";
 import ProjApplicationComponent from "./component/project-applications/projApplicationComponent";
 import ViewProjectComponent from "./component/viewproject/ViewProjectComponent";
+import ProfileComponent from "./component/profile/ProfileComponent";
+import EditProfileComponent from "./component/editProfile/EditProfileComponent";
 import ViewUserComponent from "./component/admin/viewUsers";
 import ResetPasswordComponent from "./component/resetpassword/ResetPasswordComponent"
 import ResetPasswordEmailComponent from "./component/resetpasswordemail/ResetPasswordEmailComponent";
@@ -19,6 +21,8 @@ const AppRoutes = () => {
     let routes = useRoutes([
         { path: "/", element: <HomeComponent /> },
         { path: "/about", element: <AboutComponent /> },
+        { path: "/profile", element: <ProfileComponent /> },
+        { path: "/ediPprofile", element: <EditProfileComponent /> },
         { path: "/contact", element: <ContactComponent /> },
         { path: "/register", element: <RegisterComponent /> },
         { path: "/login", element: <LoginComponent /> },
