@@ -2,6 +2,7 @@ const Milestone = require('../models/proj_milestone');
 const MilestoneCounter = require('../models/milestone_counter');
 const ProjectAllocation = require('../models/proj_allocation');
 const Project = require('../models/project');
+const sequelize = require('../config/db');
 
 exports.createMilestone = async (req, res) => {
     try {
@@ -278,3 +279,38 @@ exports.ResumeMilestone = async (req, res) => {
             .json({ message: "Error deleting milestone", error: error.message });
     }
 }
+
+exports.filterProjMilestones = async (req, res) => {
+    try {
+        const { projName } = req.query;
+        const user = req.user;
+
+        if (projName && typeof projName !== "string") {
+            return res.status(400).json({ message: "Invalid projName parameter" });
+        }
+
+        const filter_query = `
+        SELECT *
+        FROM t_project pr, t_proj_allocation pa
+        WHERE pr.project_name ILIKE '%' || :project_name || '%'
+            and pa.proj_id = pr.proj_id
+            and pa.user_id = :user_id;`
+
+        const replacements = {
+            project_name: projName,
+            user_id: user.user_id
+        }
+
+        const projects = await sequelize.query(filter_query, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements,
+        });
+
+        res.status(200).json(projects);
+    } catch (error) {
+        console.error("Error filtering projects:", error);
+        res
+            .status(500)
+            .json({ message: "Error filtering projects", error: error.message });
+    }
+};

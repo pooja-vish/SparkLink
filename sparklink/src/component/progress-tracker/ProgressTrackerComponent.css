@@ -183,3 +183,21 @@ td {
     font-size: 0.8rem;
     opacity: 0.8;
 }
+
+.milestone-details-header {
+    font-family: "Poppins", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    color: #000000 !important;
+    background-color: #0000000D !important;
+    font-size: large !important;
+}
+
+.milestone-details-data {
+    font-family: "Poppins", system-ui;
+    font-weight: 300;
+    font-style: normal;
+    color: #000000 !important;
+    background-color: #fff !important;
+    font-size: large !important;
+}
