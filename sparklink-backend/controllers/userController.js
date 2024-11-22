@@ -1,7 +1,7 @@
 require("dotenv").config();
 const User = require("../models/user");
 const SupervisorProfile = require("../models/supervisor_profile");
-
+const BusinessOwner = require('../models/owner_profile');
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
@@ -68,6 +68,11 @@ exports.register = async (req, res) => {
         is_verified: false,
         is_project_owner: false,
       });
+    }
+    else if(isBusinessOwner){
+      await BusinessOwner.create({
+        user_id: newUser.user_id,
+      }) 
     }
     // Send a confirmation email with the link
     const transporter = nodemailer.createTransport({
