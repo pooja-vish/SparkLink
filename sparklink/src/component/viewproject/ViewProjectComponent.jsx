@@ -480,7 +480,7 @@ const ViewProjectComponent = () => {
                                                             onClick={delayProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 5 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && (projDetailsList.status == 4 || projDetailsList.status == 6) && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'

@@ -26,12 +26,30 @@ const progressTrackerRouter = require('./routes/progressTrackerRoutes');
 
 const app = express();
 
-// Middleware
+
+
+const allowedOrigins = [
+  'http://localhost:3100', // React frontend
+  'http://10.0.2.2:5100', // Flutter emulator
+  'http://localhost:5100/',
+  'http://localhost:5100',
+];
+
 const corsOptions = {
-  origin: 'http://localhost:3100', // Specify the frontend origin
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  origin: (origin, callback) => {
+    console.log('Incoming Origin:', origin);
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow
+    } else {
+      console.error('Blocked by CORS:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow cookies or authentication headers
 };
+
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -41,7 +59,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // Set `secure: true` if using HTTPS in production
+  cookie: { secure: false , sameSite: 'Lax'} // Set `secure: true` if using HTTPS in production
 }));
 
 // Passport middleware
@@ -109,6 +127,7 @@ app.use('/projectstatus', projectStatusRouter);
 app.use('/department', departmentRoutes);
 app.use('/project', projectRouter);
 app.use('/profile', profileRouter);
+app.use('/editProfile', EditProfileRouter);
 //app.use('',userRouter);
 app.use('/progressTracker', progressTrackerRouter);
 // Error handling middleware
