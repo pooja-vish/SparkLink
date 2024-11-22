@@ -40,7 +40,6 @@ const ViewProjectComponent = () => {
     const { user } = useAuth();
     const [userData, setUserData] = useState({});
     const [accessVal, setAccessVal] = useState('');
-    const [progressList, setProgressList] = useState([]);
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -151,6 +150,7 @@ const ViewProjectComponent = () => {
 
     const closeModal = () => {
         setProjDetailsList(null);
+        setProjDescList([]);
         setTriggerDetails(false);
         setEditFlag(false);
     }
@@ -246,7 +246,8 @@ const ViewProjectComponent = () => {
             //setError(err.message);
         } finally {
             closeModal();
-            setLoading(false);
+            fetchProjects();
+            //setLoading(false);
         }
     }
 
@@ -268,19 +269,20 @@ const ViewProjectComponent = () => {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
             //setError(err.message);
         } finally {
-            setLoading(false);
+            fetchProjects();
+            //setLoading(false);
         }
     }
 
     const resumeProject = async () => {
-        setLoading(true);
+        //setLoading(true);
         try {
             const response = await axios.post('/project/resumeProject', {
                 projData: projDetailsList
             });
 
             if (response.status === 200) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
@@ -290,7 +292,8 @@ const ViewProjectComponent = () => {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
             //setError(err.message);
         } finally {
-            setLoading(false);
+            fetchProjects();
+            //setLoading(false);
         }
     }
 
@@ -312,7 +315,8 @@ const ViewProjectComponent = () => {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
             //setError(err.message);
         } finally {
-            setLoading(false);
+            fetchProjects();
+            //setLoading(false);
         }
     }
 
@@ -334,7 +338,8 @@ const ViewProjectComponent = () => {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
             //setError(err.message);
         } finally {
-            setLoading(false);
+            fetchProjects();
+            //setLoading(false);
         }
     }
 
@@ -357,7 +362,8 @@ const ViewProjectComponent = () => {
             Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
             //setError(error.message);
         } finally {
-            setLoading(false);
+            fetchProjects();
+            //setLoading(false);
         }
     }
 
@@ -466,21 +472,23 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status != 5 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && 
+                                                        (projDetailsList.status !== 7 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={fail_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Cancelled'
                                                             onClick={cancelProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && (projDetailsList.status != 5) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && 
+                                                        (projDetailsList.status !== 6 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={delay_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Delayed'
                                                             onClick={delayProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && (projDetailsList.status == 4 || projDetailsList.status == 6) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'
