@@ -32,6 +32,7 @@ const allowedOrigins = [
   'http://localhost:3100', // React frontend
   'http://10.0.2.2:5100', // Flutter emulator
   'http://localhost:5100/',
+  'http://localhost:5100',
 ];
 
 const corsOptions = {
@@ -146,6 +147,8 @@ app.use('/api', roleRoutes);
 app.use('/projectstatus',isAuthenticated,projectStatusRouter);
 app.use('/department', isAuthenticated,departmentRoutes);
 app.use('/project',projectRouter);
+app.use('/profile', profileRouter);
+app.use('/editProfile', EditProfileRouter);
 app.use('/apply', projApplicationRouter);
 app.use('/alloc', projAllocationRouter);
 
