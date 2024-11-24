@@ -10,7 +10,9 @@ import Table from 'react-bootstrap/Table';
 import edit_icon from '../../assets/edit_icon.png';
 import cancel_icon from '../../assets/cancel_icon.png';
 import complete_icon from '../../assets/complete_icon.png';
+import resume_icon from '../../assets/resume_icon.png';
 import { useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ProgressTrackerComponent = () => {
     const location = useLocation();
@@ -35,6 +37,7 @@ const ProgressTrackerComponent = () => {
     const [editFlag, setEditFlag] = useState(false);
     const [isMobileView, setIsMobileView] = useState(false);
     const [accessVal, setAccessVal] = useState('');
+    const [addMilestoneFlag, setAddMilestoneFlag] = useState(false);
     const currentDate = new Date();
 
     useEffect(() => {
@@ -45,7 +48,6 @@ const ProgressTrackerComponent = () => {
     }, [projId]);
 
     const ProjMilestones = async () => {
-        console.log(projId);
         setLoading(true);
         try {
             const response = await axios.get("/progressTracker/projMilestones", {
@@ -78,10 +80,6 @@ const ProgressTrackerComponent = () => {
     }
 
     useEffect(() => {
-        console.log("SETMILESTONE DATA>>>>>", filteredProjList);
-    }, [milestoneData, filteredProjList]);
-
-    useEffect(() => {
         const handleResize = () => {
             setIsMobileView(window.innerWidth < 768);
         };
@@ -95,7 +93,14 @@ const ProgressTrackerComponent = () => {
 
     const handleAddMilestone = () => {
         setMilestoneList([...milestoneList, { proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+        setAddMilestoneFlag(true);
     }
+
+    useEffect(() => {
+        if (milestoneList.length === 0) {
+            setAddMilestoneFlag(false);
+        }
+    }, [milestoneList]);
 
     const deleteMilestone = (index) => {
         setMilestoneList(prevList => {
@@ -119,7 +124,7 @@ const ProgressTrackerComponent = () => {
     const fetchSuggestions = async (query) => {
         setLoading(true);
         try {
-            const response = await axios.get('/project/filter', {
+            const response = await axios.get('/progressTracker/filterProjMilestones', {
                 params: { projName: query },
             });
             setProjectList(response.data);
@@ -129,7 +134,8 @@ const ProgressTrackerComponent = () => {
             }));
             setSuggestions(formattedSuggestions);
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -156,7 +162,6 @@ const ProgressTrackerComponent = () => {
 
             //setMilestoneList([{ proj_id: '', milestone_desc: '' }]);
             setFilteredProjList(filteredProjects);
-            console.log("hmm>>>>>>>>>", filteredProjects[0].proj_id);
             getUserRoleAccess(filteredProjects[0].proj_id);
             setProj_id(filteredProjects[0].proj_id);
             setMilestoneData([]);
@@ -183,7 +188,8 @@ const ProgressTrackerComponent = () => {
                 setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setFetchFlag(false);
             setLoading(false);
@@ -209,7 +215,8 @@ const ProgressTrackerComponent = () => {
                 setMilestoneList([]);
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -267,7 +274,8 @@ const ProgressTrackerComponent = () => {
                 }
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             fetchMilestone();
             setMilestoneList([]);
@@ -291,13 +299,14 @@ const ProgressTrackerComponent = () => {
             const response = await axios.post('/progressTracker/deleteMilestone', {
                 milestoneList: detailsList
             });
-            
+
             if (response.status === 200) {
                 fetchMilestone();
                 closeModal();
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setMilestoneList([]);
             setLoading(false);
@@ -316,7 +325,28 @@ const ProgressTrackerComponent = () => {
                 closeModal();
             }
         } catch (err) {
-            setError(err.message);
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
+        } finally {
+            setMilestoneList([]);
+            setLoading(false);
+        }
+    }
+
+    const resumeMilestone = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('/progressTracker/resumeMilestone', {
+                milestoneList: detailsList
+            });
+
+            if (response.status === 200) {
+                fetchMilestone();
+                closeModal();
+            }
+        } catch (err) {
+            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(err.message);
         } finally {
             setMilestoneList([]);
             setLoading(false);
@@ -325,15 +355,14 @@ const ProgressTrackerComponent = () => {
 
     const getUserRoleAccess = async (proj_id) => {
         setLoading(true);
-        console.log("getUserRoleAccess>>>", proj_id);
         try {
             const response = await axios.post('/progressTracker/getUserRoleAccess', {
                 proj_id: proj_id
             });
-            console.log("ACCESS>>>", response.data.accessVal);
             setAccessVal(response.data.access_val);
         } catch (error) {
-            setError(error.message);
+            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+            //setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -407,36 +436,50 @@ const ProgressTrackerComponent = () => {
                                                         })}
                                                     </div>
                                                 )}
-
-                                                {milestoneList.map((milestone, index) => (
-                                                    <div key={`milestone_${index}`} className="milestone-item">
-                                                        <div className="row">
-                                                            <div className="col-4">
-                                                                <input
-                                                                    type="text"
-                                                                    className="milestone_input_text"
-                                                                    name="milestone_title"
-                                                                    value={milestone.milestone_title || ""}
-                                                                    onChange={(e) => handleMilestoneChange(index, e)}
-                                                                    placeholder="Enter milestone title, e.g., Project Kickoff"
-                                                                    maxLength={100}
-                                                                    required
-                                                                />
-                                                            </div>
-                                                            <div className="col-5">
-                                                                <input
-                                                                    type="text"
-                                                                    className="milestone_input_text"
-                                                                    name="milestone_desc"
-                                                                    value={milestone.milestone_desc}
-                                                                    onChange={(e) => handleMilestoneChange(index, e)}
-                                                                    placeholder="Describe your milestone, e.g., Prototype Development"
-                                                                    maxLength={250}
-                                                                    required
-                                                                />
-                                                            </div>
-                                                            <div className="col-3">
-                                                                <div className="milestone-input-container">
+                                                <Table responsive='sm' bordered>
+                                                    <tbody>
+                                                        {milestoneList.length > 0 &&
+                                                            (<tr className='row text-center'>
+                                                                <td className="milestone-details-header col-4">
+                                                                    Milestone Title
+                                                                </td>
+                                                                <td className="milestone-details-header col-5">
+                                                                    Milestone Description
+                                                                </td>
+                                                                <td className="milestone-details-header col-2">
+                                                                    Milestone End Date
+                                                                </td>
+                                                                <td className="milestone-details-header col-1">
+                                                                    Delete Milestone
+                                                                </td>
+                                                            </tr>)}
+                                                        {milestoneList.map((milestone, index) => (
+                                                            <tr key={`milestone_${index}`} className="row milestone-item text-center">
+                                                                <td className="milestone-details-data col-4">
+                                                                    <input
+                                                                        type="text"
+                                                                        className="milestone_input_text"
+                                                                        name="milestone_title"
+                                                                        value={milestone.milestone_title || ""}
+                                                                        onChange={(e) => handleMilestoneChange(index, e)}
+                                                                        placeholder="Enter milestone title, e.g., Project Kickoff"
+                                                                        maxLength={100}
+                                                                        required
+                                                                    />
+                                                                </td>
+                                                                <td className="milestone-details-data col-5">
+                                                                    <input
+                                                                        type="text"
+                                                                        className="milestone_input_text"
+                                                                        name="milestone_desc"
+                                                                        value={milestone.milestone_desc}
+                                                                        onChange={(e) => handleMilestoneChange(index, e)}
+                                                                        placeholder="Describe your milestone, e.g., Prototype Development"
+                                                                        maxLength={250}
+                                                                        required
+                                                                    />
+                                                                </td>
+                                                                <td className="milestone-details-data col-2">
                                                                     <input
                                                                         type="date"
                                                                         className="milestone_input_date milestone_datepicker"
@@ -445,6 +488,8 @@ const ProgressTrackerComponent = () => {
                                                                         onChange={(e) => handleMilestoneChange(index, e)}
                                                                         required
                                                                     />
+                                                                </td>
+                                                                <td className="milestone-details-data col-1">
                                                                     <img
                                                                         src={delete_icon}
                                                                         className='delete_icon'
@@ -452,13 +497,11 @@ const ProgressTrackerComponent = () => {
                                                                         onClick={() => deleteMilestone(index)}
                                                                         alt=''
                                                                     />
-                                                                </div>
-                                                            </div>
-
-
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </Table>
                                                 <Modal
                                                     size="lg"
                                                     show={triggerDetails}
@@ -505,7 +548,16 @@ const ProgressTrackerComponent = () => {
                                                                                         title='Mark Milestone Met'
                                                                                         onClick={completeMilestone}
                                                                                         alt=''
-                                                                                    />)}</td>)}
+                                                                                    />)}
+                                                                                    &nbsp;&nbsp;
+                                                                                    {detailsList.is_completed === 'Y' && (<img
+                                                                                        src={resume_icon}
+                                                                                        className='complete_icon'
+                                                                                        title='Resume Milestone'
+                                                                                        onClick={resumeMilestone}
+                                                                                        alt=''
+                                                                                    />)}
+                                                                                </td>)}
                                                                             </>)}
                                                                             {editFlag && (<>
                                                                                 <td>

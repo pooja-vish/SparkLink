@@ -21,8 +21,6 @@ const AppRoutes = () => {
     let routes = useRoutes([
         { path: "/", element: <HomeComponent /> },
         { path: "/about", element: <AboutComponent /> },
-        { path: "/profile", element: <ProfileComponent /> },
-        { path: "/ediPprofile", element: <EditProfileComponent /> },
         { path: "/contact", element: <ContactComponent /> },
         { path: "/register", element: <RegisterComponent /> },
         { path: "/login", element: <LoginComponent /> },
@@ -39,6 +37,8 @@ const AppRoutes = () => {
                 { path: "create-project", element: <CreateProjectComponent /> },
                 { path: "view-project", element: <ViewProjectComponent /> },
                 { path: "projApplications", element: <ProjApplicationComponent /> },
+                { path: "/profile", element: <ProfileComponent /> },
+                { path: "/editProfile", element: <EditProfileComponent /> },
             ],
         },
     ]);

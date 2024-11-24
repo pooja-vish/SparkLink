@@ -2,6 +2,7 @@ const Milestone = require('../models/proj_milestone');
 const MilestoneCounter = require('../models/milestone_counter');
 const ProjectAllocation = require('../models/proj_allocation');
 const Project = require('../models/project');
+const sequelize = require('../config/db');
 
 exports.createMilestone = async (req, res) => {
     try {
@@ -122,12 +123,22 @@ exports.CompleteMilestone = async (req, res) => {
     try {
         const { milestoneList } = req.body;
 
-        const completeData = await Milestone.update({
-            is_completed: 'Y'
-        }, {
-            where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id }
+        const ms = await Milestone.findOne({
+            where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id },
+            attributes: ['is_active', 'is_completed']
         });
-        res.status(200).json({ message: "Milestone marked as complete succesfully", completeData });
+
+        if (ms.is_active === 'Y' && ms.is_completed === 'N') {
+            const completeData = await Milestone.update({
+                is_completed: 'Y'
+            }, {
+                where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id }
+            });
+            res.status(200).json({ success: true, message: "Milestone marked as complete succesfully", completeData });
+        } else {
+            res.status(200).json({ success: false, message: "Failed to complete Milestone", completeData });
+        }
+
     } catch (error) {
         console.error(error);
         res
@@ -154,7 +165,6 @@ exports.ProjMilestones = async (req, res) => {
 
         return res.status(200).json({ message: 'Project Milestone(s) fetched successfully', projMilestoneData, projData });
     } catch (error) {
-        console.log("View Milestones>>>>>", error);
         return res.status(500).json({ message: 'Error fetching Project Milestone(s)', error: error.message });
     }
 }
@@ -207,7 +217,6 @@ exports.getUserRoleAccess = async (req, res) => {
             return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
         }
     } catch (error) {
-        console.log("OK>>>>>", error);
         return res.status(500).json({ message: 'Error fetching user role access', error: error.message });
     }
 }
@@ -233,8 +242,6 @@ exports.ProjectProgress = async (req, res) => {
 
         const progress = Math.round(((completedMilestoneCount / activeMilestoneCount) * 100));
 
-        console.log(Number(progress));
-
         const projProgressData = {
             proj_id: proj_id,
             progress: Number(progress)
@@ -245,3 +252,65 @@ exports.ProjectProgress = async (req, res) => {
         return res.status(500).json({ message: "Error fetching milestone progress", error: error.message });
     }
 }
+
+exports.ResumeMilestone = async (req, res) => {
+    try {
+        const { milestoneList } = req.body;
+
+        const ms = await Milestone.findOne({
+            where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id },
+            attributes: ['is_active', 'is_completed']
+        });
+
+        if (ms.is_active === 'Y' && ms.is_completed === 'Y') {
+            const completeData = await Milestone.update({
+                is_completed: 'N'
+            }, {
+                where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id }
+            });
+            res.status(200).json({ success: true, message: "Milestone resumed succesfully", completeData });
+        } else {
+            res.status(200).json({ success: false, message: "Failed to resume milestone", completeData });
+        }
+    } catch (error) {
+        console.error(error);
+        res
+            .status(500)
+            .json({ message: "Error deleting milestone", error: error.message });
+    }
+}
+
+exports.filterProjMilestones = async (req, res) => {
+    try {
+        const { projName } = req.query;
+        const user = req.user;
+
+        if (projName && typeof projName !== "string") {
+            return res.status(400).json({ message: "Invalid projName parameter" });
+        }
+
+        const filter_query = `
+        SELECT *
+        FROM t_project pr, t_proj_allocation pa
+        WHERE pr.project_name ILIKE '%' || :project_name || '%'
+            and pa.proj_id = pr.proj_id
+            and pa.user_id = :user_id;`
+
+        const replacements = {
+            project_name: projName,
+            user_id: user.user_id
+        }
+
+        const projects = await sequelize.query(filter_query, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements,
+        });
+
+        res.status(200).json(projects);
+    } catch (error) {
+        console.error("Error filtering projects:", error);
+        res
+            .status(500)
+            .json({ message: "Error filtering projects", error: error.message });
+    }
+};

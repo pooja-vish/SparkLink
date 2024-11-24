@@ -6,30 +6,38 @@ const {
   DeleteMilestone,
   CompleteMilestone,
   ProjMilestones,
-  getUserRoleAccess
+  getUserRoleAccess,
+  ResumeMilestone,
+  filterProjMilestones
 } = require('../controllers/progressTrackerController');
 
 const router = express.Router();
 
-// Create New Milestones with { proj_id, milestone_id }
+//Create New Milestones with { proj_id, milestone_id }
 router.post('/createMilestone', createMilestone);
 
-// Fetch Milestones with { proj_id, milestone_id }
+//Fetch Milestones with { proj_id, milestone_id }
 router.post('/fetchMilestone', FetchMilestone);
 
-// Update Milestone
+//Update Milestone
 router.post('/updateMilestone', UpdateMilestone);
 
-// Delete Milestone
+//Delete Milestone
 router.post('/deleteMilestone', DeleteMilestone);
 
-// Complete Milestone
+//Complete Milestone
 router.post('/completeMilestone', CompleteMilestone);
 
-// Fetch Project Milestone(s) by proj_id
+//Fetch Project Milestone(s) by proj_id
 router.get('/projMilestones', ProjMilestones);
 
-// Fetch User Role Access
+//Fetch User Role Access
 router.post('/getUserRoleAccess', getUserRoleAccess);
+
+//Resume Milestone
+router.post('/resumeMilestone', ResumeMilestone);
+
+//Search Filter project with Proj name
+router.get('/filterProjMilestones', filterProjMilestones);
 
 module.exports = router;
