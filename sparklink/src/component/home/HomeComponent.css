@@ -18,17 +18,18 @@
     font-family: "Poppins", system-ui;
     font-weight: 500 !important;
     font-style: normal;
-    color: #999 !important;
+    color: #dbdbdb !important;
     font-size: x-large !important;
 }
 
 .home_container {
-    padding: 35px 35px 35px 65px !important;
+    padding: 2px 35px 35px 65px !important;
 }
 
 .container-fluid.background {
     /* background: linear-gradient(135deg, #0d1b2a, #1b263b 70%, #415a77); */
-    background: linear-gradient(to top, #5f7f9f, #2c3d5c);
+    /* background: linear-gradient(to top, #5f7f9f, #2c3d5c); */
+    background: #2f5972;
     border-radius: 15px;
     height: auto;
     padding: 20px;
@@ -40,6 +41,11 @@
 .carousel-indicators {
     display: none !important;
 }
+
+/* .carousel-indicators {
+    bottom: 0 !important;
+    position: absolute !important;
+} */
 
 .carousel-control-prev,
 .carousel-control-next {
@@ -194,12 +200,25 @@
     height: auto;
     max-width: 100% !important;
     object-fit: contain;
-    background-color: rgba(211, 211, 211, 0.1);
+    /* background-color: rgba(211, 211, 211, 0.1); */
     border: 1px solid transparent;
     border-radius: 8px;
     padding: 20px;
     margin: 10px 0;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow-y: auto;
+}
+
+.homepage_caption_img {
+    height: auto;
+    max-width: 100% !important;
+    object-fit: contain;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 20px;
     transition: transform 0.2s, box-shadow 0.2s;
     overflow-y: auto;
 }
@@ -209,24 +228,24 @@
     font-weight: 500;
     font-style: normal;
     color: #000 !important;
-    /* background: linear-gradient(135deg, #0d1b2a, #1b263b 70%, #415a77);
+    background: linear-gradient(135deg, #0d1b2a, #1b263b 70%, #415a77);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    -webkit-text-fill-color: transparent; */
-    font-size: x-large !important;
+    -webkit-text-fill-color: transparent;
+    font-size: large !important;
 }
 
 .card_subcaption {
     font-family: "Poppins", system-ui;
-    font-weight: 300;
+    font-weight: 400;
     font-style: normal;
     color: #000 !important;
     font-size: large !important;
 }
 
 .button-card {
-    background-color: #000;
+    background-color: #2f5972;
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -238,7 +257,8 @@
 
 .button-card:hover {
     background-color: #fff;
-    color: #000;
+    color: #2f5972;
+    border: 1px solid #2f5972;
 }
 
 .row {

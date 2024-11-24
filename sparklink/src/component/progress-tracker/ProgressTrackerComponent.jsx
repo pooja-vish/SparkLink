@@ -441,16 +441,16 @@ const ProgressTrackerComponent = () => {
                                                         {milestoneList.length > 0 &&
                                                             (<tr className='row text-center'>
                                                                 <td className="milestone-details-header col-4">
-                                                                    Milestone Title
+                                                                    Title
                                                                 </td>
                                                                 <td className="milestone-details-header col-5">
-                                                                    Milestone Description
+                                                                    Description
                                                                 </td>
                                                                 <td className="milestone-details-header col-2">
-                                                                    Milestone End Date
+                                                                    End Date
                                                                 </td>
                                                                 <td className="milestone-details-header col-1">
-                                                                    Delete Milestone
+                                                                    Delete
                                                                 </td>
                                                             </tr>)}
                                                         {milestoneList.map((milestone, index) => (
