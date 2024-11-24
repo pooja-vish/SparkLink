@@ -1,5 +1,6 @@
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
+const ProjApplication = require("../models/proj_application");
 const Milestone = require("../models/proj_milestone");
 const ProjectStatus = require("../models/proj_status");
 const Role = require("../models/role");
@@ -465,9 +466,17 @@ exports.applyProject = async (req, res) => {
         return res.status(200).json({ success: false, message: "This project already has the maximum number of supervisors." });
       }
     } else if (role === 4) {
-      const student = await ProjAllocation.create(allocationList, {
-        returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
-      });
+      const studentApplList = {
+        proj_id: proj_id,
+        user_id: user_id,
+        role: role,
+        created_by: user_id,
+        modified_by: user_id
+      }
+      const student = await ProjApplication.create(studentApplList);
+      //  student = await ProjAllocation.create(allocationList, {
+      //   returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
+      // });
 
       const statusUpdate = await Project.update({
         status: 3,
