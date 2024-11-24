@@ -5,6 +5,7 @@ const Milestone = require("../models/proj_milestone");
 const ProjectStatus = require("../models/proj_status");
 const Role = require("../models/role");
 const User = require("../models/user");
+const Image = require("../models/image");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
 
@@ -23,7 +24,7 @@ exports.createProject = async (req, res) => {
       project_description,
       features,
       project_deadline,
-      image_url, // Add image_url field
+      image_url,
     } = req.body;
 
     // Validate required fields
@@ -68,6 +69,7 @@ exports.createProject = async (req, res) => {
 
     const user = req.user;
 
+
     const projectData = {
       project_name: project_name,
       proj_desc: proj_desc,
@@ -84,7 +86,7 @@ exports.createProject = async (req, res) => {
     const project = await Project.create(projectData, { transaction: t });
 
     const projAllocationData = {
-      proj_id: project.proj_id,
+      proj_id: project.proj_id, 
       user_id: user.user_id,
       role: 2,
       created_by: user.user_id,
