@@ -4,6 +4,7 @@ import MenuComponent from '../menu/MenuComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './viewUsers.css';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { toast } from 'react-toastify;'
 
 const roleMapping = {
   "1": "Admin",
@@ -95,7 +96,11 @@ const ViewUserComponent = () => {
     }
   };
 
+const handleDeleteButton = async (user) =>{
+await axios.post("/api/users/DeleteUser", {
 
+})
+}
   return (
     <div className="page-container">
       <div className="content-container">
