@@ -4,7 +4,7 @@ body {
 }
 
 .button-home {
-  background-color: #1D3A5F;
+  background-color: #2f5972;
   color: #fff;
   border: solid 1px;
   padding: 10px 20px;
@@ -16,7 +16,7 @@ body {
 
 .button-home:hover {
   background-color: #fff;
-  color: #1D3A5F;
+  color: #2f5972;
   border: solid 1px;
 }
 
