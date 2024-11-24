@@ -1,6 +1,7 @@
 const Student_profile = require('../models/student_profile');
 const Supervisor_profile = require('../models/supervisor_profile');
 const Owner_profile = require('../models/owner_profile');
+const ProjAllocation = require("../models/proj_allocation");
 const User = require('../models/user');
 const Role = require('../models/role');
 const Project = require('../models/project');
@@ -22,7 +23,7 @@ exports.getProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+    console.log("==user.role==",user.role);
     const role = await Role.findOne({
       where: { id: user.role },
       attributes: ['role_desc'], // Only fetch the role description
@@ -36,14 +37,33 @@ exports.getProfile = async (req, res) => {
     console.log(`Role: ${roleDesc}`);
 
     // Fetch the profile based on the role
-    let profile;
+    let profile,projects;
     if (roleDesc === 'student') {
       profile = await Student_profile.findOne({ where: { user_id } });
+      projects = await ProjAllocation.findAll({
+        where: {
+          user_id: user_id,   
+          role: 4,  
+        },
+      });
     } else if (roleDesc === 'supervisor') {
       profile = await Supervisor_profile.findOne({ where: { user_id } });
+      projects = await ProjAllocation.findAll({
+        where: {
+          user_id: user_id,   
+          role: 3,  
+        },
+      });
     } else if (roleDesc === 'business_owner') {
       profile = await Owner_profile.findOne({ where: { user_id } });
+      projects = await ProjAllocation.findAll({
+        where: {
+          user_id: user_id,   
+          role: 2,  
+        },
+      });
     } else {
+      
       return res.status(400).json({ message: "Invalid role" });
     }
 
@@ -52,9 +72,10 @@ exports.getProfile = async (req, res) => {
     }
 
     // Fetch the projects for the user
-    const projects = await Project.findAll({
-      where: { user_id },
-    });
+    // const projects = await ProjAllocation.findAll({
+    //   where: { user_id },
+    //   attributes: ['id', 'role'], 
+    // });
 
     res.status(200).json({
       message: 'Profile and projects fetched successfully',

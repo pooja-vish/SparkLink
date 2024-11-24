@@ -367,10 +367,10 @@ const ProfileComponent = () => {
                                                 <div className="row">
                                                     <div className="col-md-5 col-5">
                                                         <i className="fas fa-graduation-cap text-orange"></i>
-                                                        <strong className="margin-10px-left text-orange">Degree:</strong>
+                                                        <strong className="margin-10px-left text-orange">Business Type:</strong>
                                                     </div>
                                                     <div className="col-md-7 col-7">
-                                                        <p>{profile.education}</p>
+                                                        <p>{profile.business_type}</p>
                                                     </div>
                                                 </div>
                                             </li>
@@ -378,21 +378,10 @@ const ProfileComponent = () => {
                                                 <div className="row">
                                                     <div className="col-md-5 col-5">
                                                         <i className="far fa-gem text-yellow"></i>
-                                                        <strong className="margin-10px-left text-yellow">Experience:</strong>
+                                                        <strong className="margin-10px-left text-yellow">Domain:</strong>
                                                     </div>
                                                     <div className="col-md-7 col-7">
-                                                        <p>{profile.experience}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-md-5 col-5">
-                                                        <i className="far fa-file text-lightred"></i>
-                                                        <strong className="margin-10px-left text-lightred">Courses:</strong>
-                                                    </div>
-                                                    <div className="col-md-7 col-7">
-                                                        <p>{profile.course}</p>
+                                                        <p>{profile.domain_type}</p>
                                                     </div>
                                                 </div>
                                             </li>
@@ -459,8 +448,9 @@ const ProfileComponent = () => {
                                                 ))}
                                             </div>
                                         </div>
+                                    </div>                                  
                                     </div>
-                                </div>
+                              
                             </div>
                         </div>
                     </div>
@@ -468,7 +458,7 @@ const ProfileComponent = () => {
             )}
             {/* buisness owner profile ends */}
 
-           
+
         </>
     );
 };

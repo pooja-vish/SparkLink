@@ -7,7 +7,8 @@ const {
   CompleteMilestone,
   ProjMilestones,
   getUserRoleAccess,
-  ResumeMilestone
+  ResumeMilestone,
+  filterProjMilestones
 } = require('../controllers/progressTrackerController');
 
 const router = express.Router();
@@ -35,5 +36,8 @@ router.post('/getUserRoleAccess', getUserRoleAccess);
 
 //Resume Milestone
 router.post('/resumeMilestone', ResumeMilestone);
+
+//Search Filter project with Proj name
+router.get('/filterProjMilestones', filterProjMilestones);
 
 module.exports = router;

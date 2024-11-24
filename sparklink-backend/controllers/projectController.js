@@ -447,7 +447,7 @@ exports.applyProject = async (req, res) => {
             returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
           });
           const statusUpdate = await Project.update({
-            status: 3,
+            status: 2,
             modified_by: user_id
           }, {
             where: {
