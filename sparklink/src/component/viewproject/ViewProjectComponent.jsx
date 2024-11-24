@@ -15,6 +15,20 @@ import fail_icon from '../../assets/fail_icon.png';
 import { useAuth } from '../../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import photo1 from '../../assets/project_images/photo1.jpg';
+import photo2 from '../../assets/project_images/photo2.jpg';
+import photo3 from '../../assets/project_images/photo3.jpg';
+import photo4 from '../../assets/project_images/photo4.jpg';
+import photo5 from '../../assets/project_images/photo5.jpg';
+import photo6 from '../../assets/project_images/photo6.jpg';
+import photo7 from '../../assets/project_images/photo7.jpg';
+import photo8 from '../../assets/project_images/photo8.jpg';
+import photo9 from '../../assets/project_images/photo9.jpg';
+import photo10 from '../../assets/project_images/photo10.jpg';
+
+// Array of images
+const imageArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10];
+
 
 const ViewProjectComponent = () => {
     const navigate = useNavigate();
@@ -421,16 +435,17 @@ const ViewProjectComponent = () => {
                                                 {projectList.map((item, index) => (
                                                     <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
                                                         key={index} onClick={() => openProjectDetails(item.proj_id)}>
+                                                            
                                                         <div className="progress-image"
                                                             style={{
-                                                                backgroundImage: item.image_url === ''
-                                                                    ? 'linear-gradient(to bottom right, #007BFF, #00BFFF)'
-                                                                    : `url(${encodeURI(item.image_url)})`,
+                                                                backgroundImage: `url(${imageArray[item.image_url]})`,
                                                                 backgroundSize: 'cover',
                                                                 backgroundPosition: 'center'
+
                                                             }}
                                                             loading="lazy">
                                                         </div>
+                                                        {item.image_url}
                                                         <div className="progress-content">
                                                             {/* <span className="progress-category">{item.project_name}</span> */}
                                                             {/* <span className="progress-category">Software</span> */}
