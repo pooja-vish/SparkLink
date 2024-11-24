@@ -128,7 +128,7 @@ exports.CompleteMilestone = async (req, res) => {
             attributes: ['is_active', 'is_completed']
         });
 
-        if (ms.is_active === 'Y' && is_completed === 'N') {
+        if (ms.is_active === 'Y' && ms.is_completed === 'N') {
             const completeData = await Milestone.update({
                 is_completed: 'Y'
             }, {
