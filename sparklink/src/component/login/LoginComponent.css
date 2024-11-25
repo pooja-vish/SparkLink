@@ -1,12 +1,33 @@
 /* Centering and styling the main login container */
 
 /* .login-backend { */
-  /* margin: 0; */
-  /* height: 100vh;  */
-  /* background-color: "linear-gradient(to top, #5f7f9f, #2c3d5c)" !important; */
-  /* background-color: #f8f9fa; */
+/* margin: 0; */
+/* height: 100vh;  */
+/* background-color: "linear-gradient(to top, #5f7f9f, #2c3d5c)" !important; */
+/* background-color: #f8f9fa; */
 /* } */
 
+.divider:after,
+.divider:before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eee;
+}
+.h-custom {
+  height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+  .h-custom {
+    height: 100%;
+  }
+}
+
+.form-title{
+  text-align: left;
+  font-weight: 700;
+  padding-bottom: 30px;
+}
 
 .login-page-container {
   height: 100vh;
@@ -19,7 +40,7 @@
 .login-container {
   max-width: 400px;
   padding: 2rem;
-  margin:auto;
+  margin: auto;
   background-color: #f8f9fa;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -88,9 +109,9 @@
 }
 
 /* Signup text */
-.signup-text, .forgetpassword-text {
+.signup-text,
+.forgetpassword-text {
   text-align: center;
   margin-top: 1rem;
   font-size: 0.9rem;
 }
-

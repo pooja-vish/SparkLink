@@ -233,7 +233,6 @@ const CreateProjectComponent = () => {
                       maxLength={150}
                       required
                     />
-                    {purpose}
                     <label className="form_label">
                       2. What is the main purpose of the product?
                       <span className="text-danger"> *</span>
@@ -290,7 +289,6 @@ const CreateProjectComponent = () => {
                         />
                       )}
                     </div>
-{product}
                     <label className="form_label">
                       3. What type of product do you want to build?
                       <span className="text-danger"> *</span>
