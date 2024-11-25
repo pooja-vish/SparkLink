@@ -9,14 +9,13 @@
 .footer-container {
     padding: 0 0 0 45px !important;
     /* background: linear-gradient(to bottom, #8EC5FC, #3A539B); */
-    background: linear-gradient(180deg, #5f7f9f, #2c3d5c);
-    color: #333333;
+    background: #2f5972;
     z-index: 1000;
 }
 
 .container-fluid.footer-background {
     /* background: linear-gradient(to bottom, #8EC5FC, #3A539B); */
-    background: linear-gradient(180deg, #5f7f9f, #2c3d5c);
+    background: #2f5972;
     color: #fff;
     font-weight: 500;
     font-size: large;

@@ -22,7 +22,7 @@ const MenuComponent = () => {
     const location = useLocation();
     const [open, setOpen] = useState(false); // MouseEvent
     const [role, setRole] = useState(''); // UserRole
-    const { isAuthenticated, setIsAuthenticated } = useAuth()
+    const { isAuthenticated, setIsAuthenticated } = useAuth();
     const getNavItemClass = (path) => {
         return location.pathname === path ? 'nav-item active' : 'nav-item';
     };
