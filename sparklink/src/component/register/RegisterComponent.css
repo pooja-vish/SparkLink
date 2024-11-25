@@ -1,0 +1,28 @@
+.signup-image {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-right: 2rem; /* Space between image and form */
+  }
+  
+  .signup-image img {
+    width: 100%; /* Ensure image is responsive */
+    max-width: 400px; /* Set a maximum width for the image */
+    height: auto;
+    
+  }
+  
+  
+  .signup-image a {
+    display: inline-block;
+    margin-top: 1rem; /* Space between image and link */
+    color: #007bff; /* Link color */
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+
+  
