@@ -117,12 +117,12 @@ body {
   }
   
   /* Make form inputs larger for better user experience */
-  input[type="text"],
+  /* input[type="text"],
   input[type="email"],
   input[type="tel"],
   textarea {
     font-size: 16px;
-  }
+  } */
   
   textarea {
     resize: vertical;

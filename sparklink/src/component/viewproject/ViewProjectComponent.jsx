@@ -71,7 +71,7 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project');
-            console.log(response.data.projects);
+            console.log("projects >>>" ,response.data.projects);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -445,7 +445,6 @@ const ViewProjectComponent = () => {
                                                             }}
                                                             loading="lazy">
                                                         </div>
-                                                        {item.image_url}
                                                         <div className="progress-content">
                                                             {/* <span className="progress-category">{item.project_name}</span> */}
                                                             {/* <span className="progress-category">Software</span> */}

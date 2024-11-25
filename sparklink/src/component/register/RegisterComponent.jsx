@@ -1,158 +1,189 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import sparklink_icon from '../../assets/SparkLink_icon.png';
-import backgroundImage from '../../assets/background3.jpg'; // Add your background image here
+import "./RegisterComponent.css";
+import sparklink_icon from "../../assets/SparkLink_icon.png";
+import backgroundImage from "../../assets/background3.jpg"; // Add your background image here
+import signupImage from "../../assets/signup-image.jpg";
 
 const RegistrationForm = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
   const [isBusinessOwner, setIsBusinessOwner] = useState(false);
   const [isSupervisor, setIsSupervisor] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [selectedRole, setSelectedRole] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match!');
+      setErrorMessage("Passwords do not match!");
       return;
     }
 
     try {
-      const response = await axios.post('/api/users/register', {
+      const response = await axios.post("/api/users/register", {
         username,
         email,
         password,
         name,
-        isBusinessOwner,
-        isSupervisor
+        selectedRole,
       });
 
-      setSuccessMessage('Registration successful!');
-      setErrorMessage('');
+      setSuccessMessage("Registration successful!");
+      setErrorMessage("");
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Registration failed. Please try again.');
-      setSuccessMessage('');
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Registration failed. Please try again."
+      );
+      setSuccessMessage("");
     }
   };
 
   return (
-    <div style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100vh",
-      background: `url(${backgroundImage}) center/cover no-repeat`,
-      padding: "20px"
-    }}>
-      <div
-  className="form-container p-5 rounded shadow"
-  style={{
-    maxWidth: "450px",
-    width: "100%",
-    backgroundColor: "rgba(240, 240, 240, 1)",  // Translucent dark color
-    color: "rgba(0, 0, 0, 1)",  // White text for better readability on dark background
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-    borderRadius: "8px",
-    position: "relative",
-    zIndex: 1,
-  }}
->
-        <h2 className="text-center mb-4">
-          <img src={sparklink_icon} alt="SparkLink Logo" width="50" className="me-2" />
-          Register
-        </h2>
-        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-        {successMessage && <div className="alert alert-success">{successMessage}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="name" className="form-label">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              className="form-control"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="username" className="form-label">Username</label>
-            <input
-              type="text"
-              id="username"
-              className="form-control"
-              value={username}
+    <div className="main">
+      <section className="vh-100">
+        <div className="container-fluid h-custom">
+          <div className="row d-flex justify-content-center align-items-center h-100">
+            {/* Form Section */}
+            <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+              <form className="register-form" id="register-form">
+                <h2 className="form-title">Sign up</h2>
+                {/* Name Field */}
+                <div data-mdb-input-init className="form-outline mb-4">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="form-control form-control-lg"
+                    placeholder="Your Name"
+                    required
+                  />
+                </div>
+                <div data-mdb-input-init className="form-outline mb-4">
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    value={username}
               onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email</label>
-            <input
-              type="email"
-              id="email"
-              className="form-control"
-              value={email}
+                    className="form-control form-control-lg"
+                    placeholder="User Name"
+                    required
+                  />
+                </div>
+                {/* Email Field */}
+                <div data-mdb-input-init className="form-outline mb-4">
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password</label>
-            <input
-              type="password"
-              id="password"
-              className="form-control"
-              value={password}
+                    className="form-control form-control-lg"
+                    placeholder="Your Email"
+                    required
+                  />
+                </div>
+                {/* Password Field */}
+                <div data-mdb-input-init className="form-outline mb-4">
+                  <input
+                    type="password"
+                    name="pass"
+                    id="pass"
+                    value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              className="form-control"
-              value={confirmPassword}
+                    className="form-control form-control-lg"
+                    placeholder="Password"
+                    required
+                  />
+                </div>
+                {/* Repeat Password Field */}
+                <div data-mdb-input-init className="form-outline mb-4">
+                  <input
+                    type="password"
+                    name="re_pass"
+                    id="re_pass"
+                    value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Roles</label>
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="businessOwner"
-                className="form-check-input"
-                checked={isBusinessOwner}
-                onChange={(e) => setIsBusinessOwner(e.target.checked)}
-              />
-              <label htmlFor="businessOwner" className="form-check-label">Business Owner</label>
+                    className="form-control form-control-lg"
+                    placeholder="Repeat your password"
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="roleSelect" className="form-label">
+                    Roles
+                  </label>
+                  <select
+                    id="roleSelect"
+                    className="form-select"
+                    value={selectedRole} // Assuming `selectedRole` is the state holding the selected role
+                    onChange={(e) => setSelectedRole(e.target.value)} // Update state on selection
+                  >
+                    <option value="" disabled>
+                      Select a Role
+                    </option>
+                    <option value="businessOwner">Business Owner</option>
+                    <option value="supervisor">Supervisor</option>
+                    <option value="student">Student</option>
+                  </select>
+                </div>
+                {/* Submit Button */}
+                <div className="text-center text-lg-start mt-4 pt-2">
+                  <button
+                    type="submit"
+                    name="signup"
+                    id="signup"
+                    className="btn btn-primary btn-lg"
+                    style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
+                  >
+                    Register
+                  </button>
+                </div>
+              </form>
             </div>
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="projectOwner"
-                className="form-check-input"
-                checked={isSupervisor}
-                onChange={(e) => setIsSupervisor(e.target.checked)}
-              />
-              <label htmlFor="projectOwner" className="form-check-label">Supervisor</label>
+            {/* Image Section */}
+            <div className="signup-image col-md-9 col-lg-6 col-xl-5">
+              <img
+                src={signupImage} // Use the path of your image
+                className="img-fluid"
+                alt="Sign up image"
+              ></img>
+              <a href="#" className="signup-image-link">
+                I am already a member
+              </a>
             </div>
           </div>
-          <div className="text-center">
-            <button type="submit" className="btn btn-primary w-100">Register</button>
+        </div>
+        <div className="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+          <div className="text-white mb-3 mb-md-0">
+            Copyright © 2020. All rights reserved.
           </div>
-        </form>
-      </div>
+          <div>
+            <a href="#!" className="text-white me-4">
+              <i className="fab fa-facebook-f"></i>
+            </a>
+            <a href="#!" className="text-white me-4">
+              <i className="fab fa-twitter"></i>
+            </a>
+            <a href="#!" className="text-white me-4">
+              <i className="fab fa-google"></i>
+            </a>
+            <a href="#!" className="text-white">
+              <i className="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
