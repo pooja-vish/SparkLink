@@ -4,7 +4,8 @@ import MenuComponent from '../menu/MenuComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './viewUsers.css';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { toast } from 'react-toastify;'
+import { toast } from 'react-toastify';
+
 
 const roleMapping = {
   "1": "Admin",
