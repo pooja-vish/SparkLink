@@ -9,6 +9,7 @@ import {
 import { storage } from "../../firebase_script"; // Your Firebase config file
 import "./CreateProjectComponent.css";
 import MenuComponent from "../../component/menu/MenuComponent";
+import MasterComponent from '../MasterComponent';
 import FooterComponent from "../footer/FooterComponent";
 import axios from "axios";
 
@@ -209,6 +210,7 @@ const CreateProjectComponent = () => {
       <div className="container-fluid">
         <MenuComponent />
         <div className="row">
+        <MasterComponent />
           <div className="col-1"></div>
           <div className="col-11">
             <div className="progress-tracker">
