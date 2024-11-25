@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ViewProjectComponent.css';
 import MenuComponent from '../menu/MenuComponent';
+import MasterComponent from '../MasterComponent';
 import FooterComponent from '../footer/FooterComponent';
 import axios from 'axios';
 import Select from 'react-select';
@@ -71,7 +72,6 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project');
-            console.log("projects >>>" ,response.data.projects);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -411,8 +411,9 @@ const ViewProjectComponent = () => {
         <>
             <div className="page-container">
                 <div className="content-container">
+                    <MenuComponent />
+                    <MasterComponent />
                     <div className="container-fluid mb-5">
-                        <MenuComponent />
                         <div className="progress_container">
                             <div className="row">
                                 <div className="col-lg-1 col-md-1 col-sm-3"></div>
@@ -435,7 +436,7 @@ const ViewProjectComponent = () => {
                                                 {projectList.map((item, index) => (
                                                     <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
                                                         key={index} onClick={() => openProjectDetails(item.proj_id)}>
-                                                            
+
                                                         <div className="progress-image"
                                                             style={{
                                                                 backgroundImage: `url(${imageArray[item.image_url]})`,
@@ -486,22 +487,22 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && 
-                                                        (projDetailsList.status !== 7 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
-                                                            src={fail_icon}
-                                                            className='complete_icon'
-                                                            title='Mark Project as Cancelled'
-                                                            onClick={cancelProject}
-                                                            alt=''
-                                                        /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && 
-                                                        (projDetailsList.status !== 6 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
-                                                            src={delay_icon}
-                                                            className='complete_icon'
-                                                            title='Mark Project as Delayed'
-                                                            onClick={delayProject}
-                                                            alt=''
-                                                        /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
+                                                            (projDetailsList.status !== 7 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                                src={fail_icon}
+                                                                className='complete_icon'
+                                                                title='Mark Project as Cancelled'
+                                                                onClick={cancelProject}
+                                                                alt=''
+                                                            /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
+                                                            (projDetailsList.status !== 6 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                                src={delay_icon}
+                                                                className='complete_icon'
+                                                                title='Mark Project as Delayed'
+                                                                onClick={delayProject}
+                                                                alt=''
+                                                            /></span>}
                                                         {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'

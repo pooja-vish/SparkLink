@@ -478,14 +478,14 @@ exports.applyProject = async (req, res) => {
       //   returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
       // });
 
-      const statusUpdate = await Project.update({
-        status: 3,
-        modified_by: user_id
-      }, {
-        where: {
-          proj_id: proj_id
-        }
-      });
+      // const statusUpdate = await Project.update({
+      //   status: 3,
+      //   modified_by: user_id
+      // }, {
+      //   where: {
+      //     proj_id: proj_id
+      //   }
+      // });
 
       return res.status(200).json({ success: true, message: "Project application successful", student });
     }
@@ -574,9 +574,22 @@ exports.getUserRoleAccess = async (req, res) => {
         }
       });
 
-      //Remove projStatus.status === 1
+      const student_appl = await ProjApplication.count({
+        where: {
+          proj_id: proj_id,
+          user_id: user_id,
+          role: role,
+          is_active: 'Y',
+          is_approved: 'N'
+        }
+      });
+      
+      if(student_appl === 1) {
+        return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+      }
+
       if (student === 0) {
-        if (projStatus.status === 1 || projStatus.status === 2 || projStatus.status === 3) {
+        if (projStatus.status === 1 || projStatus.status === 2 || projStatus.status === 3 || projStatus.status === 4) {
           return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
         } else {
           return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });

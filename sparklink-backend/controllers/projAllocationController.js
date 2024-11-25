@@ -1,5 +1,6 @@
 const project_allocation = require("../models/proj_allocation");
 const project_application = require("../models/proj_application");
+const Project = require("../models/project");
 
 const acceptProject = async (req, res) => {
   try {
@@ -14,13 +15,20 @@ const acceptProject = async (req, res) => {
       modified_by: user_id,
     };
 
+    const student_exists = await project_allocation.count({
+      where: {
+        proj_id: proj_id,
+        role: role
+      }
+    });
+
     // Insert a new record into the project_allocation table
     await project_allocation.create(allocationList);
 
     // Update the application status in the project_application table
     await project_application.update(
       {
-        is_active: 'N', // Change the status to inactive
+        is_active: 'Y', // Change the status to inactive
         is_approved: 'Y', // Mark as approved
       },
       {
@@ -32,6 +40,17 @@ const acceptProject = async (req, res) => {
       }
     );
 
+    if(student_exists === 0) {
+      const statusUpdate = await Project.update({
+        status: 3,
+        modified_by: user_id
+      }, {
+        where: {
+          proj_id: proj_id
+        }
+      });
+    }
+    
     // Respond with success
     res.status(200).json({
       message: "Project application accepted.",
