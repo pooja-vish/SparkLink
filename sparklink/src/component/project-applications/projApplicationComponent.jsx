@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./projApplicationComponent.css";
 import MenuComponent from "../menu/MenuComponent";
+import MasterComponent from '../MasterComponent';
 
 const ProjApplicationComponent = () => {
   const [acceptedProjects, setAcceptedProjects] = useState([]);
@@ -104,6 +105,7 @@ const ProjApplicationComponent = () => {
   return (
     <div className="container-fluid">
       <MenuComponent />
+      <MasterComponent />
       <div className="row">
         <div className="col-1"></div>
         <div className="col-11">

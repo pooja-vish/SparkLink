@@ -1,62 +1,75 @@
 const project_allocation = require("../models/proj_allocation");
 const project_application = require("../models/proj_application");
+const Project = require("../models/project");
 
 const acceptProject = async (req, res) => {
   try {
-    const { proj_id, user_id: student_id, role } = req.body;
-    
-    // Find an existing project allocation record by proj_id
-    const existingRecord = await project_allocation.findOne({
-      where: { proj_id },
+    const { proj_id, user_id, role } = req.body;
+
+    // Define the new allocation object
+    const allocationList = {
+      proj_id: proj_id,
+      user_id: user_id,
+      role: role,
+      created_by: user_id,
+      modified_by: user_id,
+    };
+
+    const student_exists = await project_allocation.count({
+      where: {
+        proj_id: proj_id,
+        role: role
+      }
     });
-    if (existingRecord) {
-      // If student field is null or empty, set it to student_id
-      // Otherwise, append `,student_id` to the existing student field
-      const updatedStudent = existingRecord.student
-        ? `${existingRecord.student},${student_id}`
-        : student_id.toString();
 
-      await existingRecord.update({
-        student: updatedStudent,
-      });
+    // Insert a new record into the project_allocation table
+    await project_allocation.create(allocationList);
 
-      await project_application.update(
-        {
-          is_active: 'N',
-          is_approved: 'Y',
+    // Update the application status in the project_application table
+    await project_application.update(
+      {
+        is_active: 'Y', // Change the status to inactive
+        is_approved: 'Y', // Mark as approved
+      },
+      {
+        where: {
+          proj_id: proj_id,
+          user_id: user_id,
+          role: role,
         },
-        {
-          where: {
-            proj_id,
-            user_id: student_id,
-            role,
-          },
-        }
-      );
+      }
+    );
 
-      res.status(200).json({
-        message: "Project application accepted and updated successfully",
-      });
-    } else {
-      // If no existing record, create a new one
-      res.status(400).json({
-        message: "No existing project",
+    if(student_exists === 0) {
+      const statusUpdate = await Project.update({
+        status: 3,
+        modified_by: user_id
+      }, {
+        where: {
+          proj_id: proj_id
+        }
       });
     }
+    
+    // Respond with success
+    res.status(200).json({
+      message: "Project application accepted.",
+    });
   } catch (error) {
     console.error("Error accepting project:", error);
-    res.status(500).json({ error: "Failed to accept project application" });
+    res.status(500).json({ error: "Failed to accept project application." });
   }
 };
+
 const rejectProject = async (req, res) => {
-  const { proj_id, user_id: student_id, role } = req.body;
+  const { proj_id, user_id, role } = req.body;
 
   try {
     // Check if the project application exists
     const existingApplication = await project_application.findOne({
       where: {
         proj_id,
-        user_id: student_id,
+        user_id,
         role,
       },
     });
@@ -76,7 +89,7 @@ const rejectProject = async (req, res) => {
       {
         where: {
           proj_id,
-          user_id: student_id,
+          user_id,
           role,
         },
       }

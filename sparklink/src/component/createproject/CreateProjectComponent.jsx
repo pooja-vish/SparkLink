@@ -9,6 +9,7 @@ import {
 import { storage } from "../../firebase_script"; // Your Firebase config file
 import "./CreateProjectComponent.css";
 import MenuComponent from "../../component/menu/MenuComponent";
+import MasterComponent from '../MasterComponent';
 import FooterComponent from "../footer/FooterComponent";
 import axios from "axios";
 
@@ -209,6 +210,7 @@ const CreateProjectComponent = () => {
       <div className="container-fluid">
         <MenuComponent />
         <div className="row">
+        <MasterComponent />
           <div className="col-1"></div>
           <div className="col-11">
             <div className="progress-tracker">
@@ -233,7 +235,6 @@ const CreateProjectComponent = () => {
                       maxLength={150}
                       required
                     />
-                    {purpose}
                     <label className="form_label">
                       2. What is the main purpose of the product?
                       <span className="text-danger"> *</span>
@@ -290,7 +291,6 @@ const CreateProjectComponent = () => {
                         />
                       )}
                     </div>
-{product}
                     <label className="form_label">
                       3. What type of product do you want to build?
                       <span className="text-danger"> *</span>
