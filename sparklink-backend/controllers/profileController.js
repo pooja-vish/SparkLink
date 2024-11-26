@@ -11,7 +11,8 @@ const sequelize = require('../config/db');
 
 exports.getProfile = async (req, res) => {
   try {
-    const user_id = req.user.user_id;
+    const { user_id } = req.query;
+    //const user_id = req.user.user_id;
 
     if (!user_id) {
       return res.status(400).json({ message: "User ID is required" });
