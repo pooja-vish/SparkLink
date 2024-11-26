@@ -23,6 +23,34 @@
     text-decoration: none;
     transition: color 0.3s ease; /* Smooth transition for hover effect */
   }
+
+  
+.logo-container {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    gap: 10px;
+    padding-bottom: 30px;
+  }
+  
+  .sparklink_logo_login {
+    width: 150px; /* Adjust the logo size */
+    align-items: center;
+    /* justify-content: center; */
+    height: auto;
+  }
+  
+  .form-title {
+    font-size: 50px; /* Adjust font size as needed */
+    /* font-weight: bold; */
+    align-items: center;
+    justify-content: center;
+    margin: 0; /* Remove any default margin */
+    text-align: center;
+    font-weight: 700;
+    /*  */
+  }
+  
   
 
   

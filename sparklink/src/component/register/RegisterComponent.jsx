@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./RegisterComponent.css";
 import sparklink_icon from "../../assets/SparkLink_icon.png";
 import backgroundImage from "../../assets/background3.jpg"; // Add your background image here
 import signupImage from "../../assets/signup-image.jpg";
+import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
 
 const RegistrationForm = () => {
   const [username, setUsername] = useState("");
@@ -54,7 +55,19 @@ const RegistrationForm = () => {
             {/* Form Section */}
             <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
               <form className="register-form" id="register-form">
-                <h2 className="form-title">Sign up</h2>
+                <div className="logo-container">
+                  <h2 className="form-title">Sign up</h2>
+                  <div className="col-lg-5 col-md-5 px-5 col-sm-12">
+                    <Link to="/">
+                      <img
+                        src={sparklink_logo}
+                        alt="Logo"
+                        className="sparklink_logo_login"
+                      />
+                    </Link>
+                  </div>
+                </div>
+
                 {/* Name Field */}
                 <div data-mdb-input-init className="form-outline mb-4">
                   <input
@@ -74,7 +87,7 @@ const RegistrationForm = () => {
                     name="username"
                     id="username"
                     value={username}
-              onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => setUsername(e.target.value)}
                     className="form-control form-control-lg"
                     placeholder="User Name"
                     required
@@ -87,7 +100,7 @@ const RegistrationForm = () => {
                     name="email"
                     id="email"
                     value={email}
-              onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="form-control form-control-lg"
                     placeholder="Your Email"
                     required
@@ -100,7 +113,7 @@ const RegistrationForm = () => {
                     name="pass"
                     id="pass"
                     value={password}
-              onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="form-control form-control-lg"
                     placeholder="Password"
                     required
@@ -113,7 +126,7 @@ const RegistrationForm = () => {
                     name="re_pass"
                     id="re_pass"
                     value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="form-control form-control-lg"
                     placeholder="Repeat your password"
                     required
@@ -143,8 +156,8 @@ const RegistrationForm = () => {
                     type="submit"
                     name="signup"
                     id="signup"
-                    className="btn btn-primary btn-lg"
-                    style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
+                    className="button_text button-card"
+                    
                   >
                     Register
                   </button>
@@ -162,25 +175,6 @@ const RegistrationForm = () => {
                 I am already a member
               </a>
             </div>
-          </div>
-        </div>
-        <div className="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
-          <div className="text-white mb-3 mb-md-0">
-            Copyright © 2020. All rights reserved.
-          </div>
-          <div>
-            <a href="#!" className="text-white me-4">
-              <i className="fab fa-facebook-f"></i>
-            </a>
-            <a href="#!" className="text-white me-4">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="#!" className="text-white me-4">
-              <i className="fab fa-google"></i>
-            </a>
-            <a href="#!" className="text-white">
-              <i className="fab fa-linkedin-in"></i>
-            </a>
           </div>
         </div>
       </section>

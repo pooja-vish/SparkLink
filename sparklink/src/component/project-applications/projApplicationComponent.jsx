@@ -105,8 +105,8 @@ const ProjApplicationComponent = () => {
   return (
     <div className="container-fluid">
       <MenuComponent />
-      <MasterComponent />
       <div className="row">
+      <MasterComponent />
         <div className="col-1"></div>
         <div className="col-11">
           <div className="notification-page">
