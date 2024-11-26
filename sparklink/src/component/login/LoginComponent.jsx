@@ -75,6 +75,8 @@ const LoginComponent = () => {
             ></img>
           </div>
           <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+          {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+          {successMessage && <div className="alert alert-success">{successMessage}</div>}
             <form className="form" onSubmit={handleLogin}>
               <div className="logo-container" >
                 <h2 className="form-title">Sign in</h2>

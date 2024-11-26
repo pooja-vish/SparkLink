@@ -15,13 +15,14 @@ const RegistrationForm = () => {
   const [name, setName] = useState("");
   const [isBusinessOwner, setIsBusinessOwner] = useState(false);
   const [isSupervisor, setIsSupervisor] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("");
+  const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match!");
       return;
@@ -33,7 +34,7 @@ const RegistrationForm = () => {
         email,
         password,
         name,
-        selectedRole,
+        role,
       });
 
       setSuccessMessage("Registration successful!");
@@ -54,7 +55,8 @@ const RegistrationForm = () => {
           <div className="row d-flex justify-content-center align-items-center h-100">
             {/* Form Section */}
             <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-              <form className="register-form" id="register-form">
+              
+              <form className="register-form" id="register-form" onSubmit={handleSubmit}>
                 <div className="logo-container">
                   <h2 className="form-title">Sign up</h2>
                   <div className="col-lg-5 col-md-5 px-5 col-sm-12">
@@ -139,15 +141,15 @@ const RegistrationForm = () => {
                   <select
                     id="roleSelect"
                     className="form-select"
-                    value={selectedRole} // Assuming `selectedRole` is the state holding the selected role
-                    onChange={(e) => setSelectedRole(e.target.value)} // Update state on selection
+                    value={role} // Assuming `selectedRole` is the state holding the selected role
+                    onChange={(e) => setRole(e.target.value)} // Update state on selection
                   >
                     <option value="" disabled>
                       Select a Role
                     </option>
-                    <option value="businessOwner">Business Owner</option>
-                    <option value="supervisor">Supervisor</option>
-                    <option value="student">Student</option>
+                    <option value="2">Business Owner</option>
+                    <option value="3">Supervisor</option>
+                    <option value="4">Student</option>
                   </select>
                 </div>
                 {/* Submit Button */}
@@ -157,11 +159,13 @@ const RegistrationForm = () => {
                     name="signup"
                     id="signup"
                     className="button_text button-card"
-                    
                   >
                     Register
                   </button>
+                  {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                {successMessage && <div className="alert alert-success">{successMessage}</div>}
                 </div>
+                
               </form>
             </div>
             {/* Image Section */}
