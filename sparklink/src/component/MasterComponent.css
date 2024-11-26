@@ -8,12 +8,16 @@
 }
 
 .heading {
-    font-family: "Roboto", sans-serif;
-    font-weight: 500 !important;
+    font-family: "Poppins", system-ui;
+    font-weight: 500;
     font-style: normal;
-    color: #fff !important;
-    font-size: xx-large !important;
-    letter-spacing: 1.5px;
+    /* color: #000000 !important; */
+    background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-size: large !important;
 }
 
 .nav-text {
@@ -26,6 +30,14 @@
 .sparklink_logo {
     height: 45px;
     cursor: pointer !important;
+}
+
+.main {
+    white-space: nowrap;
+}
+
+.sub {
+    display: inline-block;
 }
 
 @media (max-width: 768px) {

@@ -1,9 +1,11 @@
 const Project = require("../models/project");
 const ProjAllocation = require("../models/proj_allocation");
+const ProjApplication = require("../models/proj_application");
 const Milestone = require("../models/proj_milestone");
 const ProjectStatus = require("../models/proj_status");
 const Role = require("../models/role");
 const User = require("../models/user");
+const Image = require("../models/image");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
 
@@ -22,7 +24,7 @@ exports.createProject = async (req, res) => {
       project_description,
       features,
       project_deadline,
-      image_url, // Add image_url field
+      image_url,
     } = req.body;
 
     // Validate required fields
@@ -67,6 +69,7 @@ exports.createProject = async (req, res) => {
 
     const user = req.user;
 
+
     const projectData = {
       project_name: project_name,
       proj_desc: proj_desc,
@@ -110,7 +113,7 @@ exports.createProject = async (req, res) => {
   }
 };
 // Get all projects
-exports.getAllProjects = async (req, res) => {
+/*exports.getAllProjects = async (req, res) => {
   try {
     const user = req.user;
     const projects = await Project.findAll({
@@ -127,8 +130,8 @@ exports.getAllProjects = async (req, res) => {
           and pr.proj_id = :proj_id;`;
 
         const [statusResult] = await sequelize.query(status_query, {
-          replacements: { proj_id }, // Replaces :projId with the actual value
-          type: sequelize.QueryTypes.SELECT, // Specifies the query type
+          replacements: { proj_id },
+          type: sequelize.QueryTypes.SELECT,
         });
 
         const status_desc = statusResult ? statusResult.status_desc : null;
@@ -204,7 +207,104 @@ exports.getAllProjects = async (req, res) => {
       .status(500)
       .json({ message: "Error fetching projects", error: error.message });
   }
+}; */
+
+exports.getAllProjects = async (req, res) => {
+  try {
+    const user = req.user;
+
+    const projectsQuery = `
+      SELECT pr.*, ps.status_desc
+      FROM t_project pr, t_proj_status ps
+      WHERE pr.is_active = 'Y'
+      and pr.status = ps.status_id 
+      order by pr.created_on desc
+      limit 50;
+    `;
+    const projects = await sequelize.query(projectsQuery, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    if (projects && projects.length > 0) {
+      const projIds = projects.map(project => project.proj_id);
+
+      const stakeholdersQuery = `
+        SELECT pa.proj_id, u.name, 
+        CASE 
+          WHEN pa.role = 2 THEN 'business_owner'
+          WHEN pa.role = 3 THEN 'supervisor'
+          WHEN pa.role = 4 THEN 'student'
+        END AS role
+        FROM t_proj_allocation pa, t_usermst u 
+        WHERE pa.user_id = u.user_id
+        and pa.proj_id IN (:projIds)
+        order by proj_id desc;
+      `;
+      const stakeholders = await sequelize.query(stakeholdersQuery, {
+        replacements: { projIds },
+        type: sequelize.QueryTypes.SELECT,
+      });
+
+      const stakeholderMap = stakeholders.reduce((map, stakeholder) => {
+        if (!map[stakeholder.proj_id]) {
+          map[stakeholder.proj_id] = [];
+        }
+        map[stakeholder.proj_id].push({
+          name: stakeholder.name,
+          role: stakeholder.role,
+        });
+        return map;
+      }, {});
+
+      const milestonesQuery = `
+        SELECT proj_id, 
+          COUNT(CASE WHEN is_active = 'Y' THEN 1 END) AS active_milestones,
+          COUNT(CASE WHEN is_active = 'Y' AND is_completed = 'Y' THEN 1 END) AS completed_milestones
+        FROM t_proj_milestone
+        WHERE proj_id IN (:projIds)
+        GROUP BY proj_id;
+      `;
+      const milestones = await sequelize.query(milestonesQuery, {
+        replacements: { projIds },
+        type: sequelize.QueryTypes.SELECT,
+      });
+
+      // Map milestones by project
+      const milestoneMap = milestones.reduce((map, milestone) => {
+        const progress = milestone.active_milestones > 0
+          ? Math.round((milestone.completed_milestones / milestone.active_milestones) * 100)
+          : 0;
+        map[milestone.proj_id] = progress || 0;
+        return map;
+      }, {});
+
+      // Combine all data into the projects array
+      projects.forEach(project => {
+        project.status_desc = project.status_desc || '';
+        project.stakeholder = stakeholderMap[project.proj_id] || [];
+        project.progress = milestoneMap[project.proj_id] || 0;
+      });
+    }
+
+    res.status(200).json({
+      projects,
+      user: {
+        user_id: user.user_id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        isAuthenticated: true,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error fetching projects",
+      error: error.message,
+    });
+  }
 };
+
 
 // Get a single project by ID
 exports.getProjectById = async (req, res) => {
@@ -463,18 +563,26 @@ exports.applyProject = async (req, res) => {
         return res.status(200).json({ success: false, message: "This project already has the maximum number of supervisors." });
       }
     } else if (role === 4) {
-      const student = await ProjAllocation.create(allocationList, {
-        returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
-      });
-
-      const statusUpdate = await Project.update({
-        status: 3,
+      const studentApplList = {
+        proj_id: proj_id,
+        user_id: user_id,
+        role: role,
+        created_by: user_id,
         modified_by: user_id
-      }, {
-        where: {
-          proj_id: proj_id
-        }
-      });
+      }
+      const student = await ProjApplication.create(studentApplList);
+      //  student = await ProjAllocation.create(allocationList, {
+      //   returning: ['proj_id', 'user_id', 'role', 'created_by', 'created_on', 'modified_by', 'modified_on']
+      // });
+
+      // const statusUpdate = await Project.update({
+      //   status: 3,
+      //   modified_by: user_id
+      // }, {
+      //   where: {
+      //     proj_id: proj_id
+      //   }
+      // });
 
       return res.status(200).json({ success: true, message: "Project application successful", student });
     }
@@ -563,9 +671,22 @@ exports.getUserRoleAccess = async (req, res) => {
         }
       });
 
-      //Remove projStatus.status === 1
+      const student_appl = await ProjApplication.count({
+        where: {
+          proj_id: proj_id,
+          user_id: user_id,
+          role: role,
+          is_active: 'Y',
+          is_approved: 'N'
+        }
+      });
+
+      if (student_appl === 1) {
+        return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });
+      }
+
       if (student === 0) {
-        if (projStatus.status === 1 || projStatus.status === 2 || projStatus.status === 3) {
+        if (projStatus.status === 1 || projStatus.status === 2 || projStatus.status === 3 || projStatus.status === 4) {
           return res.status(200).json({ success: true, message: "Valid User", access_val: 'A' });
         } else {
           return res.status(200).json({ success: false, message: "Invalid User", access_val: 'I' });

@@ -50,7 +50,8 @@
 
 .milestone_form input[type="text"],
 .milestone_form input[type="number"],
-input[type="text"] {
+.milestone_input_text
+{
     display: block;
     font-family: "Poppins", system-ui;
     width: 100%;

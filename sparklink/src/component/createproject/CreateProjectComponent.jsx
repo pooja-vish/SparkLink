@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
-  getStorage,
+  // getStorage,
   ref,
   uploadBytes,
   getDownloadURL,
@@ -9,8 +9,9 @@ import {
 import { storage } from "../../firebase_script"; // Your Firebase config file
 import "./CreateProjectComponent.css";
 import MenuComponent from "../../component/menu/MenuComponent";
+import MasterComponent from '../MasterComponent';
 import FooterComponent from "../footer/FooterComponent";
-import axios from 'axios';
+import axios from "axios";
 
 const CreateProjectComponent = () => {
   const dateInputRef = useRef(null);
@@ -35,22 +36,24 @@ const CreateProjectComponent = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  useEffect(() => {
-    console.log("CREATE PROJECT>>>>>>>>");
-  }, []);
-
-  const triggerDatePicker = () => {
-    if (dateInputRef.current) {
-      dateInputRef.current.showPicker();
-    }
-  };
-
   const handlePurposeCheckBoxChange = (e) => {
-    setIsOtherPurposeChecked(e.target.checked);
-    if (e.target.checked && e.target.value !== "Other") {
-      setPurpose([...purpose, e.target.value]);
+    const { checked, value } = e.target;
+    if (checked) {
+      if (value === "Other") {
+        setIsOtherPurposeChecked(checked);
+        return;
+      }
+      setPurpose([...purpose, value]);
     } else {
-      setPurpose(purpose.filter((p) => p !== e.target.value));
+      if (value === "Other") {
+        setIsOtherPurposeChecked(false);
+        setPurpose((prevPurpose) =>
+          prevPurpose.filter((p) => p !== otherPurposeText) // Remove "Other" from purpose
+        );
+        setOtherPurposeText("");
+        return;
+      }
+      setPurpose(purpose.filter((p) => p !== value));
     }
   };
 
@@ -59,7 +62,6 @@ const CreateProjectComponent = () => {
     setOtherPurposeText(text);
     if (setIsOtherPurposeChecked) {
       setPurpose((prevPurpose) => {
-        // Remove any existing "other" text first, then add the new one
         const filteredPurpose = prevPurpose.filter(
           (p) => p !== otherPurposeText
         );
@@ -69,13 +71,27 @@ const CreateProjectComponent = () => {
   };
 
   const handleProductCheckBoxChange = (e) => {
-    setIsOtherProductChecked(e.target.checked);
-    if (e.target.checked && e.target.value !== "Other") {
-      setProduct([...product, e.target.value]);
+    const { checked, value } = e.target;
+  
+    if (checked) {
+      if (value === "Other") {
+        setIsOtherProductChecked(true);
+        return;
+      }
+      setProduct((prevProduct) => [...prevProduct, value]);
     } else {
-      setProduct(product.filter((p) => p !== e.target.value));
+      if (value === "Other") {
+        setIsOtherProductChecked(false);
+        setProduct((prevProduct) =>
+          prevProduct.filter((p) => p !== otherProductText)
+        );
+        setOtherProductText(""); 
+        return;
+      }
+      setProduct((prevProduct) => prevProduct.filter((p) => p !== value));
     }
   };
+  
 
   const handleOtherProducttextChange = (e) => {
     const text = e.target.value;
@@ -94,6 +110,35 @@ const CreateProjectComponent = () => {
   // Handle image change
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]); // Set the selected image file
+  };
+
+  const emptyForm = () => {
+    setProjectName("");
+    setPurpose([]);
+    setProduct([]);
+    setProjectBudget("");
+    setProjectDescription("");
+    setFeatures("");
+    setProjectDeadline("");
+  };
+
+  const imageNames = [
+    "photo1",
+    "photo2",
+    "photo3",
+    "photo4",
+    "photo5",
+    "photo6",
+    "photo7",
+    "photo8",
+    "photo9",
+    "photo10",
+  ];
+  
+  // Function to get a random image name
+  const getRandomImageName = () => {
+    const randomIndex = Math.floor(Math.random() * imageNames.length);
+    return randomIndex;
   };
 
   // Handle form submission
@@ -125,35 +170,7 @@ const CreateProjectComponent = () => {
       return;
     }
 
-    let imageUrl = previousImageUrl;
 
-    if (imageFile) {
-      // If an image was selected, upload it
-      const uniqueImageName = `${Date.now()}_${imageFile.name}`; // Create a unique name for the image
-      const imageRef = ref(storage, `images/${uniqueImageName}`);
-
-      try {
-        // If there was a previously uploaded image, delete it from Firebase Storage
-        if (previousImageUrl) {
-          const oldImageRef = ref(storage, previousImageUrl);
-          await deleteObject(oldImageRef); // Delete previous image
-          console.log("Previous image deleted:", previousImageUrl);
-        }
-
-        // Upload the new image to Firebase Storage
-        const snapshot = await uploadBytes(imageRef, imageFile);
-        // Get the download URL of the uploaded image
-        imageUrl = await getDownloadURL(snapshot.ref);
-        setPreviousImageUrl(imageUrl); // Update state to track the newly uploaded image URL
-        console.log("Image uploaded successfully:", imageUrl);
-      } catch (error) {
-        setErrorMessage("Error uploading image: " + error.message);
-      }
-      // finally {
-      //   setLoading(false); 
-      //   return;
-      // }
-    }
 
     const form_data = {
       project_name: projectName,
@@ -163,19 +180,12 @@ const CreateProjectComponent = () => {
       project_description: projectDescription,
       features: features,
       project_deadline: projectDeadline,
-      image_url: imageUrl, // Include the image URL in the form data
+      image_url: getRandomImageName(), // Include the image URL in the form data
     };
 
     console.log("Form Data Submitted:", form_data);
 
     try {
-      // const response = await fetch("http://localhost:5100/project", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(form_data),
-      // });
 
       const response = await axios.post("/project", form_data);
 
@@ -183,9 +193,10 @@ const CreateProjectComponent = () => {
         const project = response.data;
         setSuccessMessage("Project created successfully!");
         console.log("Project created successfully:", project);
+        emptyForm();
       } else {
         //const errorResponse = await response.json();
-        //setErrorMessage(errorResponse.message || " Failed to create project " );
+        setErrorMessage(" Failed to create project ");
       }
     } catch (error) {
       setErrorMessage("Error submitting form: " + error.message);
@@ -199,6 +210,7 @@ const CreateProjectComponent = () => {
       <div className="container-fluid">
         <MenuComponent />
         <div className="row">
+        <MasterComponent />
           <div className="col-1"></div>
           <div className="col-11">
             <div className="progress-tracker">
@@ -223,7 +235,6 @@ const CreateProjectComponent = () => {
                       maxLength={150}
                       required
                     />
-
                     <label className="form_label">
                       2. What is the main purpose of the product?
                       <span className="text-danger"> *</span>
@@ -234,15 +245,8 @@ const CreateProjectComponent = () => {
                           type="checkbox"
                           name="purpose"
                           value="E-Commerce"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setPurpose([...purpose, e.target.value]);
-                            } else {
-                              setPurpose(
-                                purpose.filter((p) => p !== e.target.value)
-                              );
-                            }
-                          }}
+                          checked={purpose.includes("E-Commerce")}
+                          onChange={handlePurposeCheckBoxChange}
                         />
                         <span>E-Commerce</span>
                       </div>
@@ -251,15 +255,8 @@ const CreateProjectComponent = () => {
                           type="checkbox"
                           name="purpose"
                           value="Social Media"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setPurpose([...purpose, e.target.value]);
-                            } else {
-                              setPurpose(
-                                purpose.filter((p) => p !== e.target.value)
-                              );
-                            }
-                          }}
+                          checked={purpose.includes("Social Media")}
+                          onChange={handlePurposeCheckBoxChange}
                         />
                         <span>Social Media</span>
                       </div>
@@ -268,15 +265,8 @@ const CreateProjectComponent = () => {
                           type="checkbox"
                           name="purpose"
                           value="Internal Tool"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setPurpose([...purpose, e.target.value]);
-                            } else {
-                              setPurpose(
-                                purpose.filter((p) => p !== e.target.value)
-                              );
-                            }
-                          }}
+                          checked={purpose.includes("Internal Tool")}
+                          onChange={handlePurposeCheckBoxChange}
                         />
                         <span>Internal Tool</span>
                       </div>
@@ -285,6 +275,7 @@ const CreateProjectComponent = () => {
                           type="checkbox"
                           name="purpose"
                           value="Other"
+                          checked={isOtherPurposeChecked}
                           onChange={handlePurposeCheckBoxChange}
                         />
 
@@ -295,30 +286,24 @@ const CreateProjectComponent = () => {
                           type="text"
                           name="other purpose"
                           placeholder="Specify your purpose"
+                          value={otherPurposeText}
                           onChange={handleOtherPurposetextChange}
                         />
                       )}
                     </div>
-
                     <label className="form_label">
                       3. What type of product do you want to build?
                       <span className="text-danger"> *</span>
                     </label>
+                    
                     <div className="radio_button_container ">
                       <div>
                         <input
                           type="checkbox"
                           name="product"
                           value="Website"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setProduct([...product, e.target.value]);
-                            } else {
-                              setProduct(
-                                product.filter((p) => p !== e.target.value)
-                              );
-                            }
-                          }}
+                          checked={product.includes("Website")}
+                          onChange={handleProductCheckBoxChange}
                         />
                         <span>Website</span>
                       </div>
@@ -327,15 +312,8 @@ const CreateProjectComponent = () => {
                           type="checkbox"
                           name="product"
                           value="Android App"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setProduct([...product, e.target.value]);
-                            } else {
-                              setProduct(
-                                product.filter((p) => p !== e.target.value)
-                              );
-                            }
-                          }}
+                          checked={product.includes("Android App")}
+                          onChange={handleProductCheckBoxChange}
                         />
                         <span>Android App</span>
                       </div>
@@ -344,15 +322,8 @@ const CreateProjectComponent = () => {
                           type="checkbox"
                           name="product"
                           value="IOS App"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setProduct([...product, e.target.value]);
-                            } else {
-                              setProduct(
-                                product.filter((p) => p !== e.target.value)
-                              );
-                            }
-                          }}
+                          checked={product.includes("IOS App")}
+                          onChange={handleProductCheckBoxChange}
                         />
                         <span>IOS App</span>
                       </div>
@@ -361,15 +332,8 @@ const CreateProjectComponent = () => {
                           type="checkbox"
                           name="product"
                           value="Windows Software"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setProduct([...product, e.target.value]);
-                            } else {
-                              setProduct(
-                                product.filter((p) => p !== e.target.value)
-                              );
-                            }
-                          }}
+                          checked={product.includes("Windows Software")}
+                          onChange={handleProductCheckBoxChange}
                         />
                         <span>Windows Software</span>
                       </div>
@@ -378,6 +342,7 @@ const CreateProjectComponent = () => {
                           type="checkbox"
                           name="product"
                           value="Other"
+                          checked={isOtherProductChecked}
                           onChange={handleProductCheckBoxChange}
                         />
                         <span>Other</span>
@@ -446,24 +411,13 @@ const CreateProjectComponent = () => {
                       ref={dateInputRef}
                       value={projectDeadline}
                       className="createproject_datepicker date"
-                      min={today} 
+                      min={today}
                       //   onClick={triggerDatePicker}
-                      onChange={(e) => setProjectDeadline(e.target.value)} required
+                      onChange={(e) => setProjectDeadline(e.target.value)}
+                      required
                     />
 
-                    <label className="form_label">
-                      8. Upload an image for your project:
-                    </label>
-                    <input
-                      type="file"
-                      onChange={handleImageChange} // Handle image selection
-                      className="project_image"
-                      accept="image/*"
-                    />
-
-                    <button className="submit button-home" type="submit">
-                      Submit
-                    </button>
+                
                     <div className="message">
                       {errorMessage && (
                         <div className="error-message">{errorMessage}</div>
@@ -472,6 +426,9 @@ const CreateProjectComponent = () => {
                         <div className="success-message">{successMessage}</div>
                       )}
                     </div>
+                    <button className="submit button-home" type="submit">
+                      Submit
+                    </button>
                   </form>
                 </div>
               </div>
@@ -482,8 +439,11 @@ const CreateProjectComponent = () => {
         {loading && (
           <div className="loading-overlay d-flex justify-content-center align-items-center">
             <div className="text-center">
-              <div className="spinner-border text-light" style={{width: "5rem", height: "5rem"}} role="status">
-              </div>
+              <div
+                className="spinner-border text-light"
+                style={{ width: "5rem", height: "5rem" }}
+                role="status"
+              ></div>
               <div className="text-light mt-2">Processing...</div>
             </div>
           </div>
@@ -492,7 +452,6 @@ const CreateProjectComponent = () => {
       <div className="footer-fixed">
         <FooterComponent></FooterComponent>
       </div>
-      
     </>
   );
 };
