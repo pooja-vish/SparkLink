@@ -23,12 +23,6 @@
   }
 }
 
-.form-title{
-  text-align: left;
-  font-weight: 700;
-  padding-bottom: 30px;
-}
-
 .login-page-container {
   height: 100vh;
   background: linear-gradient(to top, #5f7f9f, #2c3d5c);
@@ -114,4 +108,44 @@
   text-align: center;
   margin-top: 1rem;
   font-size: 0.9rem;
+}
+
+.btn.submit-button {
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  background-color: #2f5972; /* Custom background color */
+  border-color: #2f5972; /* Match border color with background */
+  color: #fff; /* Ensure text is visible */
+}
+
+/* Add hover effect for better user experience */
+.btn.submit-button:hover {
+  background-color:  #fff;
+  color: #244a5c; /* Ensure text is visible */
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  gap: 10px;
+  padding-bottom: 30px;
+}
+
+.sparklink_logo_login {
+  width: 150px; /* Adjust the logo size */
+  align-items: center;
+  /* justify-content: center; */
+  height: auto;
+}
+
+.form-title {
+  font-size: 50px; /* Adjust font size as needed */
+  /* font-weight: bold; */
+  align-items: center;
+  justify-content: center;
+  margin: 0; /* Remove any default margin */
+  text-align: center;
+  font-weight: 700;
+  /*  */
 }

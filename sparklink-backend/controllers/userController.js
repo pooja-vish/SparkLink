@@ -68,8 +68,7 @@ exports.register = async (req, res) => {
         is_verified: false,
         is_project_owner: false,
       });
-    }
-    else if(isBusinessOwner){
+    } else if(isBusinessOwner){
       await BusinessOwner.create({
         user_id: newUser.user_id,
       }) 
