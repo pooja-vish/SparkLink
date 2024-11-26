@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ProgressTrackerComponent.css';
 import MenuComponent from '../menu/MenuComponent';
+import MasterComponent from '../MasterComponent';
 import FooterComponent from '../footer/FooterComponent';
 import axios from 'axios';
 import Select from 'react-select';
@@ -376,10 +377,13 @@ const ProgressTrackerComponent = () => {
         <>
             <div className="page-container">
                 <div className="content-container">
+                    <MenuComponent />
+                    <MasterComponent />
                     <div className="container-fluid mb-5">
-                        <MenuComponent />
+
                         <div className="milestone_container">
                             <div className="row">
+
                                 <div className="col-lg-1 col-md-1 col-sm-3"></div>
                                 <div className="col-lg-11 col-md-11 col-sm-9">
                                     <div className="milestone_Heading">

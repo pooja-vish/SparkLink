@@ -30,14 +30,16 @@ const MasterComponent = () => {
             <div className="container-fluid">
                 <div className="ms-lg-5 ms-md-0 mt-2 row" style={{ paddingRight: 25 }}>
                     <div className="col-lg-5 col-md-5 px-5 col-sm-12 heading">
-                        <img src={sparklink_logo} alt="Logo" className="sparklink_logo" />
+                        <Link to='/'>
+                            <img src={sparklink_logo} alt="Logo" className="sparklink_logo" />
+                        </Link>
                     </div>
                     <div className="col-lg-7 col-md-7 col-sm-12">
                         {!isAuthenticated && (<span className='d-flex align-items-center justify-content-end'>
                             <span className='heading'>Sign in to Collborate Better!</span>&nbsp;&nbsp;
-                            <button className={`text-center button_text button-card ${getNavItemClass('/login')}`}>
-                                <Link to='/login'>
-                                    Login</Link></button>
+                            <Link className={getNavItemClass('/login')} to='/login'>
+                                <button className={`text-center button_text button-card`}>
+                                    Login</button></Link>
                         </span>)}
                         {isAuthenticated && (<span className='d-flex align-items-center justify-content-end'>
                             <span className='heading'>Welcome {user.username}!</span>&nbsp;&nbsp;
