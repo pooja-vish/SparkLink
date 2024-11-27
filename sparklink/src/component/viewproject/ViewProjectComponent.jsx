@@ -424,6 +424,19 @@ const ViewProjectComponent = () => {
         }
     }
 
+    const fetchUserProfile = async (user_id) => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/profile', {
+                params: { user_id: user_id }
+            });
+        } catch (error) {
+            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const viewMilestones = async () => {
         navigate("/progress", { state: { projId: projDetailsList.proj_id } });
     }
@@ -617,14 +630,22 @@ const ViewProjectComponent = () => {
                                                                 </td>
                                                                 <td className='proj-details-data'>
                                                                     {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => {
-                                                                        return (<div key={index} className='stakeholder-button'>
-                                                                            {name}
-                                                                            {((accessVal === 'E' && role === 'student')
-                                                                                || (accessVal === 'S' && role !== 'business_owner')) &&
-                                                                                editFlag && <img src={remove_icon}
-                                                                                    onClick={() => removeStakeholder(proj_id, role, user_id)}
-                                                                                    className='remove_icon' alt="" />}
-                                                                        </div>)
+                                                                        return (
+                                                                            <>
+                                                                                {!editFlag &&
+                                                                                    <div key={index} onClick={() => fetchUserProfile(user_id)} className='stakeholder-button'>
+                                                                                        {name}
+                                                                                    </div>}
+                                                                                {editFlag &&
+                                                                                    <div key={index} className='stakeholder-button'>
+                                                                                        {name}
+                                                                                        {((accessVal === 'E' && role === 'student')
+                                                                                    || (accessVal === 'S' && role !== 'business_owner')) && <img src={remove_icon}
+                                                                                            onClick={() => removeStakeholder(proj_id, role, user_id)}
+                                                                                            className='remove_icon' alt="" />}
+                                                                                    </div>}
+                                                                            </>
+                                                                        )
                                                                     })}
                                                                     {/* {stakeholdersByRole.join(', ')} */}
                                                                 </td>
