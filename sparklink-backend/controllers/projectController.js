@@ -5,7 +5,6 @@ const Milestone = require("../models/proj_milestone");
 const ProjectStatus = require("../models/proj_status");
 const Role = require("../models/role");
 const User = require("../models/user");
-const Image = require("../models/image");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
 
