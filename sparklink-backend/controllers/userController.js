@@ -2,6 +2,7 @@ require("dotenv").config();
 const User = require("../models/user");
 const SupervisorProfile = require("../models/supervisor_profile");
 const BusinessOwner = require("../models/owner_profile");
+const StudentProfile = require("../models/student_profile");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
@@ -12,7 +13,14 @@ const { Op } = require("sequelize");
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, name, role } = req.body;
+    const { username, email, password, confirmPassword, name, role } = req.body;
+
+    if( password !== confirmPassword){
+      return res.status(400).json({message: "Passwords do not match!"});
+    }
+    if ((role === '3' || role === '4') && !email.endsWith("@uwindsor.ca")) {
+      return res.status(400).json({ message: "Email should end with @uwindsor.ca" });
+    }
 
     // Check if the user already exists
     const existingUser = await User.findOne({ where: { email } });
@@ -37,15 +45,20 @@ exports.register = async (req, res) => {
       created_by: role,
       confirmation_token: confirmationToken, // Save the token to the database
     });
-
-    if (role === 3) {
+    console.log(" entered");
+    if (role === '3') {
       await SupervisorProfile.create({
         user_id: newUser.user_id,
         is_verified: false,
         is_project_owner: false,
       });
-    } else if (role === 2) {
+    } else if (role === '2') {
       await BusinessOwner.create({
+        user_id: newUser.user_id,
+      });
+    } else if (role === '4') {
+      console.log(" user is student ");
+      await StudentProfile.create({
         user_id: newUser.user_id,
       });
     }
