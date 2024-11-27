@@ -10,6 +10,7 @@ import contact_icon from "../../assets/contact_us.png";
 import milestone_icon from "../../assets/Milestone_Tracker.png";
 import profile_icon from "../../assets/profile.png";
 import create_icon from "../../assets/create_project.png";
+import notification_icon from "../../assets/notification.png";
 import axios from "axios";
 import LoginComponent from "../login/LoginComponent";
 import { useNavigate } from "react-router-dom";
@@ -203,7 +204,7 @@ const MenuComponent = () => {
                               to="/projApplications"
                             >
                               <img
-                                src={milestone_icon}
+                                src={notification_icon}
                                 className="nav_sub_menu_icon"
                                 alt=""
                                 style={{ marginLeft: 15 }}

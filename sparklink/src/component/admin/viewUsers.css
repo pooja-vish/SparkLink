@@ -1,3 +1,7 @@
 .usertable{
     padding-left: 65px !important;
 }
+
+.button-edit{
+    border-radius: 20px;
+}
