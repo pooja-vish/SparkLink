@@ -22,11 +22,14 @@ const ProfileComponent = () => {
     const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
     const [isScrollable, setIsScrollable] = useState(false);
 
-    const fetchProfile = async () => {
-        const user_id = user.user_id;
+    const fetchProfile = async (user_id) => {
+        //const user_id = user.user_id;
+        console.log("PROF>>>>>", user_id);
         if (user) {
             try {
-                const response = await axios.get("/profile");
+                const response = await axios.get("/profile", {
+                    params: { user_id: user_id }
+                });
                 console.log('profile data = ', response.data);
                 setRole(response.data.role);
                 setProfile(response.data.profile);
@@ -59,7 +62,9 @@ const ProfileComponent = () => {
     };
 
     useEffect(() => {
-        fetchProfile();
+        if (isAuthenticated) {
+            fetchProfile(user.user_id);
+        }
     }, [user]);
 
     useEffect(() => {
