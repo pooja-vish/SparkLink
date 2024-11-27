@@ -30,6 +30,7 @@ const acceptProject = async (req, res) => {
       {
         is_active: 'Y', // Change the status to inactive
         is_approved: 'Y', // Mark as approved
+        is_rejected: 'N'
       },
       {
         where: {
@@ -83,8 +84,9 @@ const rejectProject = async (req, res) => {
     // Update the record to mark it as inactive and rejected
     await project_application.update(
       {
-        is_active: 'N',
-        is_approved: 'N', // Assuming you want to mark the application as rejected
+        is_active: 'Y',
+        is_rejected: 'Y',
+        is_approved: 'N',
       },
       {
         where: {

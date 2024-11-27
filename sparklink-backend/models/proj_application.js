@@ -74,6 +74,14 @@ const ProjApplication = sequelize.define(
         isIn: [["Y", "N"]],
       },
     },
+    is_rejected: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: "N",
+      validate: {
+        isIn: [["Y", "N"]],
+      },
+    },
   },
   {
     tableName: "t_proj_application",

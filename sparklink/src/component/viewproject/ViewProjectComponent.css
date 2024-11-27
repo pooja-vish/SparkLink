@@ -288,3 +288,20 @@
     background-color: #fff !important;
     font-size: large !important;
 }
+
+.stakeholder-button {
+    display: inline-block;
+    margin: 5px;
+    padding: 8px 12px;
+    border: 2px #999 dashed;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+.remove_icon {
+    height: 20px;
+    display: inline-block;
+    cursor: pointer;
+    margin-left: 5px;
+    vertical-align: middle;
+}

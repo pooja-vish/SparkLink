@@ -24,7 +24,8 @@ exports.fetchApplication = async (req, res) => {
         // Step 1: Retrieve proj_id's for the current user from ProjAllocation
         const allocations = await ProjAllocation.findAll({
             where: { user_id: user.user_id,
-                role: '3'
+                role: '3',
+                is_active: 'Y'
              },
             attributes: ['proj_id']
         });
