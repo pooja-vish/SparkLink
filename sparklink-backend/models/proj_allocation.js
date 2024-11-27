@@ -61,6 +61,22 @@ const ProjAllocation = sequelize.define(
       allowNull: false,
       defaultValue: sequelize.literal("NOW()"),
     },
+    is_active: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: 'Y',
+      validate: {
+        isIn: [['Y', 'N']],
+      },
+    },
+    notification: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: 'Y',
+      validate: {
+        isIn: [['Y', 'N']],
+      },
+    },
   },
   {
     tableName: "t_proj_allocation",

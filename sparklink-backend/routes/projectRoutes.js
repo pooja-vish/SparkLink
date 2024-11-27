@@ -11,6 +11,7 @@ const {
   DelayProject,
   getUserRoleAccess,
   applyProject,
+  removeStakeholder
 } = require('../controllers/projectController');
 
 const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
@@ -47,6 +48,9 @@ router.post('/cancelProject', CancelProject);
 
 //Delay Project
 router.post('/delayProject', DelayProject);
+
+//Remove Project
+router.post('/removeStakeholder', removeStakeholder);
 
 router.post('/accept', acceptProject);
 
