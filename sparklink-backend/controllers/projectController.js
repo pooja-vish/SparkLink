@@ -229,7 +229,7 @@ exports.getAllProjects = async (req, res) => {
       const projIds = projects.map(project => project.proj_id);
 
       const stakeholdersQuery = `
-        SELECT pa.proj_id, u.name, 
+        SELECT pa.proj_id, u.name, u.user_id,
         CASE 
           WHEN pa.role = 2 THEN 'business_owner'
           WHEN pa.role = 3 THEN 'supervisor'
@@ -237,6 +237,7 @@ exports.getAllProjects = async (req, res) => {
         END AS role
         FROM t_proj_allocation pa, t_usermst u 
         WHERE pa.user_id = u.user_id
+        and pa.is_active = 'Y'
         and pa.proj_id IN (:projIds)
         order by proj_id desc;
       `;
@@ -252,6 +253,8 @@ exports.getAllProjects = async (req, res) => {
         map[stakeholder.proj_id].push({
           name: stakeholder.name,
           role: stakeholder.role,
+          user_id: stakeholder.user_id,
+          proj_id: stakeholder.proj_id
         });
         return map;
       }, {});
@@ -529,7 +532,8 @@ exports.applyProject = async (req, res) => {
       supervisor_count = await ProjAllocation.count({
         where: {
           proj_id: proj_id,
-          role: role
+          role: role,
+          is_active: 'Y'
         }
       });
 
@@ -538,7 +542,8 @@ exports.applyProject = async (req, res) => {
           where: {
             proj_id: proj_id,
             user_id: user_id,
-            role: role
+            role: role,
+            is_active: 'Y'
           }
         });
 
@@ -621,7 +626,8 @@ exports.getUserRoleAccess = async (req, res) => {
       supervisor_count = await ProjAllocation.count({
         where: {
           proj_id: proj_id,
-          role: role
+          role: role,
+          is_active: 'Y'
         }
       });
 
@@ -629,7 +635,8 @@ exports.getUserRoleAccess = async (req, res) => {
         where: {
           proj_id: proj_id,
           user_id: user_id,
-          role: role
+          role: role,
+          is_active: 'Y'
         }
       });
 
@@ -653,7 +660,8 @@ exports.getUserRoleAccess = async (req, res) => {
         where: {
           proj_id: proj_id,
           user_id: user_id,
-          role: role
+          role: role,
+          is_active: 'Y'
         }
       });
 
@@ -667,7 +675,8 @@ exports.getUserRoleAccess = async (req, res) => {
         where: {
           proj_id: proj_id,
           user_id: user_id,
-          role: role
+          role: role,
+          is_active: 'Y'
         }
       });
 
@@ -677,7 +686,8 @@ exports.getUserRoleAccess = async (req, res) => {
           user_id: user_id,
           role: role,
           is_active: 'Y',
-          is_approved: 'N'
+          is_approved: 'N',
+          is_rejected: 'N'
         }
       });
 
@@ -708,3 +718,41 @@ exports.getUserRoleAccess = async (req, res) => {
   }
 }
 
+exports.removeStakeholder = async (req, res) => {
+  const { removeData } = req.body;
+  let role_id;
+
+  if(removeData.role === 'business_owner') {
+    role_id = 2;
+  } else if(removeData.role === 'supervisor') {
+    role_id = 3;
+  } else if(removeData.role === 'student') {
+    role_id = 4;
+  }
+
+  try {
+    const applicationUpdate = ProjApplication.update({
+      is_active: 'N'
+    }, {
+      where: {
+        proj_id: removeData.proj_id,
+        role: role_id,
+        user_id: removeData.user_id
+      }
+    });
+
+    const allocationUpdate = ProjAllocation.update({
+      is_active: 'N'
+    }, {
+      where: {
+        proj_id: removeData.proj_id,
+        role: role_id,
+        user_id: removeData.user_id
+      }
+    });
+
+    return res.status(200).json({ message: "Stakeholder removed successfully from the project" });
+  } catch(error) {
+    return res.status(500).json({ message: "Error removing stakeholder from the project", error: error.message });
+  }
+}

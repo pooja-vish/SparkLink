@@ -26,6 +26,7 @@ import photo7 from '../../assets/project_images/photo7.jpg';
 import photo8 from '../../assets/project_images/photo8.jpg';
 import photo9 from '../../assets/project_images/photo9.jpg';
 import photo10 from '../../assets/project_images/photo10.jpg';
+import remove_icon from '../../assets/remove_icon.png';
 
 // Array of images
 const imageArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10];
@@ -55,6 +56,7 @@ const ViewProjectComponent = () => {
     const { user } = useAuth();
     const [userData, setUserData] = useState({});
     const [accessVal, setAccessVal] = useState('');
+    const today = new Date().toISOString().split("T")[0];
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -357,6 +359,29 @@ const ViewProjectComponent = () => {
         }
     }
 
+    const removeStakeholder = async (proj_id, role, user_id) => {
+        setLoading(true);
+        try {
+            const removeObj = {
+                proj_id: proj_id,
+                role: role,
+                user_id: user_id
+            }
+            const response = await axios.post('/project/removeStakeholder', {
+                removeData: removeObj
+            });
+            if (response.status === 200) {
+                //fetchProjects();
+                closeModal();
+                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+            }
+        } catch (error) {
+            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+        } finally {
+            fetchProjects();
+        }
+    }
+
     const submitApplication = async () => {
         setLoading(true);
         try {
@@ -566,6 +591,7 @@ const ViewProjectComponent = () => {
                                                             type="date"
                                                             className="milestone_input_date milestone_datepicker"
                                                             name="end_date"
+                                                            min={today}
                                                             value={projDetailsList.end_date || ""}
                                                             onChange={(e) => handleUpdateProjDetailsChange(e)}
                                                             required
@@ -579,7 +605,7 @@ const ViewProjectComponent = () => {
                                                 {['business_owner', 'supervisor', 'student'].map((role) => {
                                                     const stakeholdersByRole = (projDetailsList?.stakeholder || [])
                                                         .filter((stakeholder) => stakeholder.role === role)
-                                                        .map((stakeholder) => stakeholder.name);
+                                                        .map((stakeholder) => stakeholder);
 
                                                     if (stakeholdersByRole.length > 0) {
                                                         return (
@@ -590,7 +616,17 @@ const ViewProjectComponent = () => {
                                                                     {role === 'student' && 'Student(s)'}
                                                                 </td>
                                                                 <td className='proj-details-data'>
-                                                                    {stakeholdersByRole.join(', ')}
+                                                                    {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => {
+                                                                        return (<div key={index} className='stakeholder-button'>
+                                                                            {name}
+                                                                            {((accessVal === 'E' && role === 'student')
+                                                                                || (accessVal === 'S' && role !== 'business_owner')) &&
+                                                                                editFlag && <img src={remove_icon}
+                                                                                    onClick={() => removeStakeholder(proj_id, role, user_id)}
+                                                                                    className='remove_icon' alt="" />}
+                                                                        </div>)
+                                                                    })}
+                                                                    {/* {stakeholdersByRole.join(', ')} */}
                                                                 </td>
                                                             </tr>
                                                         );
