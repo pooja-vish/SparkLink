@@ -1,7 +1,8 @@
 require("dotenv").config();
 const User = require("../models/user");
 const SupervisorProfile = require("../models/supervisor_profile");
-const BusinessOwner = require('../models/owner_profile');
+const BusinessOwner = require("../models/owner_profile");
+const StudentProfile = require("../models/student_profile");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
@@ -12,8 +13,14 @@ const { Op } = require("sequelize");
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, name, isSupervisor, isBusinessOwner } =
-      req.body;
+    const { username, email, password, confirmPassword, name, role } = req.body;
+
+    if( password !== confirmPassword){
+      return res.status(400).json({message: "Passwords do not match!"});
+    }
+    if ((role === '3' || role === '4') && !email.endsWith("@uwindsor.ca")) {
+      return res.status(400).json({ message: "Email should end with @uwindsor.ca" });
+    }
 
     // Check if the user already exists
     const existingUser = await User.findOne({ where: { email } });
@@ -33,45 +40,27 @@ exports.register = async (req, res) => {
       email,
       name,
       password: password,
-      role:
-        isSupervisor 
-          ? "3"
-          : isBusinessOwner
-          ? "2"
-          : "4",
-      is_active: "N", // User initially inactive
-      created_by:
-        isSupervisor 
-        ? "3"
-        : isBusinessOwner
-        ? "2"
-        : "4",
-      modified_by:
-       
-        isSupervisor 
-        ? "3"
-        : isBusinessOwner
-        ? "2"
-        : "4",
+      role: role,
+      modified_by: role,
+      created_by: role,
       confirmation_token: confirmationToken, // Save the token to the database
     });
-
-    if (isSupervisor && isBusinessOwner) {
-      await SupervisorProfile.create({
-        user_id: newUser.user_id,
-        is_verified: false,
-        is_project_owner: true,
-      });
-    } else if (isSupervisor) {
+    console.log(" entered");
+    if (role === '3') {
       await SupervisorProfile.create({
         user_id: newUser.user_id,
         is_verified: false,
         is_project_owner: false,
       });
-    } else if(isBusinessOwner){
+    } else if (role === '2') {
       await BusinessOwner.create({
         user_id: newUser.user_id,
-      }) 
+      });
+    } else if (role === '4') {
+      console.log(" user is student ");
+      await StudentProfile.create({
+        user_id: newUser.user_id,
+      });
     }
     // Send a confirmation email with the link
     const transporter = nodemailer.createTransport({
@@ -91,16 +80,31 @@ exports.register = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Confirm Your Email",
-      text: `Please click the following link to confirm your email: ${confirmationLink}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <h2 style="color: #4CAF50;">Welcome to Our Platform!</h2>
+          <p>Thank you for signing up. Please confirm your email address by clicking the button below:</p>
+          <a 
+            href="${confirmationLink}" 
+            style="display: inline-block; padding: 10px 20px; margin: 10px 0; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
+            Confirm Email
+          </a>
+          <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
+          <p style="word-break: break-word;">${confirmationLink}</p>
+          <hr style="border: none; border-top: 1px solid #ccc;">
+          <p style="font-size: 0.9em; color: #666;">
+            If you didn’t create an account, please ignore this email.
+          </p>
+        </div>
+      `,
     });
 
-    res
-      .status(201)
-      .json({
-        message:
-          "User registered successfully. Please check your email to confirm your account.",
-      });
+    res.status(201).json({
+      message:
+        "User registered successfully. Please check your email to confirm your account.",
+    });
   } catch (error) {
+    console.log(error.message);
     res
       .status(500)
       .json({ message: "Error registering user", error: error.message });
@@ -382,20 +386,24 @@ exports.updateusers = async (req, res) => {
         name,
         role,
         is_active,
-        modified_by: req.user.user_id
-         // Optional: Track who modified
+        modified_by: req.user.user_id,
+        // Optional: Track who modified
       },
       { where: { user_id: id }, returning: true }
     );
 
     if (updated === 0) {
-      return res.status(404).json({ message: 'User not found or no changes made.' });
+      return res
+        .status(404)
+        .json({ message: "User not found or no changes made." });
     }
 
     // Return the updated user
     const updatedUser = await User.findByPk(id);
     res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating user', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating user", error: error.message });
   }
 };

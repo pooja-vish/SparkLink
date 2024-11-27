@@ -13,74 +13,71 @@ const RegistrationForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
-  const [isBusinessOwner, setIsBusinessOwner] = useState(false);
-  const [isSupervisor, setIsSupervisor] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("");
+  const [role, setRole] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match!");
       return;
     }
 
+    if ((role === "3" || role === "4") && !email.endsWith("@uwindsor.ca")) {
+      setErrorMessage("Email should end with @uwindsor.ca");
+      return;
+    }
+
     try {
+      setLoading(true);
       const response = await axios.post("/api/users/register", {
         username,
         email,
         password,
+        confirmPassword,
         name,
-        selectedRole,
+        role,
       });
 
-      setSuccessMessage("Registration successful!");
+      setSuccessMessage("Please check your email to confirm your account.");
       setErrorMessage("");
     } catch (error) {
+      console.log(error);
       setErrorMessage(
         error.response?.data?.message ||
           "Registration failed. Please try again."
       );
       setSuccessMessage("");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="main">
+    <div className="main row-2">
       <section className="vh-100">
-        <div className="container-fluid h-custom">
+        <div className="container-fluid">
+          <div className="row heading-register text-end">
+            <Link to="/">
+              <img src={sparklink_logo} alt="Logo" className="sparklink_logo" />
+            </Link>
+          </div>
           <div className="row d-flex justify-content-center align-items-center h-100">
             {/* Form Section */}
             <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-              <form className="register-form" id="register-form">
-                <div className="logo-container">
-                  <h2 className="form-title">Sign up</h2>
-                  <div className="col-lg-5 col-md-5 px-5 col-sm-12">
-                    <Link to="/">
-                      <img
-                        src={sparklink_logo}
-                        alt="Logo"
-                        className="sparklink_logo_login"
-                      />
-                    </Link>
-                  </div>
-                </div>
+              <form
+                className="register-form"
+                id="register-form"
+                onSubmit={handleSubmit}
+              >
+                <h2 className="form-title">Sign up</h2>
 
                 {/* Name Field */}
-                <div data-mdb-input-init className="form-outline mb-4">
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="form-control form-control-lg"
-                    placeholder="Your Name"
-                    required
-                  />
-                </div>
+
                 <div data-mdb-input-init className="form-outline mb-4">
                   <input
                     type="text"
@@ -89,7 +86,19 @@ const RegistrationForm = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="form-control form-control-lg"
-                    placeholder="User Name"
+                    placeholder="First Name"
+                    required
+                  />
+                </div>
+                <div data-mdb-input-init className="form-outline mb-4">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="form-control form-control-lg"
+                    placeholder="Last Name"
                     required
                   />
                 </div>
@@ -139,44 +148,60 @@ const RegistrationForm = () => {
                   <select
                     id="roleSelect"
                     className="form-select"
-                    value={selectedRole} // Assuming `selectedRole` is the state holding the selected role
-                    onChange={(e) => setSelectedRole(e.target.value)} // Update state on selection
+                    value={role} // Assuming `selectedRole` is the state holding the selected role
+                    onChange={(e) => setRole(e.target.value)} // Update state on selection
                   >
                     <option value="" disabled>
                       Select a Role
                     </option>
-                    <option value="businessOwner">Business Owner</option>
-                    <option value="supervisor">Supervisor</option>
-                    <option value="student">Student</option>
+                    <option value="2">Business Owner</option>
+                    <option value="3">Supervisor</option>
+                    <option value="4">Student</option>
                   </select>
                 </div>
                 {/* Submit Button */}
+                {errorMessage && (
+                  <div className="alert alert-danger">{errorMessage}</div>
+                )}
+                {successMessage && (
+                  <div className="alert alert-success">{successMessage}</div>
+                )}
                 <div className="text-center text-lg-start mt-4 pt-2">
                   <button
                     type="submit"
                     name="signup"
                     id="signup"
                     className="button_text button-card"
-                    
                   >
                     Register
                   </button>
+                  <Link to="/login" className="login-link">I am already a member</Link>
                 </div>
               </form>
             </div>
             {/* Image Section */}
+
             <div className="signup-image col-md-9 col-lg-6 col-xl-5">
               <img
                 src={signupImage} // Use the path of your image
                 className="img-fluid"
                 alt="Sign up image"
               ></img>
-              <a href="#" className="signup-image-link">
-                I am already a member
-              </a>
             </div>
           </div>
         </div>
+        {loading && (
+          <div className="loading-overlay d-flex justify-content-center align-items-center">
+            <div className="text-center">
+              <div
+                className="spinner-border text-light"
+                style={{ width: "5rem", height: "5rem" }}
+                role="status"
+              ></div>
+              <div className="text-light mt-2">Processing...</div>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

@@ -66,46 +66,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport Local Strategy
-// passport.use(new LocalStrategy({
-//   usernameField: 'email',
-//   passwordField: 'password'
-// }, async (email, password, done) => {
-//   console.log(`username: ${email}`);
-//   console.log(`password is : ${password}`)
-//   try {
-
-//     const user = await User.findOne({ where: { email } });
-//     if (!user) return done(null, false, { message: 'Incorrect email.' });
-//     console.log(`username is correct`);
-//     const isValidPassword = await user.validPassword(password.trim());
-//     console.log(`isValidPassword:${isValidPassword}`);
-//     if (!isValidPassword) return done(null, false, { message: 'Incorrect password.' });
-//     console.log(`password is correct`);
-//     return done(null, user);
-//   } catch (err) {
-//     return done(err);
-//   }
-// }));
-
-// // Serialize and deserialize user for session management
-// passport.serializeUser((user, done) => {
-//   console.log(`Inside Serialize User`);
-//   console.log(user);
-//   done(null, user.user_id);
-// }
-
-// );
-// passport.deserializeUser(async (user_id, done) => {
-//   console.log('Insidee Deserialize');
-//   try {
-//     const finduser = await User.findByPk(user_id);
-//     done(null, finduser);
-//   } catch (err) {
-//     done(err, null);
-//   }
-// });
-
 // Test database connection
 sequelize.authenticate()
   .then(() => {
@@ -155,16 +115,6 @@ app.use('/alloc', projAllocationRouter);
 
 
 
-// // Protect routes - example middleware
-// function isAuthenticated(req, res, next) {
-//   if (req.isAuthenticated()) return next();
-//   res.redirect('/login');
-// }
-
-// // Protected route example
-// app.get('/dashboard', isAuthenticated, (req, res) => {
-//   res.send('Welcome to the dashboard!');
-// });
 
 app.get("/status",(req,res) => {
   console.log(`Inside status end point`);
