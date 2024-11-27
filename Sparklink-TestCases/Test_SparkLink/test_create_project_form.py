@@ -17,16 +17,16 @@ class CreateProjectFormTest(BaseCase):
             # The project bavggates to the login page cause the user must be registered to create a project
 
             #input the username
-            self.send_keys("#root > div > div > div > form > div:nth-child(1) > input","michael@uwindsor.ca")
+            self.send_keys("#form3Example3", "michael@uwindsor.ca")
             self.sleep(3)
-            #input the password
-            self.send_keys("#root > div > div > div > form > div:nth-child(2) > input","testing01")
+            # input the password
+            self.send_keys("#form3Example4", "testing01")
             self.sleep(3)
-            #click the login button
-            self.click("#root > div > div > div > form > button")
+            # click the login button
+            self.click('[type="submit"]')
             self.sleep(3)
 
-            self.send_keys('[name="project_name"]', "Web Design")
+            self.send_keys('[name="project_name"]', "Automation")
             self.sleep(2)
 
             E_Commerce='[value="E-Commerce"]'
@@ -72,14 +72,13 @@ class CreateProjectFormTest(BaseCase):
             self.send_keys('[class="form_textarea"]', "Jut WOW me please")
             self.sleep(2)
 
-            self.send_keys('[name="project_deadline"]', "002025-10-10")
+            self.send_keys('[name="project_deadline"]', "002025-12-10")
             self.sleep(3)
 
             # This field is to upload file
-
-            file_path = "/Users/fajukoodunayo/Downloads/AfricaMap.jpg"
-            self.choose_file('[accept="image/*"]', file_path, by="css selector")
-            self.sleep(4)
+            # file_path = "/Users/fajukoodunayo/Downloads/AfricaMap.jpg"
+            # self.choose_file('[accept="image/*"]', file_path, by="css selector")
+            # self.sleep(4)
 
             self.click(".submit.button-home")
             self.sleep(10)

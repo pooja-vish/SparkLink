@@ -24,10 +24,10 @@ class TestCheckProject(BaseCase):
         self.click_xpath('//*[@id="root"]/div/div[1]/div[1]/div/div/nav/div/ul[2]/li[2]')
         self.sleep(3)
 
-        self.send_keys('[placeholder="Email"]', "michael@uwindsor.ca")
+        self.send_keys("#form3Example3", "michael@uwindsor.ca")
         self.sleep(3)
         # input the password
-        self.send_keys('[placeholder="Password"]', "testing01")
+        self.send_keys("#form3Example4", "testing01")
         self.sleep(3)
         # click the login button
         self.click('[type="submit"]')
@@ -35,12 +35,11 @@ class TestCheckProject(BaseCase):
 
         #Initialize project index
         i = 1
-        max_attempts = 1  # Limit the number of scroll attempts to avoid infinite loops
+        max_attempts = 2  # Limit the number of scroll attempts to avoid infinite loops
         scroll_attempts = 0
-
         while True:
             nav_id = f'div[{i}]'
-            selector = f'//*[@id="root"]/div/div[1]/div/div[2]/div/div[2]/div/div[2]/div/{nav_id}'
+            selector = f'//*[@id="root"]/div/div[1]/div[3]/div/div/div[2]/div/div[2]/div/{nav_id}'
             # Check if the project element is visible
             if self.is_element_visible(selector):
                 #gettinig the project text self.get_text not working so we used javascript to retrieve the text
@@ -49,11 +48,10 @@ class TestCheckProject(BaseCase):
 
                 try:
                     self.scroll_to(selector)  # Scroll to the element to ensure visibility
+                    self.wait_for_element_visible(selector)
                     self.click_xpath(selector)  # Attempt to click the element
                     self.sleep(1)
                     i += 1  # Move to the next project
-
-
                 except ElementClickInterceptedException:
                     print("Element click intercepted, stopping execution.")
                     break  # Exit the loop if element is not clickable
