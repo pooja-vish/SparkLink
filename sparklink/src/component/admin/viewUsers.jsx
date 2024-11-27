@@ -81,8 +81,10 @@ const ViewUserComponent = () => {
 
         // Optionally, update the UI by removing the user from the state
         setAllUsers((prevUsers) =>
-          prevUsers.filter(
-            (existingUser) => existingUser.user_id !== user.user_id
+          prevUsers.map((existingUser) =>
+            existingUser.user_id === user.user_id
+              ? { ...existingUser, is_active: 'N' }
+              : existingUser
           )
         );
       } else {

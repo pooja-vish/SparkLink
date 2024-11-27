@@ -422,7 +422,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     // Mark the user as inactive or delete them
-    await User.update({ is_active: 'N' }, { where: { user_id: id } });
+    await User.update({ is_active: "N" }, { where: { user_id: id } });
 
     res.status(200).json({ message: "User successfully deleted (marked inactive)." });
   } catch (error) {
