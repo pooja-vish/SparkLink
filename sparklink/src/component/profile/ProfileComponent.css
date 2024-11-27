@@ -259,4 +259,50 @@ a.text-lightred:hover {
   .button:hover {
     background-color: #0056b3;
   }
-  
+  /* Ensure default flex layout for progress-items */
+.progress-items  {
+    display: flex; /* Align items horizontally */
+    gap: 10px; /* Add spacing between items */
+}
+
+/* Add horizontal scrolling only when necessary */
+.scrollable {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent items from wrapping to a new row */
+    scrollbar-width: thin; /* Thin scrollbar for better aesthetics (Firefox) */
+}
+
+/* Optional: Customize scrollbar for WebKit browsers */
+.scrollable::-webkit-scrollbar {
+    height: 8px; /* Scrollbar height */
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: #888; /* Thumb color */
+    border-radius: 2px; /* Rounded scrollbar thumb */
+}
+
+.scrollable::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Thumb hover color */
+}
+
+.progress-card {
+    flex: 0 0 auto; /* Prevent items from shrinking or wrapping */
+    width: 300px; /* Set a fixed width for each card */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+   
+}
+
+.progress-title {
+    color: #555;
+    font-weight: 600;
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+.profile {
+    margin-left: 10px;
+    margin-right: 10PX;
+}  

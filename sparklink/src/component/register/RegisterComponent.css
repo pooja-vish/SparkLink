@@ -1,28 +1,48 @@
 .signup-image {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    margin-right: 2rem; /* Space between image and form */
-  }
-  
-  .signup-image img {
-    width: 100%; /* Ensure image is responsive */
-    max-width: 400px; /* Set a maximum width for the image */
-    height: auto;
-    
-  }
-  
-  
-  .signup-image a {
-    display: inline-block;
-    margin-top: 1rem; /* Space between image and link */
-    color: #007bff; /* Link color */
-    font-weight: bold;
-    text-decoration: none;
-    transition: color 0.3s ease; /* Smooth transition for hover effect */
-  }
-  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-right: 2rem; /* Space between image and form */
+}
 
-  
+.signup-image img {
+  width: 100%; /* Ensure image is responsive */
+  max-width: 400px; /* Set a maximum width for the image */
+  height: auto;
+}
+
+.login-link {
+  display: inline-block;
+  margin-left: 5rem; 
+  text-decoration: none;
+  color: green;
+  font-weight: bold;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.form-title {
+  font-size: 50px; /* Adjust font size as needed */
+  /* font-weight: bold; */
+  padding: 0 0 20px 0; /* Remove any default margin */
+  text-align: left;
+  font-weight: 700;
+  color: #2f5972;
+}
+
+.heading-register {
+  font-family: "Poppins", system-ui;
+  font-weight: 500;
+  /* margin: auto; */
+  padding: 20px 20px 0 0;
+  font-style: normal;
+  /* color: #000000 !important; */
+  background: linear-gradient(135deg, #2b2b2b, #555555 70%, #888888);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  font-size: large !important;
+}

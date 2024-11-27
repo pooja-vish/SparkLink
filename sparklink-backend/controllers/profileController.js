@@ -2,13 +2,17 @@ const Student_profile = require('../models/student_profile');
 const Supervisor_profile = require('../models/supervisor_profile');
 const Owner_profile = require('../models/owner_profile');
 const ProjAllocation = require("../models/proj_allocation");
+const ProjectStatus = require("../models/proj_status");
 const User = require('../models/user');
 const Role = require('../models/role');
 const Project = require('../models/project');
+const { Op } = require("sequelize");
+const sequelize = require('../config/db');
 
 exports.getProfile = async (req, res) => {
   try {
-    const user_id = req.user.user_id;
+    const { user_id } = req.query;
+    //const user_id = req.user.user_id;
 
     if (!user_id) {
       return res.status(400).json({ message: "User ID is required" });
@@ -37,7 +41,7 @@ exports.getProfile = async (req, res) => {
     console.log(`Role: ${roleDesc}`);
 
     // Fetch the profile based on the role
-    let profile,projects;
+    let profile,projects,project_details;
     if (roleDesc === 'student') {
       profile = await Student_profile.findOne({ where: { user_id } });
       projects = await ProjAllocation.findAll({
@@ -70,7 +74,26 @@ exports.getProfile = async (req, res) => {
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
     }
+    project_details = await Project.findAll();
+    if (project_details && project_details.length > 0) {
+      for (let i = 0; i < project_details.length; i++) {
+        let proj_id = project_details[i].proj_id;
 
+        const status_query = `select ps.status_desc
+          from t_project pr, t_proj_status ps
+          where pr.status = ps.status_id
+          and pr.proj_id = :proj_id;`;
+
+        const [statusResult] = await sequelize.query(status_query, {
+          replacements: { proj_id }, // Replaces :projId with the actual value
+          type: sequelize.QueryTypes.SELECT, // Specifies the query type
+        });
+
+        const status_desc = statusResult ? statusResult.status_desc : null;
+
+        project_details[i].setDataValue('status_desc', status_desc || '');
+      }    
+    }
     // Fetch the projects for the user
     // const projects = await ProjAllocation.findAll({
     //   where: { user_id },
@@ -81,6 +104,7 @@ exports.getProfile = async (req, res) => {
       message: 'Profile and projects fetched successfully',
       profile,
       projects,
+      project_details,
       role: roleDesc,
     });
   } catch (err) {

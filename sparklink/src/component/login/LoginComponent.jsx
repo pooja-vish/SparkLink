@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./LoginComponent.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useAuth } from "../../AuthContext";
+import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
 
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
@@ -65,6 +66,11 @@ const LoginComponent = () => {
   return (
     <section className="vh-100">
       <div className="container-fluid h-custom">
+        <div className="row heading-login">
+          <Link to="/">
+            <img src={sparklink_logo} alt="Logo" className="sparklink_logo" />
+          </Link>
+        </div>
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-md-9 col-lg-6 col-xl-5">
             <img
@@ -74,9 +80,13 @@ const LoginComponent = () => {
             ></img>
           </div>
           <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            {errorMessage && (
+              <div className="alert alert-danger">{errorMessage}</div>
+            )}
+            {successMessage && (
+              <div className="alert alert-success">{successMessage}</div>
+            )}
             <form className="form" onSubmit={handleLogin}>
-              
-
               <h2 className="form-title">Sign in</h2>
 
               <div data-mdb-input-init className="form-outline mb-4">
@@ -102,62 +112,33 @@ const LoginComponent = () => {
                 />
               </div>
 
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="form-check mb-0">
-                  <input
-                    className="form-check-input me-2"
-                    type="checkbox"
-                    value=""
-                    id="form2Example3"
-                  />
-                  <label className="form-check-label" for="form2Example3">
-                    Remember me
-                  </label>
-                </div>
-                <a href="/reset-password-email" className="text-body">
-                  Forgot password?
-                </a>
-              </div>
 
-              <div className="text-center text-lg-start mt-4 pt-2">
+
+
+
+              <div className="d-flex justify-content-between align-items-center  mt-4 pt-2">
+              <div className="text-center text-lg-start">
                 <button
-                  type="submit" 
+                  type="submit"
                   data-mdb-button-init
                   data-mdb-ripple-init
-                  className="btn btn-primary btn-lg"
-                  style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
+                  className="submit-button button_text button-card"
                 >
                   Login
                 </button>
-                <p className="small fw-bold mt-2 pt-1 mb-0">
-                  Don't have an account?{" "}
-                  <a href="/register" className="link-danger">
-                    Register
-                  </a>
-                </p>
+                </div>
+                <a href="/reset-password-email" className=" text-end">
+                  Forgot password?
+                </a>
               </div>
+              <p className="small fw-bold mt-2 pt-1 mb-0">
+                Don't have an account?{" "}
+                <a href="/register" className="link-danger">
+                  Register
+                </a>
+              </p>
             </form>
           </div>
-        </div>
-      </div>
-      <div className="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
-        <div className="text-white mb-3 mb-md-0">
-          Copyright © 2020. All rights reserved.
-        </div>
-
-        <div>
-          <a href="#!" className="text-white me-4">
-            <i className="fab fa-facebook-f"></i>
-          </a>
-          <a href="#!" className="text-white me-4">
-            <i className="fab fa-twitter"></i>
-          </a>
-          <a href="#!" className="text-white me-4">
-            <i className="fab fa-google"></i>
-          </a>
-          <a href="#!" className="text-white">
-            <i className="fab fa-linkedin-in"></i>
-          </a>
         </div>
       </div>
     </section>
