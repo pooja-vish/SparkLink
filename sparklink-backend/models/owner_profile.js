@@ -28,19 +28,11 @@ const Owner_Profile = sequelize.define('Owner_Profile', {
         type: DataTypes.STRING(15),
         allowNull: true
     },
-    name: {
-        type: DataTypes.STRING(100),
-        allowNull: true
-    },
-    address: {
+      address: {
         type: DataTypes.TEXT,
         allowNull: true
     },
-    email: {
-        type: DataTypes.STRING(100),
-        allowNull: true
-    },
-}, {
+ }, {
     tableName: 't_owner_profile',
     timestamps: false,
 });

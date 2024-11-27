@@ -21,7 +21,7 @@ exports.getProfile = async (req, res) => {
     // Fetch the user and their role
     const user = await User.findOne({
       where: { user_id },
-      attributes: ['role'], // Only fetch the role field
+      attributes: ['role','email','name','username'], // Only fetch the role field
     });
 
     if (!user) {
@@ -102,6 +102,13 @@ exports.getProfile = async (req, res) => {
 
     res.status(200).json({
       message: 'Profile and projects fetched successfully',
+      user_details: {
+        user_id: user.user_id,
+        username: user.username,
+        email: user.email,
+        name: user.name,
+        isAuthenticated: true,
+      },
       profile,
       projects,
       project_details,

@@ -8,6 +8,7 @@ import { useAuth } from '../../AuthContext';
 const EditProfileComponent = () => {
     const { user } = useAuth();
     const [role, setRole] = useState(null);
+    const [userDetails, setUserDetails] = useState(null);
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -123,11 +124,11 @@ const EditProfileComponent = () => {
                                     <div className="panel-body">
                                         {[
                                             { label: 'Phone Number', name: 'phone_number', type: 'tel' },
-                                            { label: 'E-mail Address', name: 'email', type: 'email' },
+                                            // { label: 'E-mail Address', name: 'email', type: 'email', disabled: true },
                                             { label: 'LinkedIn', name: 'linkedin', type: 'text' },
                                             { label: 'GitHub', name: 'github', type: 'text' },
                                             { label: 'Address', name: 'address', type: 'text' },
-                                        ].map(({ label, name, type }) => (
+                                        ].map(({ label, name, type, disabled }) => (
                                             <div className="form-group" key={name}>
                                                 <label className="col-sm-2 control-label">{label}</label>
                                                 <div className="col-sm-10">
@@ -138,11 +139,13 @@ const EditProfileComponent = () => {
                                                         className="form-control"
                                                         onChange={handleChange}
                                                         placeholder={`Enter ${label.toLowerCase()}`}
+                                                        disabled={disabled || false}
                                                     />
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
+
                                 </div>
 
                                 {/* Submit and Cancel */}
@@ -221,6 +224,38 @@ const EditProfileComponent = () => {
                                     </div>
                                 </div>
 
+                                {/* Contact Info */}
+                                <div className="panel panel-default">
+                                    <div className="panel-heading">
+                                        <h4 className="panel-title text-orange">Contact Info</h4>
+                                    </div>
+                                    <div className="panel-body">
+                                        {[
+                                            { label: 'Phone Number', name: 'phone_number', type: 'tel' },
+                                            // { label: 'E-mail Address', name: 'email', type: 'email', disabled: true },
+                                            { label: 'LinkedIn', name: 'linkedin', type: 'text' },
+                                            { label: 'GitHub', name: 'github', type: 'text' },
+                                            { label: 'Address', name: 'address', type: 'text' },
+                                        ].map(({ label, name, type, disabled }) => (
+                                            <div className="form-group" key={name}>
+                                                <label className="col-sm-2 control-label">{label}</label>
+                                                <div className="col-sm-10">
+                                                    <input
+                                                        name={name}
+                                                        type={type}
+                                                        value={profile[name] || ''}
+                                                        className="form-control"
+                                                        onChange={handleChange}
+                                                        placeholder={`Enter ${label.toLowerCase()}`}
+                                                        disabled={disabled || false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                </div>
+
                                 {/* Submit and Cancel */}
                                 <div className="form-group">
                                     <div className="col-sm-10 col-sm-offset-2">
@@ -266,9 +301,6 @@ const EditProfileComponent = () => {
                                             { label: 'Business Type', name: 'business_type', type: 'text' },
                                             { label: 'Domain Type', name: 'domain_type', type: 'text' },
                                             { label: 'Bio', name: 'bio', type: 'textarea' },
-                                            { label: 'Address', name: 'address', type: 'textarea' },
-                                            { label: 'Phone Number', name: 'phone_number', type: 'text' },
-                                            { label: 'Email', name: 'email', type: 'email' },
                                         ].map(({ label, name, type }) => (
                                             <div className="form-group" key={name}>
                                                 <label className="col-sm-2 control-label">{label}</label>
@@ -295,6 +327,38 @@ const EditProfileComponent = () => {
                                             </div>
                                         ))}
                                     </div>
+                                </div>
+
+                                {/* Contact Info */}
+                                <div className="panel panel-default">
+                                    <div className="panel-heading">
+                                        <h4 className="panel-title text-orange">Contact Info</h4>
+                                    </div>
+                                    <div className="panel-body">
+                                        {[
+                                            { label: 'Phone Number', name: 'phone_number', type: 'tel' },
+                                            // { label: 'E-mail Address', name: 'email', type: 'email', disabled: true },
+                                            { label: 'LinkedIn', name: 'linkedin', type: 'text' },
+                                            { label: 'GitHub', name: 'github', type: 'text' },
+                                            { label: 'Address', name: 'address', type: 'text' },
+                                        ].map(({ label, name, type, disabled }) => (
+                                            <div className="form-group" key={name}>
+                                                <label className="col-sm-2 control-label">{label}</label>
+                                                <div className="col-sm-10">
+                                                    <input
+                                                        name={name}
+                                                        type={type}
+                                                        value={profile[name] || ''}
+                                                        className="form-control"
+                                                        onChange={handleChange}
+                                                        placeholder={`Enter ${label.toLowerCase()}`}
+                                                        disabled={disabled || false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
                                 </div>
 
                                 {/* Submit and Cancel */}
