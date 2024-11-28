@@ -25,11 +25,11 @@ router.post('/applyProject', applyProject);
 //Search Filter project with Proj name
 router.get('/filter', filterProject);
 
+// GET route to fetch all projects
+router.get('/getAllProjects', getAllProjects);
+
 // POST route to create a new project
 router.post('/', createProject);
-
-// GET route to fetch all projects
-router.get('/', getAllProjects);
 
 //Update Project Details
 router.post('/updateProject', UpdateProjDetails);

@@ -24,7 +24,7 @@ const AppRoutes = () => {
         { path: "/contact", element: <ContactComponent /> },
         { path: "/register", element: <RegisterComponent /> },
         { path: "/login", element: <LoginComponent /> },
-        { path:"/admin/viewusers", element: <ViewUserComponent/>},
+        
 
         { path: "/reset-password", element: <ResetPasswordComponent /> },
         { path: "/reset-password-email", element: <ResetPasswordEmailComponent /> },
@@ -39,6 +39,7 @@ const AppRoutes = () => {
                 { path: "projApplications", element: <ProjApplicationComponent /> },
                 { path: "/profile", element: <ProfileComponent /> },
                 { path: "/editProfile", element: <EditProfileComponent /> },
+                { path:"/admin/viewusers", element: <ViewUserComponent/>},
             ],
         },
     ]);

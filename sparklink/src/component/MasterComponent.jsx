@@ -29,6 +29,10 @@ const MasterComponent = () => {
             const response = await axios.get('/profile', {
                 params: { user_id: user_id }
             });
+
+            if (response.status === 200) {
+                navigate(`/profile?user_id=${user_id}`);
+            }
         } catch (error) {
             Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
         } finally {
@@ -54,6 +58,10 @@ const MasterComponent = () => {
                             <Link className={getNavItemClass('/login')} to='/login'>
                                 <button className={`text-center button_text button-card`}>
                                     Login</button></Link>
+                                    &nbsp;&nbsp;
+                            <Link className={getNavItemClass('/register')} to='/register'>
+                                <button className={`text-center button_text button-card`}>
+                                    Register</button></Link>
                         </span>)}
                         {isAuthenticated && (<span className='d-flex align-items-center justify-content-end'>
                             <span className='heading' onClick={() => fetchUserProfile(user.user_id)} >Welcome {user.username}!</span>&nbsp;&nbsp;

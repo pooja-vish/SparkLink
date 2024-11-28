@@ -373,7 +373,7 @@ exports.getallusers = async (req, res) => {
   }
 };
 
-exports.updateusers = async (req, res) => {
+exports.updateuser = async (req, res) => {
   try {
     const { id } = req.params; // User ID from the route
     const { username, email, name, role, is_active, modified_by } = req.body; // Data from request
@@ -402,8 +402,32 @@ exports.updateusers = async (req, res) => {
     const updatedUser = await User.findByPk(id);
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json({ message: "Error updating user", error: error.message });
+  }
+};
+
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params; // User ID from the route
+
+    // Find the user by ID
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Mark the user as inactive or delete them
+    await User.update({ is_active: "N" }, { where: { user_id: id } });
+
+    res.status(200).json({ message: "User successfully deleted (marked inactive)." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting user", error: error.message });
   }
 };

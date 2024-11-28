@@ -73,7 +73,7 @@ const ViewProjectComponent = () => {
     const fetchProjects = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('/project');
+            const response = await axios.get('/project/getAllProjects');
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -252,7 +252,7 @@ const ViewProjectComponent = () => {
             });
 
             if (response.status === 200) {
-                fetchProjects();
+                //fetchProjects();
                 Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
                 Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
@@ -275,7 +275,7 @@ const ViewProjectComponent = () => {
             });
 
             if (response.status === 200) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
@@ -321,7 +321,7 @@ const ViewProjectComponent = () => {
             });
 
             if (response.status === 200) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
@@ -344,7 +344,7 @@ const ViewProjectComponent = () => {
             });
 
             if (response.status === 200) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
@@ -360,6 +360,7 @@ const ViewProjectComponent = () => {
     }
 
     const removeStakeholder = async (proj_id, role, user_id) => {
+        console.log("proj_id>>>", proj_id, "role>>>>>", role, "user_id>>>>>>>>", user_id);
         setLoading(true);
         try {
             const removeObj = {
@@ -378,6 +379,7 @@ const ViewProjectComponent = () => {
         } catch (error) {
             Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
         } finally {
+            closeModal();
             fetchProjects();
         }
     }
@@ -389,11 +391,11 @@ const ViewProjectComponent = () => {
                 proj_id: projDetailsList.proj_id
             });
             if (response.status === 200 && response.data.success) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Application Successful', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 200 && !response.data.success) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Application Unsuccessful', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
@@ -430,6 +432,10 @@ const ViewProjectComponent = () => {
             const response = await axios.get('/profile', {
                 params: { user_id: user_id }
             });
+
+            if (response.status === 200) {
+                navigate(`/profile?user_id=${user_id}`);
+            }
         } catch (error) {
             Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
         } finally {
@@ -477,7 +483,7 @@ const ViewProjectComponent = () => {
 
                                                         <div className="progress-image"
                                                             style={{
-                                                                backgroundImage: `url(${imageArray[item.image_url]})`,
+                                                                backgroundImage: `url(${imageArray[Number(item.image_url)] || ''})`,
                                                                 backgroundSize: 'cover',
                                                                 backgroundPosition: 'center'
 
@@ -573,7 +579,7 @@ const ViewProjectComponent = () => {
                                                     </td>
                                                 </tr>
                                                 {projDescList.map((p, i) => (
-                                                    <tr key={i}>
+                                                    <tr key={`projDesc-${i}`}>
                                                         {!editFlag && <>
                                                             <td className='proj-details-sub-header'>{p[0]}</td>
                                                             <td className='proj-details-data'>{p[1]}</td>
@@ -615,44 +621,44 @@ const ViewProjectComponent = () => {
                                                     <td className="proj-details-sub-header">Status</td>
                                                     <td className="proj-details-data">{projDetailsList.status_desc}</td>
                                                 </tr>
-                                                {['business_owner', 'supervisor', 'student'].map((role) => {
-                                                    const stakeholdersByRole = (projDetailsList?.stakeholder || [])
-                                                        .filter((stakeholder) => stakeholder.role === role)
-                                                        .map((stakeholder) => stakeholder);
+                                                {["business_owner", "supervisor", "student"].map(role => {
+                                                    const stakeholdersByRole = (projDetailsList?.stakeholder || []).filter(
+                                                        stakeholder => stakeholder.role === role
+                                                    );
 
                                                     if (stakeholdersByRole.length > 0) {
                                                         return (
                                                             <tr key={role}>
-                                                                <td className='proj-details-sub-header'>
-                                                                    {role === 'business_owner' && 'Business Owner'}
-                                                                    {role === 'supervisor' && 'Supervisor(s)'}
-                                                                    {role === 'student' && 'Student(s)'}
+                                                                <td className="proj-details-sub-header">
+                                                                    {role === "business_owner" && "Business Owner"}
+                                                                    {role === "supervisor" && "Supervisor(s)"}
+                                                                    {role === "student" && "Student(s)"}
                                                                 </td>
-                                                                <td className='proj-details-data'>
-                                                                    {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => {
-                                                                        return (
-                                                                            <>
-                                                                                {!editFlag &&
-                                                                                    <div key={index} onClick={() => fetchUserProfile(user_id)} className='stakeholder-button'>
-                                                                                        {name}
-                                                                                    </div>}
-                                                                                {editFlag &&
-                                                                                    <div key={index} className='stakeholder-button'>
-                                                                                        {name}
-                                                                                        {((accessVal === 'E' && role === 'student')
-                                                                                    || (accessVal === 'S' && role !== 'business_owner')) && <img src={remove_icon}
-                                                                                            onClick={() => removeStakeholder(proj_id, role, user_id)}
-                                                                                            className='remove_icon' alt="" />}
-                                                                                    </div>}
-                                                                            </>
-                                                                        )
-                                                                    })}
-                                                                    {/* {stakeholdersByRole.join(', ')} */}
+                                                                <td className="proj-details-data">
+                                                                    {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
+                                                                        <div
+                                                                            key={`${role}-${user_id}`}
+                                                                            className="stakeholder-button"
+                                                                            onClick={!editFlag ? () => fetchUserProfile(user_id) : undefined}
+                                                                        >
+                                                                            {name}
+                                                                            {editFlag &&
+                                                                                ((accessVal === "E" && role === "student") ||
+                                                                                    (accessVal === "S" && role !== "business_owner")) && (
+                                                                                    <img
+                                                                                        src={remove_icon}
+                                                                                        onClick={() => removeStakeholder(proj_id, role, user_id)}
+                                                                                        className="remove_icon"
+                                                                                        alt=""
+                                                                                    />
+                                                                                )}
+                                                                        </div>
+                                                                    ))}
                                                                 </td>
                                                             </tr>
                                                         );
                                                     }
-                                                    return null; // Skip rendering if no stakeholders for the role
+                                                    return null;
                                                 })}
 
 

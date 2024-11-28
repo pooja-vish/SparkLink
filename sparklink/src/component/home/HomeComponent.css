@@ -29,7 +29,7 @@
 .container-fluid.background {
     /* background: linear-gradient(135deg, #0d1b2a, #1b263b 70%, #415a77); */
     /* background: linear-gradient(to top, #5f7f9f, #2c3d5c); */
-    background: #2f5972;
+    background: #005596;
     border-radius: 15px;
     height: auto;
     padding: 20px;
@@ -245,9 +245,10 @@
 }
 
 .button-card {
-    background-color: #2f5972;
-    color: #fff;
+    background-color: #FFCE00;
+    color: #585858;
     border: none;
+    font-weight: 700;
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 5px;
@@ -256,9 +257,9 @@
 }
 
 .button-card:hover {
-    background-color: #fff;
-    color: #2f5972;
-    border: 1px solid #2f5972;
+    background-color: #585858;
+    color: #FFCE00;
+    border: 1px solid #585858;
 }
 
 .row {
