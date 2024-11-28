@@ -430,6 +430,10 @@ const ViewProjectComponent = () => {
             const response = await axios.get('/profile', {
                 params: { user_id: user_id }
             });
+            
+            if (response.status === 200) {
+                navigate(`/profile?user_id=${user_id}`);
+            }
         } catch (error) {
             Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
         } finally {
@@ -640,9 +644,9 @@ const ViewProjectComponent = () => {
                                                                                     <div key={index} className='stakeholder-button'>
                                                                                         {name}
                                                                                         {((accessVal === 'E' && role === 'student')
-                                                                                    || (accessVal === 'S' && role !== 'business_owner')) && <img src={remove_icon}
-                                                                                            onClick={() => removeStakeholder(proj_id, role, user_id)}
-                                                                                            className='remove_icon' alt="" />}
+                                                                                            || (accessVal === 'S' && role !== 'business_owner')) && <img src={remove_icon}
+                                                                                                onClick={() => removeStakeholder(proj_id, role, user_id)}
+                                                                                                className='remove_icon' alt="" />}
                                                                                     </div>}
                                                                             </>
                                                                         )
