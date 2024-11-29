@@ -72,7 +72,9 @@ const ProgressTrackerComponent = () => {
                     value: response.data.projData.project_name
                 }
                 handleSelectChange(optionSelect);
-                setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+                if (accessVal === 'S' || accessVal === 'SU' || accessVal === 'ST') {
+                    setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+                }
             }
         } catch (error) {
             //setError(error);
@@ -187,7 +189,9 @@ const ProgressTrackerComponent = () => {
                 setMilestoneData(response.data.milestoneData);
             } else {
                 setMilestoneData([]);
-                setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+                if (accessVal === 'S' || accessVal === 'SU' || accessVal === 'ST') {
+                    setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+                }
             }
         } catch (err) {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
@@ -475,16 +479,16 @@ const ProgressTrackerComponent = () => {
                                                             const milestoneEndDate = new Date(milestone.end_date).toISOString().split("T")[0];
 
                                                             if (milestoneEndDate < today && milestone.is_completed === 'N') {
-                                                                backgroundColor = '#e74c3c';
+                                                                backgroundColor = '#FF3300';
                                                             } else if (milestone.is_completed === 'Y') {
                                                                 backgroundColor = '#3CB371';
                                                             } else {
-                                                                backgroundColor = '#f5a623';
+                                                                backgroundColor = '#FFCE00';
                                                             }
 
                                                             return (
                                                                 <div className="col-12 col-md-4 col-lg-2 mb-4 mt-3" key={index}>
-                                                                    <div className="box" style={{ backgroundColor, cursor: 'pointer' }}
+                                                                    <div className="box" style={{ backgroundColor, cursor: 'pointer', transition: 'background-color 0.3s ease' }}
                                                                         title='Click to view more details'
                                                                         onClick={() => openMilestoneDetails(milestone.milestone_id)}>
                                                                         <div className="header">

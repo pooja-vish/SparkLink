@@ -23,10 +23,11 @@ exports.fetchApplication = async (req, res) => {
 
         // Step 1: Retrieve proj_id's for the current user from ProjAllocation
         const allocations = await ProjAllocation.findAll({
-            where: { user_id: user.user_id,
+            where: {
+                user_id: user.user_id,
                 role: '3',
                 is_active: 'Y'
-             },
+            },
             attributes: ['proj_id']
         });
 
@@ -49,9 +50,9 @@ exports.fetchApplication = async (req, res) => {
         // Step 2: Fetch Project Applications based on proj_id and role = 4
         const applicationData = await ProjApplication.findAll({
             where: {
-                proj_id: projIds, 
-                role: 4, 
-                is_active: 'Y', 
+                proj_id: projIds,
+                role: 4,
+                is_active: 'Y',
                 is_approved: 'N'
             },
             include: [
@@ -86,3 +87,28 @@ exports.fetchApplication = async (req, res) => {
         });
     }
 };
+
+exports.fetchNotificationCount = async (req, res) => {
+    try {
+        const user = req.user;
+        let notifCount = 0;
+        if (Number(user.role) === 3) {
+            notifCount = await ProjApplication.count({
+                where: {
+                    is_active: 'Y',
+                    is_approved: 'N',
+                    is_rejected: 'N'
+                }
+            });
+        } else if (Number(user.role) === 4) {
+            notifCount = await ProjAllocation.count({
+                where: {
+                    notification: 'Y'
+                }
+            })
+        }
+        res.status(200).json({ message: 'Notification Count fetched successfully', notifCount });
+    } catch (error) {
+        res.status(500).json({ message: "Error retrieving Notification Count", error: error.message });
+    }
+}

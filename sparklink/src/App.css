@@ -4,9 +4,10 @@ body {
 }
 
 .button-home {
-  background-color: #2f5972;
-  color: #fff;
-  border: solid 1px;
+  background-color: #005596;
+  color: #585858;
+  border: none;
+  font-weight: 700;
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 5px;
@@ -15,9 +16,9 @@ body {
 }
 
 .button-home:hover {
-  background-color: #fff;
-  color: #2f5972;
-  border: solid 1px;
+  background-color: #585858;
+  color: #FFCE00;
+  border: 1px solid #585858;
 }
 
 .page-container {
@@ -39,7 +40,7 @@ body {
 }
 
 .button-delete {
-  background-color: #ff3d3d;
+  background-color: #FF3300;
   color: #fff;
   border: solid 1px;
   padding: 10px 20px;
@@ -50,7 +51,7 @@ body {
 }
 
 .button-delete:hover {
-  background-color: #fff;
-  color: #ff3d3d;
-  border: solid 1px;
+  background-color: #585858;
+  color: #FFCE00;
+  border: solid 1px #585858;
 }

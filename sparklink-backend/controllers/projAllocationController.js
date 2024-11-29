@@ -13,12 +13,14 @@ const acceptProject = async (req, res) => {
       role: role,
       created_by: user_id,
       modified_by: user_id,
+      is_active: 'Y'
     };
 
     const student_exists = await project_allocation.count({
       where: {
         proj_id: proj_id,
-        role: role
+        role: role,
+        is_active: 'Y'
       }
     });
 
@@ -37,6 +39,7 @@ const acceptProject = async (req, res) => {
           proj_id: proj_id,
           user_id: user_id,
           role: role,
+          is_active: 'Y'
         },
       }
     );
