@@ -214,9 +214,29 @@ const ProgressTrackerComponent = () => {
             if (response.status === 201) {
                 fetchMilestone();
                 setMilestoneList([]);
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            if (err.response) {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
             //setError(err.message);
         } finally {
             setLoading(false);
@@ -273,9 +293,29 @@ const ProgressTrackerComponent = () => {
                     //setDetailsList({});
                     setEditFlag(false);
                 }
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            if (err.response) {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
             //setError(err.message);
         } finally {
             fetchMilestone();
@@ -304,6 +344,12 @@ const ProgressTrackerComponent = () => {
             if (response.status === 200) {
                 fetchMilestone();
                 closeModal();
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
@@ -324,6 +370,12 @@ const ProgressTrackerComponent = () => {
             if (response.status === 200) {
                 fetchMilestone();
                 closeModal();
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
@@ -344,6 +396,12 @@ const ProgressTrackerComponent = () => {
             if (response.status === 200) {
                 fetchMilestone();
                 closeModal();
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });

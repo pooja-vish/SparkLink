@@ -1,26 +1,20 @@
 const express = require('express');
 
 function isConsecSplChar(input) {
-    const pattern = /[{}"\\%&'()*+,\-./:;<=>?\[\]|\t\n]+/g;
-
-    let match;
-    while ((match = pattern.exec(input)) !== null) {
-        if (match[0].length > 1) {
-            return false;
-        }
-    }
-    return true;
+    const pattern = /[^A-Za-z0-9]+[^A-Za-z0-9]+/;
+    console.log(pattern.test(input));
+    return pattern.test(input);
 }
 
 function isValidString(input, minLength, maxLength) {
-    if(input.trim().length < minLength || input.trim().length > maxLength) {
+    if (input.trim().length < minLength || input.trim().length > maxLength) {
         return false;
     }
     return true;
 }
 
 function isEmptyString(input) {
-    if(input.trim().length === 0) {
+    if (input.trim().length === 0) {
         return true;
     }
     return false;

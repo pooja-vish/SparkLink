@@ -5,6 +5,7 @@ const Milestone = require("../models/proj_milestone");
 const ProjectStatus = require("../models/proj_status");
 const Role = require("../models/role");
 const User = require("../models/user");
+const ValidationUtil = require("../common/validationUtil");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
 
@@ -64,14 +65,17 @@ exports.createProject = async (req, res) => {
     }
 
     // Combine fields to form proj_desc
-    const proj_desc = `Purpose: ${purpose}; Product: ${product}; Description: ${project_description}; Features: ${features}`;
+    //const proj_desc = `Purpose: ${purpose}; Product: ${product}; Description: ${project_description}; Features: ${features}`;
 
     const user = req.user;
 
 
     const projectData = {
       project_name: project_name,
-      proj_desc: proj_desc,
+      purpose: purpose,
+      product: product,
+      description: project_description,
+      features: features,
       budget: project_budget,
       end_date: project_deadline,
       created_by: user.user_id,
@@ -228,7 +232,7 @@ exports.getAllProjects = async (req, res) => {
       const projIds = projects.map(project => project.proj_id);
 
       const stakeholdersQuery = `
-        SELECT pa.proj_id, u.name, u.user_id,
+        SELECT pa.proj_id, u.username || ' ' || u.name as name, u.user_id,
         CASE 
           WHEN pa.role = 2 THEN 'business_owner'
           WHEN pa.role = 3 THEN 'supervisor'
@@ -334,7 +338,7 @@ exports.updateProject = async (req, res) => {
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
-
+    console.log("updateProjectData>>>>>", req.body);
     await project.update(req.body);
     res.status(200).json(project);
   } catch (error) {
@@ -397,8 +401,40 @@ exports.UpdateProjDetails = async (req, res) => {
   try {
     const { projDetailsList } = req.body;
 
+    const isValidDate = ValidationUtil.isValidDate(projDetailsList.end_date);
+    const isValidPurpose = !ValidationUtil.isEmptyString(projDetailsList.purpose) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.purpose) &&
+      ValidationUtil.isValidString(projDetailsList.purpose, 5, 250);
+    //const isProductEmpty = ValidationUtil.isEmptyString(projDetailsList.product);
+    const isValidProduct = !ValidationUtil.isEmptyString(projDetailsList.product) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.product) &&
+      ValidationUtil.isValidString(projDetailsList.product, 5, 250);
+    //const isDescriptionEmpty = ValidationUtil.isEmptyString(projDetailsList.description);
+    const isValidDescription = !ValidationUtil.isEmptyString(projDetailsList.description) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.description) &&
+      ValidationUtil.isValidString(projDetailsList.description, 5, 250);
+    //const isFeaturesEmpty = ValidationUtil.isEmptyString(projDetailsList.features);
+    const isValidFeatures = !ValidationUtil.isEmptyString(projDetailsList.features) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.features) &&
+      ValidationUtil.isValidString(projDetailsList.features, 5, 250);
+
+    if (!isValidDate) {
+      return res.status(400).json({ message: "Please select a valid date" });
+    } else if (!isValidPurpose) {
+      return res.status(400).json({ message: "Please enter a valid Purpose - You may not enter consecutive special characters" });
+    } else if (!isValidProduct) {
+      return res.status(400).json({ message: "Please enter valid Product(s) - You may not enter consecutive special characters" });
+    } else if (!isValidDescription) {
+      return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
+    } else if (!isValidFeatures) {
+      return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });
+    }
+
     const updatedData = await Project.update({
-      proj_desc: projDetailsList.proj_desc,
+      purpose: projDetailsList.purpose.trim(),
+      product: projDetailsList.product.trim(),
+      description: projDetailsList.description.trim(),
+      features: projDetailsList.features.trim(),
       skills_req: projDetailsList.skills_req,
       budget: projDetailsList.budget,
       status: projDetailsList.status,
@@ -721,11 +757,11 @@ exports.removeStakeholder = async (req, res) => {
   const { removeData } = req.body;
   let role_id;
 
-  if(removeData.role === 'business_owner') {
+  if (removeData.role === 'business_owner') {
     role_id = 2;
-  } else if(removeData.role === 'supervisor') {
+  } else if (removeData.role === 'supervisor') {
     role_id = 3;
-  } else if(removeData.role === 'student') {
+  } else if (removeData.role === 'student') {
     role_id = 4;
   }
 
@@ -751,7 +787,7 @@ exports.removeStakeholder = async (req, res) => {
     });
 
     return res.status(200).json({ message: "Stakeholder removed successfully from the project" });
-  } catch(error) {
+  } catch (error) {
     return res.status(500).json({ message: "Error removing stakeholder from the project", error: error.message });
   }
 }
