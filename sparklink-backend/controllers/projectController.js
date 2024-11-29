@@ -519,12 +519,12 @@ exports.CancelProject = async (req, res) => {
       where: { proj_id: projData.proj_id }
     });
 
-    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+    res.status(200).json({ message: "Project Cancelled successfully", updatedData })
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Error Resuming Project", error: error.message });
+      .json({ message: "Error Cancelling Project", error: error.message });
   }
 }
 
@@ -538,12 +538,12 @@ exports.DelayProject = async (req, res) => {
       where: { proj_id: projData.proj_id }
     });
 
-    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+    res.status(200).json({ message: "Project Delayed successfully", updatedData })
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Error Resuming Project", error: error.message });
+      .json({ message: "Error Delaying Project", error: error.message });
   }
 }
 
@@ -608,7 +608,8 @@ exports.applyProject = async (req, res) => {
         user_id: user_id,
         role: role,
         created_by: user_id,
-        modified_by: user_id
+        modified_by: user_id,
+        is_active: 'Y'
       }
       const student = await ProjApplication.create(studentApplList);
       //  student = await ProjAllocation.create(allocationList, {
@@ -633,6 +634,7 @@ exports.applyProject = async (req, res) => {
 
 /**
  * access_val === 'S' -> User has admin access can take every action on the Project
+ * access_val === 'SB' -> User is the Business Owner and a Supersor of the project and has edit and delete access to the Project
  * access_val === 'E' -> User has supervisor role and edit access on the Project
  * access_val === 'A' -> User has access to Apply to the Project
  * access_val === 'B' -> User has access to Edit and Delete access to the Project
@@ -674,6 +676,19 @@ exports.getUserRoleAccess = async (req, res) => {
           is_active: 'Y'
         }
       });
+
+      const supervisor_business_owner = await ProjAllocation.count({
+        where: {
+          proj_id: proj_id,
+          user_id: user_id,
+          role: 2,
+          is_active: 'Y'
+        }
+      });
+
+      if(supervisor_business_owner === 1) {
+        return res.status(200).json({ success: true, message: "Valid User", access_val: 'SB' });
+      }
 
       //Supervisor Edit
       if (supervisor_exists === 1) {

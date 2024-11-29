@@ -4,19 +4,21 @@ const User = require("../models/user");
 const Project = require("../models/project");
 
 /**
- * Composite Primary key (proj_id, role, user_id)
- * Foreign key (proj_id)
- * Foreign key (role)
- * Foreign key (user_id)
+ * Primary key (id)
+ * Unique Index [proj_id, user_id, role where is_active = 'Y']
  */
 
 const ProjApplication = sequelize.define(
   "ProjApplication",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     proj_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       references: {
         model: "t_project",
         key: "proj_id",
@@ -25,7 +27,6 @@ const ProjApplication = sequelize.define(
     role: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       references: {
         model: "t_rolesmst",
         key: "id",
@@ -34,7 +35,6 @@ const ProjApplication = sequelize.define(
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       references: {
         model: "t_usermst",
         key: "user_id",
@@ -86,6 +86,16 @@ const ProjApplication = sequelize.define(
   {
     tableName: "t_proj_application",
     timestamps: false,
+    indexes: [
+      {
+        name: "t_proj_application_active_unique",
+        unique: true,
+        fields: ["proj_id", "user_id", "role"],
+        where: {
+          is_active: 'Y'
+        }
+      },
+    ],
   }
 );
 

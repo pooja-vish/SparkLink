@@ -327,11 +327,12 @@ exports.filterProjMilestones = async (req, res) => {
         }
 
         const filter_query = `
-        SELECT *
+        SELECT pr.project_name, pr.proj_id
         FROM t_project pr, t_proj_allocation pa
         WHERE pr.project_name ILIKE '%' || :project_name || '%'
             and pa.proj_id = pr.proj_id
-            and pa.user_id = :user_id;`
+            and pa.user_id = :user_id
+		GROUP BY pr.project_name, pr.proj_id;`
 
         const replacements = {
             project_name: projName,

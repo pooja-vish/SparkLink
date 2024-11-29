@@ -270,26 +270,38 @@ const ViewProjectComponent = () => {
     };
 
     const deleteProject = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/deleteProject', {
-                projData: projDetailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Delete this project? This change cannot be undone',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/project/deleteProject', {
+                        projData: projDetailsList
+                    });
 
-            if (response.status === 200) {
-                //fetchProjects();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            } else if (response.status === 500) {
-                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    } else if (response.status === 500) {
+                        Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    closeModal();
+                    fetchProjects();
+                    //setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            closeModal();
-            fetchProjects();
-            //setLoading(false);
-        }
+        });
     }
 
     const completeProject = async () => {
@@ -325,7 +337,7 @@ const ViewProjectComponent = () => {
             if (response.status === 200) {
                 //fetchProjects();
                 closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                Swal.fire({ title: 'Success', icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
                 Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
@@ -339,74 +351,109 @@ const ViewProjectComponent = () => {
     }
 
     const cancelProject = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/cancelProject', {
-                projData: projDetailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Cancel this project?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/project/cancelProject', {
+                        projData: projDetailsList
+                    });
 
-            if (response.status === 200) {
-                //fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            } else if (response.status === 500) {
-                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    } else if (response.status === 500) {
+                        Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    fetchProjects();
+                    //setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            fetchProjects();
-            //setLoading(false);
-        }
+        });
     }
 
     const delayProject = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/delayProject', {
-                projData: projDetailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Delay this project?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/project/delayProject', {
+                        projData: projDetailsList
+                    });
 
-            if (response.status === 200) {
-                //fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            } else if (response.status === 500) {
-                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    } else if (response.status === 500) {
+                        Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    fetchProjects();
+                    //setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            fetchProjects();
-            //setLoading(false);
-        }
+        });
     }
 
     const removeStakeholder = async (proj_id, role, user_id) => {
-        console.log("proj_id>>>", proj_id, "role>>>>>", role, "user_id>>>>>>>>", user_id);
-        setLoading(true);
-        try {
-            const removeObj = {
-                proj_id: proj_id,
-                role: role,
-                user_id: user_id
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to remove them from the project? This change cannot be undone',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const removeObj = {
+                        proj_id: proj_id,
+                        role: role,
+                        user_id: user_id
+                    }
+                    const response = await axios.post('/project/removeStakeholder', {
+                        removeData: removeObj
+                    });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    }
+                } catch (error) {
+                    Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+                } finally {
+                    closeModal();
+                    fetchProjects();
+                }
             }
-            const response = await axios.post('/project/removeStakeholder', {
-                removeData: removeObj
-            });
-            if (response.status === 200) {
-                //fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            }
-        } catch (error) {
-            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
-        } finally {
-            closeModal();
-            fetchProjects();
-        }
+        });
     }
 
     const submitApplication = async () => {
@@ -507,33 +554,33 @@ const ViewProjectComponent = () => {
                                                     if (item.progress > 1 && item.progress === 100 && item.status !== 5) {
                                                         projectProgress = item.progress - 1;
                                                     }
-                                                    
+
                                                     return (
                                                         <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
-                                                        key={index} onClick={() => openProjectDetails(item.proj_id)}>
+                                                            key={index} onClick={() => openProjectDetails(item.proj_id)}>
 
-                                                        <div className="progress-image"
-                                                            style={{
-                                                                backgroundImage: `url(${imageArray[Number(item.image_url)] || ''})`,
-                                                                backgroundSize: 'cover',
-                                                                backgroundPosition: 'center'
+                                                            <div className="progress-image"
+                                                                style={{
+                                                                    backgroundImage: `url(${imageArray[Number(item.image_url)] || ''})`,
+                                                                    backgroundSize: 'cover',
+                                                                    backgroundPosition: 'center'
 
-                                                            }}
-                                                            loading="lazy">
-                                                        </div>
-                                                        <div className="progress-content">
-                                                            {/* <span className="progress-category">{item.project_name}</span> */}
-                                                            {/* <span className="progress-category">Software</span> */}
-                                                            <div className="progress-title">{item.project_name}</div>
-                                                            <div className="progress-bar-container">
-                                                                <div className="progress-bar">
-                                                                    <div className="progress" style={{ width: `${item.progress}%` }}></div>
+                                                                }}
+                                                                loading="lazy">
+                                                            </div>
+                                                            <div className="progress-content">
+                                                                {/* <span className="progress-category">{item.project_name}</span> */}
+                                                                {/* <span className="progress-category">Software</span> */}
+                                                                <div className="progress-title">{item.project_name}</div>
+                                                                <div className="progress-bar-container">
+                                                                    <div className="progress-bar">
+                                                                        <div className="progress" style={{ width: `${item.progress}%` }}></div>
+                                                                    </div>
+                                                                    {/* <span className="progress-text">{item.progress}%</span> */}
+                                                                    <span className="progress-text">{projectProgress}%</span>
                                                                 </div>
-                                                                {/* <span className="progress-text">{item.progress}%</span> */}
-                                                                <span className="progress-text">{projectProgress}%</span>
                                                             </div>
                                                         </div>
-                                                    </div>
                                                     )
                                                 })}
                                             </div>
@@ -563,7 +610,7 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
                                                             (projDetailsList.status !== 7 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={fail_icon}
                                                                 className='complete_icon'
@@ -571,7 +618,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={cancelProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
                                                             (projDetailsList.status !== 6 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={delay_icon}
                                                                 className='complete_icon'
@@ -579,14 +626,14 @@ const ViewProjectComponent = () => {
                                                                 onClick={delayProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={complete_icon}
                                                             className='complete_icon'
                                                             title='Mark Project as Complete'
                                                             onClick={completeProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
                                                             (projDetailsList.status === 5 || projDetailsList.status === 6 || projDetailsList.status === 7) && <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={resume_icon}
                                                                 className='complete_icon'
@@ -594,17 +641,17 @@ const ViewProjectComponent = () => {
                                                                 onClick={resumeProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status === 3 && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && projDetailsList.status === 3 && <span className='ms-1' style={{ float: 'right' }}><img
                                                             src={resume_icon}
                                                             className='complete_icon'
                                                             title='Start Project'
                                                             onClick={resumeProject}
                                                             alt=''
                                                         /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
                                                             title='Click to edit Project Details' alt=""
                                                             onClick={() => triggerUpdate('U')} /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
                                                             title='Click to cancel editing' alt=''
                                                             onClick={() => triggerUpdate('C')}
                                                         /></span>}
@@ -735,7 +782,7 @@ const ViewProjectComponent = () => {
                                                                         >
                                                                             {name}
                                                                             {editFlag &&
-                                                                                ((accessVal === "E" && role === "student") ||
+                                                                                (((accessVal === "E" || accessVal === "SB") && role === "student") ||
                                                                                     (accessVal === "S" && role !== "business_owner")) && (
                                                                                     <img
                                                                                         src={remove_icon}
@@ -777,9 +824,9 @@ const ViewProjectComponent = () => {
                                             onClick={UpdateProjDetails}>Save Changes</button>}
                                         {(accessVal === 'A') && <button className="ms-3 text-center button_text button-home"
                                             onClick={submitApplication}>Click to Apply</button>}
-                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B') && <button className="ms-3 text-center button_text button-home"
+                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-home"
                                             onClick={viewMilestones}>View Milestones</button>}
-                                        {(accessVal === 'S' || accessVal === 'B') && <button className="ms-3 text-center button_text button-delete"
+                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
