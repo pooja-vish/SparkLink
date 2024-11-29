@@ -225,7 +225,7 @@ const MenuComponent = () => {
                                 style={{ marginLeft: 15 }}
                               ></img>
                               &nbsp;&nbsp;&nbsp;Notifications
-                              <span className="notifcation-badge-expand text-center">{notifCount > 9 ? '9+' : notifCount}</span>
+                              {isAuthenticated && <span className="notifcation-badge-expand text-center">{notifCount > 9 ? '9+' : notifCount}</span>}
                             </Link>
                           </span>
                         </li>
@@ -366,7 +366,7 @@ const MenuComponent = () => {
                             alt=""
                             style={{ marginLeft: 15 }}
                           ></img>
-                          <span className="notification-badge text-center">{notifCount > 9 ? '9+' : notifCount}</span>
+                          {isAuthenticated && <span className="notification-badge text-center">{notifCount > 9 ? '9+' : notifCount}</span>}
                         </span>
                       </li>
 
