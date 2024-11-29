@@ -5,6 +5,7 @@ const Milestone = require("../models/proj_milestone");
 const ProjectStatus = require("../models/proj_status");
 const Role = require("../models/role");
 const User = require("../models/user");
+const ProjReport = require('../models/proj_report');
 const ValidationUtil = require("../common/validationUtil");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
@@ -686,7 +687,7 @@ exports.getUserRoleAccess = async (req, res) => {
         }
       });
 
-      if(supervisor_business_owner === 1) {
+      if (supervisor_business_owner === 1) {
         return res.status(200).json({ success: true, message: "Valid User", access_val: 'SB' });
       }
 
@@ -804,5 +805,40 @@ exports.removeStakeholder = async (req, res) => {
     return res.status(200).json({ message: "Stakeholder removed successfully from the project" });
   } catch (error) {
     return res.status(500).json({ message: "Error removing stakeholder from the project", error: error.message });
+  }
+}
+
+exports.reportProject = async (req, res) => {
+  try {
+    const { reportData } = req.body;
+    const proj_id = reportData.proj_id;
+    const reason = reportData.reason;
+
+    const user = req.user;
+
+    const isValidReason = !ValidationUtil.isEmptyString(reason) &&
+      !ValidationUtil.isConsecSplChar(reason) &&
+      ValidationUtil.isValidString(reason, 5, 250);
+
+    if (!isValidReason) {
+      return res.status(400).json({ message: "Please enter a valid reason" });
+    }
+
+    const reportExists = await ProjReport.count({
+      where: {
+        proj_id: proj_id
+      }
+    });
+
+    const report = await ProjReport.create({
+      proj_id: proj_id,
+      reported_by: user.user_id,
+      reason: reason,
+      report_count: reportExists + 1
+    });
+
+    return res.status(200).json({ message: "Project has been reported succesfully", report });
+  } catch (error) {
+    return res.status(500).json({ message: "Error Reporting Project", error: error.message });
   }
 }
