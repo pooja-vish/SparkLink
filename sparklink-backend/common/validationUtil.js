@@ -2,19 +2,19 @@ const express = require('express');
 
 function isConsecSplChar(input) {
     const pattern = /[^A-Za-z0-9]+[^A-Za-z0-9]+/;
-    console.log(pattern.test(input));
+
     return pattern.test(input);
 }
 
 function isValidString(input, minLength, maxLength) {
-    if (input.trim().length < minLength || input.trim().length > maxLength) {
+    if(input.trim().length < minLength || input.trim().length > maxLength) {
         return false;
     }
     return true;
 }
 
 function isEmptyString(input) {
-    if (input.trim().length === 0) {
+    if(input.trim().length === 0) {
         return true;
     }
     return false;
@@ -34,12 +34,8 @@ function doPasswordsMatch(input1, input2) {
     return input1 === input2;
 }
 
-function isValidDate(input) {
-    const inputDate = new Date(input);
-    const currentDate = new Date();
-
-    currentDate.setHours(0, 0, 0, 0);
-    inputDate.setHours(0, 0, 0, 0);
+function isValidDate(inputDate) {
+    const currentDate = new Date().toISOString().split("T")[0];
 
     return inputDate >= currentDate;
 }

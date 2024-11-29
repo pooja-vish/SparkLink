@@ -39,7 +39,8 @@ const ProgressTrackerComponent = () => {
     const [isMobileView, setIsMobileView] = useState(false);
     const [accessVal, setAccessVal] = useState('');
     const [addMilestoneFlag, setAddMilestoneFlag] = useState(false);
-    const currentDate = new Date();
+    //const currentDate = new Date();
+    const today = new Date().toISOString().split("T")[0];
 
     useEffect(() => {
         if (projId) {
@@ -471,8 +472,9 @@ const ProgressTrackerComponent = () => {
                                                     <div className="row">
                                                         {milestoneData.map((milestone, index) => {
                                                             let backgroundColor;
+                                                            const milestoneEndDate = new Date(milestone.end_date).toISOString().split("T")[0];
 
-                                                            if (new Date(milestone.end_date) < currentDate && milestone.is_completed === 'N') {
+                                                            if (milestoneEndDate < today && milestone.is_completed === 'N') {
                                                                 backgroundColor = '#e74c3c';
                                                             } else if (milestone.is_completed === 'Y') {
                                                                 backgroundColor = '#3CB371';
@@ -547,6 +549,7 @@ const ProgressTrackerComponent = () => {
                                                                         className="milestone_input_date milestone_datepicker"
                                                                         name="end_date"
                                                                         value={milestone.end_date || ""}
+                                                                        min={today}
                                                                         onChange={(e) => handleMilestoneChange(index, e)}
                                                                         required
                                                                     />
@@ -652,6 +655,7 @@ const ProgressTrackerComponent = () => {
                                                                                         className="milestone_input_date milestone_datepicker"
                                                                                         name="end_date"
                                                                                         value={detailsList.end_date || ""}
+                                                                                        min={today}
                                                                                         onChange={(e) => handleUpdateMilestoneChange(e)}
                                                                                         required
                                                                                     />
@@ -713,6 +717,7 @@ const ProgressTrackerComponent = () => {
                                                                                     className="milestone_input_date milestone_datepicker"
                                                                                     name="end_date"
                                                                                     value={detailsList.end_date || ""}
+                                                                                    min={today}
                                                                                     onChange={(e) => handleUpdateMilestoneChange(e)}
                                                                                     required
                                                                                 />
