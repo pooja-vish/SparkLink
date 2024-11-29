@@ -74,6 +74,7 @@ const ViewProjectComponent = () => {
         setLoading(true);
         try {
             const response = await axios.get('/project/getAllProjects');
+            console.log(response.data);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -147,27 +148,34 @@ const ViewProjectComponent = () => {
         }
     }
 
-    useEffect(() => {
-        if (projDetailsList && triggerModalFlag) {
-            let splitDesc = projDetailsList.proj_desc.split(";");
-            let filterDesc = [];
-            for (let i = 0; i < splitDesc.length; i++) {
-                filterDesc[i] = splitDesc[i].trim().split(":");
-            }
-            setProjDescList(filterDesc);
-        }
-    }, [projDetailsList, triggerModalFlag]);
+    // useEffect(() => {
+    //     if (projDetailsList && triggerModalFlag) {
+    //         let splitDesc = projDetailsList.proj_desc.split(";");
+    //         let filterDesc = [];
+    //         for (let i = 0; i < splitDesc.length; i++) {
+    //             filterDesc[i] = splitDesc[i].trim().split(":");
+    //         }
+    //         setProjDescList(filterDesc);
+    //     }
+    // }, [projDetailsList, triggerModalFlag]);
+
+    // useEffect(() => {
+    //     if (projDescList.length > 0) {
+    //         fetchUserRoles();
+    //     }
+    // }, [projDescList]);
 
     useEffect(() => {
-        if (projDescList.length > 0) {
+        if (triggerModalFlag && projDetailsList && projDetailsList.proj_id) {
             fetchUserRoles();
         }
-    }, [projDescList]);
+    }, [triggerModalFlag]);
 
     const closeModal = () => {
         setProjDetailsList(null);
-        setProjDescList([]);
+        //setProjDescList([]);
         setTriggerDetails(false);
+        setTriggerModalFlag(false);
         setEditFlag(false);
     }
 
@@ -175,11 +183,11 @@ const ViewProjectComponent = () => {
         if (triggerKey === 'U') {
             setEditFlag(true);
             setCopyOfProjDetailsList(projDetailsList);
-            setCopyOfProjDescList(projDescList);
+            //setCopyOfProjDescList(projDescList);
         } else if (triggerKey === 'C') {
             setEditFlag(false);
             setProjDetailsList(copyOfProjDetailsList);
-            setProjDescList(copyOfProjDescList);
+            //setProjDescList(copyOfProjDescList);
         }
     }
 
@@ -190,6 +198,7 @@ const ViewProjectComponent = () => {
                 projDetailsList: projDetailsList
             });
 
+            console.log(response.data);
             if (response.status === 200) {
                 if (editFlag) {
                     setEditFlag(false);
@@ -197,9 +206,25 @@ const ViewProjectComponent = () => {
                 Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
                 Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+            } else if (response.status === 400) {
+                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
         } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            if (err.response) {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
             //setError(err.message);
         } finally {
             setLoading(false);
@@ -207,34 +232,34 @@ const ViewProjectComponent = () => {
         }
     }
 
-    const handleUpdateProjDescChange = (event) => {
-        const { name, value } = event.target;
+    // const handleUpdateProjDescChange = (event) => {
+    //     const { name, value } = event.target;
 
-        const updatedTempProjDescList = tempProjDescList.map((p) => {
-            if (p[0] === name) {
-                return [p[0], value];
-            }
-            return p;
-        });
+    //     const updatedTempProjDescList = tempProjDescList.map((p) => {
+    //         if (p[0] === name) {
+    //             return [p[0], value];
+    //         }
+    //         return p;
+    //     });
 
-        setTempProjDescList(updatedTempProjDescList);
-    };
+    //     setTempProjDescList(updatedTempProjDescList);
+    // };
 
-    const handleProjDescBlur = () => {
-        const trimmedProjDescList = tempProjDescList.map(p => [p[0].trim(), p[1].trim()]);
-        setProjDescList(trimmedProjDescList);
+    // const handleProjDescBlur = () => {
+    //     const trimmedProjDescList = tempProjDescList.map(p => [p[0].trim(), p[1].trim()]);
+    //     setProjDescList(trimmedProjDescList);
 
-        setProjDetailsList(prevDetails => {
-            const updatedProjDescString = trimmedProjDescList
-                .map(p => `${p[0]}: ${p[1]}`)
-                .join('; ');
-            return { ...prevDetails, proj_desc: updatedProjDescString };
-        });
-    };
+    //     setProjDetailsList(prevDetails => {
+    //         const updatedProjDescString = trimmedProjDescList
+    //             .map(p => `${p[0]}: ${p[1]}`)
+    //             .join('; ');
+    //         return { ...prevDetails, proj_desc: updatedProjDescString };
+    //     });
+    // };
 
-    useEffect(() => {
-        setTempProjDescList(projDescList);
-    }, [projDescList]);
+    // useEffect(() => {
+    //     setTempProjDescList(projDescList);
+    // }, [projDescList]);
 
     const handleUpdateProjDetailsChange = (event) => {
         const { name, value } = event.target;
@@ -477,8 +502,14 @@ const ViewProjectComponent = () => {
 
                                         <div className="progress-background-card">
                                             <div className="row progress-card-layout">
-                                                {projectList.map((item, index) => (
-                                                    <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
+                                                {projectList.map((item, index) => {
+                                                    let projectProgress = item.progress;
+                                                    if (item.progress > 1 && item.progress === 100 && item.status !== 5) {
+                                                        projectProgress = item.progress - 1;
+                                                    }
+                                                    
+                                                    return (
+                                                        <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
                                                         key={index} onClick={() => openProjectDetails(item.proj_id)}>
 
                                                         <div className="progress-image"
@@ -499,11 +530,12 @@ const ViewProjectComponent = () => {
                                                                     <div className="progress" style={{ width: `${item.progress}%` }}></div>
                                                                 </div>
                                                                 {/* <span className="progress-text">{item.progress}%</span> */}
-                                                                <span className="progress-text">{item.progress}%</span>
+                                                                <span className="progress-text">{projectProgress}%</span>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                ))}
+                                                    )
+                                                })}
                                             </div>
                                         </div>
                                     </div>
@@ -578,7 +610,7 @@ const ViewProjectComponent = () => {
                                                         /></span>}
                                                     </td>
                                                 </tr>
-                                                {projDescList.map((p, i) => (
+                                                {/* {projDescList.map((p, i) => (
                                                     <tr key={`projDesc-${i}`}>
                                                         {!editFlag && <>
                                                             <td className='proj-details-sub-header'>{p[0]}</td>
@@ -594,14 +626,74 @@ const ViewProjectComponent = () => {
                                                                     value={tempProjDescList.find(item => item[0] === p[0])?.[1] || ""}
                                                                     onChange={(e) => handleUpdateProjDescChange(e)}
                                                                     onBlur={handleProjDescBlur}
-                                                                    placeholder="Enter milestone title, e.g., Project Kickoff"
+                                                                    placeholder={`Enter ${p[0]}`}
                                                                     maxLength={100}
                                                                     required
                                                                 />
                                                             </td>
                                                         </>}
                                                     </tr>
-                                                ))}
+                                                ))} */}
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Purpose</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.purpose}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="purpose"
+                                                            placeholder='e.g., E-Commerce'
+                                                            value={projDetailsList.purpose || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Product</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.product}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="product"
+                                                            placeholder='e.g., Website'
+                                                            value={projDetailsList.product || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Description</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.description}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="description"
+                                                            placeholder='e.g., This website is intended for MAC Faculty and Students'
+                                                            value={projDetailsList.description || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Features</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.features}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="features"
+                                                            placeholder='e.g., Recommendation System'
+                                                            value={projDetailsList.features || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
                                                 <tr>
                                                     <td className='proj-details-sub-header'>End Date</td>
                                                     {!editFlag && <td className='proj-details-data'>{projDetailsList.end_date}</td>}

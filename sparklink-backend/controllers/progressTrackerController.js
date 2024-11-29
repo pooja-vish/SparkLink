@@ -2,6 +2,7 @@ const Milestone = require('../models/proj_milestone');
 const MilestoneCounter = require('../models/milestone_counter');
 const ProjectAllocation = require('../models/proj_allocation');
 const Project = require('../models/project');
+const ValidationUtil = require('../common/validationUtil');
 const sequelize = require('../config/db');
 
 exports.createMilestone = async (req, res) => {
@@ -21,6 +22,24 @@ exports.createMilestone = async (req, res) => {
                 milestone_title,
                 end_date
             } = milestone;
+
+            const isValidMilestoneTitle = !ValidationUtil.isEmptyString(milestone_title) &&
+                !ValidationUtil.isConsecSplChar(milestone_title) &&
+                ValidationUtil.isValidString(milestone_title, 5, 250);
+
+            const isValidMilestoneDesc = !ValidationUtil.isEmptyString(milestone_desc) &&
+                !ValidationUtil.isConsecSplChar(milestone_desc) &&
+                ValidationUtil.isValidString(milestone_desc, 5, 250);
+
+            const isValidDate = ValidationUtil.isValidDate(end_date);
+
+            if (!isValidDate) {
+                return res.status(400).json({ message: "Please select a valid date" });
+            } else if (!isValidMilestoneTitle) {
+                return res.status(400).json({ message: "Please enter a valid Milestone Title - You may not enter consecutive special characters" });
+            } else if (!isValidMilestoneDesc) {
+                return res.status(400).json({ message: "Please enter valid Milestone Description - You may not enter consecutive special characters" });
+            }
 
             const projMilestoneCount = await MilestoneCounter.findOne({
                 where: { proj_id: proj_id }
@@ -45,8 +64,8 @@ exports.createMilestone = async (req, res) => {
                 const milestoneList = {
                     proj_id: proj_id,
                     milestone_id: updatedProjMilestoneCount.milestone_id,
-                    milestone_desc: milestone_desc,
-                    milestone_title: milestone_title,
+                    milestone_desc: milestone_desc.trim(),
+                    milestone_title: milestone_title.trim(),
                     end_date: end_date
                 }
                 const newMilestone = await Milestone.create(milestoneList);
@@ -85,9 +104,27 @@ exports.UpdateMilestone = async (req, res) => {
     try {
         const { milestoneList } = req.body;
 
+        const isValidMilestoneTitle = !ValidationUtil.isEmptyString(milestoneList.milestone_title) &&
+            !ValidationUtil.isConsecSplChar(milestoneList.milestone_title) &&
+            ValidationUtil.isValidString(milestoneList.milestone_title, 5, 250);
+
+        const isValidMilestoneDesc = !ValidationUtil.isEmptyString(milestoneList.milestone_desc) &&
+            !ValidationUtil.isConsecSplChar(milestoneList.milestone_desc) &&
+            ValidationUtil.isValidString(milestoneList.milestone_desc, 5, 250);
+
+        const isValidDate = ValidationUtil.isValidDate(milestoneList.end_date);
+
+        if (!isValidDate) {
+            return res.status(400).json({ message: "Please select a valid date" });
+        } else if (!isValidMilestoneTitle) {
+            return res.status(400).json({ message: "Please enter a valid Milestone Title - You may not enter consecutive special characters" });
+        } else if (!isValidMilestoneDesc) {
+            return res.status(400).json({ message: "Please enter valid Milestone Description - You may not enter consecutive special characters" });
+        }
+
         const updatedData = await Milestone.update({
-            milestone_title: milestoneList.milestone_title,
-            milestone_desc: milestoneList.milestone_desc,
+            milestone_title: milestoneList.milestone_title.trim(),
+            milestone_desc: milestoneList.milestone_desc.trim(),
             end_date: milestoneList.end_date
         }, {
             where: { proj_id: milestoneList.proj_id, milestone_id: milestoneList.milestone_id }
