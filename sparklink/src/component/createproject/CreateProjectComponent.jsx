@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   // getStorage,
   ref,
@@ -12,6 +12,8 @@ import MenuComponent from "../../component/menu/MenuComponent";
 import MasterComponent from '../MasterComponent';
 import FooterComponent from "../footer/FooterComponent";
 import axios from "axios";
+import { useAuth } from '../../AuthContext';
+import Swal from "sweetalert2";
 
 const CreateProjectComponent = () => {
   const dateInputRef = useRef(null);
@@ -35,6 +37,11 @@ const CreateProjectComponent = () => {
   // States for success and error messages
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const { isAuthenticated, user } = useAuth();
+
+  useEffect(()=>{
+    console.log("the user logged in is", user)
+  })
 
   const handlePurposeCheckBoxChange = (e) => {
     const { checked, value } = e.target;
@@ -144,17 +151,17 @@ const CreateProjectComponent = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Clear previous messages
     setErrorMessage("");
     setSuccessMessage("");
-    setLoading(true);
-
+    setLoading(false);
+  
     if (setIsOtherPurposeChecked) {
       setPurpose((prevPurpose) => [...prevPurpose, otherPurposeText]);
       console.log("purpose --- > " + purpose);
     }
-
+  
     // Basic form validation
     if (
       !projectName ||
@@ -169,9 +176,7 @@ const CreateProjectComponent = () => {
       setLoading(false);
       return;
     }
-
-
-
+  
     const form_data = {
       project_name: projectName,
       purpose: purpose.join(", "),
@@ -182,21 +187,52 @@ const CreateProjectComponent = () => {
       project_deadline: projectDeadline,
       image_url: getRandomImageName(), // Include the image URL in the form data
     };
-
+  
     console.log("Form Data Submitted:", form_data);
-
+  
+    // Check if the user role is supervisor (role 3)
+    if (user.role === "3") {
+      const result = await Swal.fire({
+        title: "Supervise Project?",
+        text: "Do you want to supervise this project?",
+        icon: "question",
+        showCancelButton: true,    // Show the Cancel button
+        showDenyButton: true,      // Show the Deny (No) button
+        confirmButtonText: "Yes",  // Text for the Confirm button
+        denyButtonText: "No",      // Text for the Deny button
+        cancelButtonText: "Cancel", // Text for the Cancel button
+      });
+    
+      // Handle user response
+      if (result.isConfirmed) {
+        form_data.supervise = true; // Add supervise field to form data
+        console.log("User opted to supervise the project.");
+      } else if (result.isDenied) {
+        form_data.supervise = false; // Add supervise = false if user clicked "No"
+        console.log("User declined to supervise the project.");
+      } else if (result.isDismissed) {
+        console.log("User canceled or closed the modal, stopping execution.");
+        return; // Stop execution if the modal was closed or canceled
+      }
+    }
+    
+    // Proceed with the rest of the logic
+    
+  
+    // Proceed with loading state after SweetAlert decision
+    setLoading(true);
+  
     try {
-
+      // Make the API request only if user confirmed to supervise or declined but not canceled
       const response = await axios.post("/project", form_data);
-
+  
       if (response) {
         const project = response.data;
         setSuccessMessage("Project created successfully!");
         console.log("Project created successfully:", project);
-        emptyForm();
+        emptyForm(); // Reset form after successful submission
       } else {
-        //const errorResponse = await response.json();
-        setErrorMessage(" Failed to create project ");
+        setErrorMessage("Failed to create project");
       }
     } catch (error) {
       setErrorMessage("Error submitting form: " + error.message);
@@ -204,6 +240,7 @@ const CreateProjectComponent = () => {
       setLoading(false); // Hide loading indicator after the operation completes
     }
   };
+  
 
   return (
     <>

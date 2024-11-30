@@ -39,7 +39,8 @@ const ProgressTrackerComponent = () => {
     const [isMobileView, setIsMobileView] = useState(false);
     const [accessVal, setAccessVal] = useState('');
     const [addMilestoneFlag, setAddMilestoneFlag] = useState(false);
-    const currentDate = new Date();
+    //const currentDate = new Date();
+    const today = new Date().toISOString().split("T")[0];
 
     useEffect(() => {
         if (projId) {
@@ -71,7 +72,9 @@ const ProgressTrackerComponent = () => {
                     value: response.data.projData.project_name
                 }
                 handleSelectChange(optionSelect);
-                setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+                if (accessVal === 'S' || accessVal === 'SU' || accessVal === 'ST') {
+                    setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+                }
             }
         } catch (error) {
             //setError(error);
@@ -186,7 +189,9 @@ const ProgressTrackerComponent = () => {
                 setMilestoneData(response.data.milestoneData);
             } else {
                 setMilestoneData([]);
-                setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+                if (accessVal === 'S' || accessVal === 'SU' || accessVal === 'ST') {
+                    setMilestoneList([{ proj_id: '', milestone_desc: '', milestone_title: '', end_date: '' }]);
+                }
             }
         } catch (err) {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
@@ -214,9 +219,29 @@ const ProgressTrackerComponent = () => {
             if (response.status === 201) {
                 fetchMilestone();
                 setMilestoneList([]);
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            if (err.response) {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
             //setError(err.message);
         } finally {
             setLoading(false);
@@ -273,9 +298,29 @@ const ProgressTrackerComponent = () => {
                     //setDetailsList({});
                     setEditFlag(false);
                 }
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            if (err.response) {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
             //setError(err.message);
         } finally {
             fetchMilestone();
@@ -304,6 +349,12 @@ const ProgressTrackerComponent = () => {
             if (response.status === 200) {
                 fetchMilestone();
                 closeModal();
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
@@ -324,6 +375,12 @@ const ProgressTrackerComponent = () => {
             if (response.status === 200) {
                 fetchMilestone();
                 closeModal();
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
@@ -344,6 +401,12 @@ const ProgressTrackerComponent = () => {
             if (response.status === 200) {
                 fetchMilestone();
                 closeModal();
+                Swal.fire({
+                    title: 'Success',
+                    text: response.data.message,
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                });
             }
         } catch (err) {
             Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
@@ -413,18 +476,19 @@ const ProgressTrackerComponent = () => {
                                                     <div className="row">
                                                         {milestoneData.map((milestone, index) => {
                                                             let backgroundColor;
+                                                            const milestoneEndDate = new Date(milestone.end_date).toISOString().split("T")[0];
 
-                                                            if (new Date(milestone.end_date) < currentDate && milestone.is_completed === 'N') {
-                                                                backgroundColor = '#e74c3c';
+                                                            if (milestoneEndDate < today && milestone.is_completed === 'N') {
+                                                                backgroundColor = '#FF3300';
                                                             } else if (milestone.is_completed === 'Y') {
                                                                 backgroundColor = '#3CB371';
                                                             } else {
-                                                                backgroundColor = '#f5a623';
+                                                                backgroundColor = '#FFCE00';
                                                             }
 
                                                             return (
                                                                 <div className="col-12 col-md-4 col-lg-2 mb-4 mt-3" key={index}>
-                                                                    <div className="box" style={{ backgroundColor, cursor: 'pointer' }}
+                                                                    <div className="box" style={{ backgroundColor, cursor: 'pointer', transition: 'background-color 0.3s ease' }}
                                                                         title='Click to view more details'
                                                                         onClick={() => openMilestoneDetails(milestone.milestone_id)}>
                                                                         <div className="header">
@@ -489,6 +553,7 @@ const ProgressTrackerComponent = () => {
                                                                         className="milestone_input_date milestone_datepicker"
                                                                         name="end_date"
                                                                         value={milestone.end_date || ""}
+                                                                        min={today}
                                                                         onChange={(e) => handleMilestoneChange(index, e)}
                                                                         required
                                                                     />
@@ -594,6 +659,7 @@ const ProgressTrackerComponent = () => {
                                                                                         className="milestone_input_date milestone_datepicker"
                                                                                         name="end_date"
                                                                                         value={detailsList.end_date || ""}
+                                                                                        min={today}
                                                                                         onChange={(e) => handleUpdateMilestoneChange(e)}
                                                                                         required
                                                                                     />
@@ -655,6 +721,7 @@ const ProgressTrackerComponent = () => {
                                                                                     className="milestone_input_date milestone_datepicker"
                                                                                     name="end_date"
                                                                                     value={detailsList.end_date || ""}
+                                                                                    min={today}
                                                                                     onChange={(e) => handleUpdateMilestoneChange(e)}
                                                                                     required
                                                                                 />

@@ -1,15 +1,9 @@
 const express = require('express');
 
 function isConsecSplChar(input) {
-    const pattern = /[{}"\\%&'()*+,\-./:;<=>?\[\]|\t\n]+/g;
+    const pattern = /[^A-Za-z0-9\s][^A-Za-z0-9\s]/;
 
-    let match;
-    while ((match = pattern.exec(input)) !== null) {
-        if (match[0].length > 1) {
-            return false;
-        }
-    }
-    return true;
+    return pattern.test(input);
 }
 
 function isValidString(input, minLength, maxLength) {
@@ -40,12 +34,8 @@ function doPasswordsMatch(input1, input2) {
     return input1 === input2;
 }
 
-function isValidDate(input) {
-    const inputDate = new Date(input);
-    const currentDate = new Date();
-
-    currentDate.setHours(0, 0, 0, 0);
-    inputDate.setHours(0, 0, 0, 0);
+function isValidDate(inputDate) {
+    const currentDate = new Date().toISOString().split("T")[0];
 
     return inputDate >= currentDate;
 }

@@ -5,6 +5,8 @@ const Milestone = require("../models/proj_milestone");
 const ProjectStatus = require("../models/proj_status");
 const Role = require("../models/role");
 const User = require("../models/user");
+const ProjReport = require('../models/proj_report');
+const ValidationUtil = require("../common/validationUtil");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
 
@@ -24,6 +26,7 @@ exports.createProject = async (req, res) => {
       features,
       project_deadline,
       image_url,
+      supervise,
     } = req.body;
 
     // Validate required fields
@@ -63,15 +66,14 @@ exports.createProject = async (req, res) => {
         .json({ message: "The project deadline must be a future date." });
     }
 
-    // Combine fields to form proj_desc
-    const proj_desc = `Purpose: ${purpose}; Product: ${product}; Description: ${project_description}; Features: ${features}`;
-
     const user = req.user;
-
 
     const projectData = {
       project_name: project_name,
-      proj_desc: proj_desc,
+      purpose: purpose,
+      product: product,
+      description: project_description,
+      features: features,
       budget: project_budget,
       end_date: project_deadline,
       created_by: user.user_id,
@@ -84,7 +86,22 @@ exports.createProject = async (req, res) => {
     // Create the project in the database
     const project = await Project.create(projectData, { transaction: t });
 
-    const projAllocationData = {
+    // If supervise is true, insert two records with different roles (2 and 3)
+    if (supervise) {
+      // Insert the record with role 3
+      const projAllocationDataRole3 = {
+        proj_id: project.proj_id,
+        user_id: user.user_id,
+        role: 3,
+        created_by: user.user_id,
+        modified_by: user.user_id,
+      };
+
+      await ProjAllocation.create(projAllocationDataRole3, { transaction: t });
+    }
+
+    // Insert the record with role 2
+    const projAllocationDataRole2 = {
       proj_id: project.proj_id,
       user_id: user.user_id,
       role: 2,
@@ -92,8 +109,8 @@ exports.createProject = async (req, res) => {
       modified_by: user.user_id,
     };
 
-    // Create the project allocation record in the database
-    const allocation = await ProjAllocation.create(projAllocationData, { transaction: t });
+    // Create the project allocation record in the database with role 2
+    const allocation = await ProjAllocation.create(projAllocationDataRole2, { transaction: t });
 
     // Commit the transaction
     await t.commit();
@@ -111,6 +128,7 @@ exports.createProject = async (req, res) => {
       .json({ message: "Error creating project", error: error.message });
   }
 };
+
 // Get all projects
 /*exports.getAllProjects = async (req, res) => {
   try {
@@ -228,7 +246,7 @@ exports.getAllProjects = async (req, res) => {
       const projIds = projects.map(project => project.proj_id);
 
       const stakeholdersQuery = `
-        SELECT pa.proj_id, u.name, u.user_id,
+        SELECT pa.proj_id, u.username || ' ' || u.name as name, u.user_id,
         CASE 
           WHEN pa.role = 2 THEN 'business_owner'
           WHEN pa.role = 3 THEN 'supervisor'
@@ -334,7 +352,7 @@ exports.updateProject = async (req, res) => {
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
-
+    console.log("updateProjectData>>>>>", req.body);
     await project.update(req.body);
     res.status(200).json(project);
   } catch (error) {
@@ -397,8 +415,40 @@ exports.UpdateProjDetails = async (req, res) => {
   try {
     const { projDetailsList } = req.body;
 
+    const isValidDate = ValidationUtil.isValidDate(projDetailsList.end_date);
+    const isValidPurpose = !ValidationUtil.isEmptyString(projDetailsList.purpose) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.purpose) &&
+      ValidationUtil.isValidString(projDetailsList.purpose, 5, 250);
+    //const isProductEmpty = ValidationUtil.isEmptyString(projDetailsList.product);
+    const isValidProduct = !ValidationUtil.isEmptyString(projDetailsList.product) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.product) &&
+      ValidationUtil.isValidString(projDetailsList.product, 5, 250);
+    //const isDescriptionEmpty = ValidationUtil.isEmptyString(projDetailsList.description);
+    const isValidDescription = !ValidationUtil.isEmptyString(projDetailsList.description) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.description) &&
+      ValidationUtil.isValidString(projDetailsList.description, 5, 250);
+    //const isFeaturesEmpty = ValidationUtil.isEmptyString(projDetailsList.features);
+    const isValidFeatures = !ValidationUtil.isEmptyString(projDetailsList.features) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.features) &&
+      ValidationUtil.isValidString(projDetailsList.features, 5, 250);
+
+    if (!isValidDate) {
+      return res.status(400).json({ message: "Please select a valid date" });
+    } else if (!isValidPurpose) {
+      return res.status(400).json({ message: "Please enter a valid Purpose - You may not enter consecutive special characters" });
+    } else if (!isValidProduct) {
+      return res.status(400).json({ message: "Please enter valid Product(s) - You may not enter consecutive special characters" });
+    } else if (!isValidDescription) {
+      return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
+    } else if (!isValidFeatures) {
+      return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });
+    }
+
     const updatedData = await Project.update({
-      proj_desc: projDetailsList.proj_desc,
+      purpose: projDetailsList.purpose.trim(),
+      product: projDetailsList.product.trim(),
+      description: projDetailsList.description.trim(),
+      features: projDetailsList.features.trim(),
       skills_req: projDetailsList.skills_req,
       budget: projDetailsList.budget,
       status: projDetailsList.status,
@@ -483,12 +533,12 @@ exports.CancelProject = async (req, res) => {
       where: { proj_id: projData.proj_id }
     });
 
-    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+    res.status(200).json({ message: "Project Cancelled successfully", updatedData })
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Error Resuming Project", error: error.message });
+      .json({ message: "Error Cancelling Project", error: error.message });
   }
 }
 
@@ -502,12 +552,12 @@ exports.DelayProject = async (req, res) => {
       where: { proj_id: projData.proj_id }
     });
 
-    res.status(200).json({ message: "Project Resumed successfully", updatedData })
+    res.status(200).json({ message: "Project Delayed successfully", updatedData })
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Error Resuming Project", error: error.message });
+      .json({ message: "Error Delaying Project", error: error.message });
   }
 }
 
@@ -572,7 +622,8 @@ exports.applyProject = async (req, res) => {
         user_id: user_id,
         role: role,
         created_by: user_id,
-        modified_by: user_id
+        modified_by: user_id,
+        is_active: 'Y'
       }
       const student = await ProjApplication.create(studentApplList);
       //  student = await ProjAllocation.create(allocationList, {
@@ -597,6 +648,7 @@ exports.applyProject = async (req, res) => {
 
 /**
  * access_val === 'S' -> User has admin access can take every action on the Project
+ * access_val === 'SB' -> User is the Business Owner and a Supersor of the project and has edit and delete access to the Project
  * access_val === 'E' -> User has supervisor role and edit access on the Project
  * access_val === 'A' -> User has access to Apply to the Project
  * access_val === 'B' -> User has access to Edit and Delete access to the Project
@@ -638,6 +690,19 @@ exports.getUserRoleAccess = async (req, res) => {
           is_active: 'Y'
         }
       });
+
+      const supervisor_business_owner = await ProjAllocation.count({
+        where: {
+          proj_id: proj_id,
+          user_id: user_id,
+          role: 2,
+          is_active: 'Y'
+        }
+      });
+
+      if (supervisor_business_owner === 1) {
+        return res.status(200).json({ success: true, message: "Valid User", access_val: 'SB' });
+      }
 
       //Supervisor Edit
       if (supervisor_exists === 1) {
@@ -721,11 +786,11 @@ exports.removeStakeholder = async (req, res) => {
   const { removeData } = req.body;
   let role_id;
 
-  if(removeData.role === 'business_owner') {
+  if (removeData.role === 'business_owner') {
     role_id = 2;
-  } else if(removeData.role === 'supervisor') {
+  } else if (removeData.role === 'supervisor') {
     role_id = 3;
-  } else if(removeData.role === 'student') {
+  } else if (removeData.role === 'student') {
     role_id = 4;
   }
 
@@ -751,7 +816,42 @@ exports.removeStakeholder = async (req, res) => {
     });
 
     return res.status(200).json({ message: "Stakeholder removed successfully from the project" });
-  } catch(error) {
+  } catch (error) {
     return res.status(500).json({ message: "Error removing stakeholder from the project", error: error.message });
+  }
+}
+
+exports.reportProject = async (req, res) => {
+  try {
+    const { reportData } = req.body;
+    const proj_id = reportData.proj_id;
+    const reason = reportData.reason;
+
+    const user = req.user;
+
+    const isValidReason = !ValidationUtil.isEmptyString(reason) &&
+      !ValidationUtil.isConsecSplChar(reason) &&
+      ValidationUtil.isValidString(reason, 5, 250);
+
+    if (!isValidReason) {
+      return res.status(400).json({ message: "Please enter a valid reason" });
+    }
+
+    const reportExists = await ProjReport.count({
+      where: {
+        proj_id: proj_id
+      }
+    });
+
+    const report = await ProjReport.create({
+      proj_id: proj_id,
+      reported_by: user.user_id,
+      reason: reason,
+      report_count: reportExists + 1
+    });
+
+    return res.status(200).json({ message: "Project has been reported succesfully", report });
+  } catch (error) {
+    return res.status(500).json({ message: "Error Reporting Project", error: error.message });
   }
 }

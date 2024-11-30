@@ -11,7 +11,8 @@ const {
   DelayProject,
   getUserRoleAccess,
   applyProject,
-  removeStakeholder
+  removeStakeholder,
+  reportProject
 } = require('../controllers/projectController');
 
 const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
@@ -25,11 +26,11 @@ router.post('/applyProject', applyProject);
 //Search Filter project with Proj name
 router.get('/filter', filterProject);
 
+// GET route to fetch all projects
+router.get('/getAllProjects', getAllProjects);
+
 // POST route to create a new project
 router.post('/', createProject);
-
-// GET route to fetch all projects
-router.get('/', getAllProjects);
 
 //Update Project Details
 router.post('/updateProject', UpdateProjDetails);
@@ -55,5 +56,8 @@ router.post('/removeStakeholder', removeStakeholder);
 router.post('/accept', acceptProject);
 
 router.post('/reject', rejectProject);
+
+//Report Project
+router.post('/reportProject', reportProject);
 
 module.exports = router;
