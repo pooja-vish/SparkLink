@@ -26,6 +26,7 @@ exports.createProject = async (req, res) => {
       features,
       project_deadline,
       image_url,
+      supervise,
     } = req.body;
 
     // Validate required fields
@@ -65,11 +66,7 @@ exports.createProject = async (req, res) => {
         .json({ message: "The project deadline must be a future date." });
     }
 
-    // Combine fields to form proj_desc
-    //const proj_desc = `Purpose: ${purpose}; Product: ${product}; Description: ${project_description}; Features: ${features}`;
-
     const user = req.user;
-
 
     const projectData = {
       project_name: project_name,
@@ -89,7 +86,22 @@ exports.createProject = async (req, res) => {
     // Create the project in the database
     const project = await Project.create(projectData, { transaction: t });
 
-    const projAllocationData = {
+    // If supervise is true, insert two records with different roles (2 and 3)
+    if (supervise) {
+      // Insert the record with role 3
+      const projAllocationDataRole3 = {
+        proj_id: project.proj_id,
+        user_id: user.user_id,
+        role: 3,
+        created_by: user.user_id,
+        modified_by: user.user_id,
+      };
+
+      await ProjAllocation.create(projAllocationDataRole3, { transaction: t });
+    }
+
+    // Insert the record with role 2
+    const projAllocationDataRole2 = {
       proj_id: project.proj_id,
       user_id: user.user_id,
       role: 2,
@@ -97,8 +109,8 @@ exports.createProject = async (req, res) => {
       modified_by: user.user_id,
     };
 
-    // Create the project allocation record in the database
-    const allocation = await ProjAllocation.create(projAllocationData, { transaction: t });
+    // Create the project allocation record in the database with role 2
+    const allocation = await ProjAllocation.create(projAllocationDataRole2, { transaction: t });
 
     // Commit the transaction
     await t.commit();
@@ -116,6 +128,7 @@ exports.createProject = async (req, res) => {
       .json({ message: "Error creating project", error: error.message });
   }
 };
+
 // Get all projects
 /*exports.getAllProjects = async (req, res) => {
   try {
