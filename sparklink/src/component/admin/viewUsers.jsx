@@ -129,14 +129,6 @@ const ViewUserComponent = () => {
     }
   };
 
-<<<<<<< HEAD
-const handleDeleteButton = async (user) =>{
-await axios.post("/api/users/DeleteUser", {
-
-})
-}
-=======
->>>>>>> f2a76e96d4da1b6087136716c70a9f491cd4f94a
   return (
     <div className="page-container">
       <div className="content-container">
