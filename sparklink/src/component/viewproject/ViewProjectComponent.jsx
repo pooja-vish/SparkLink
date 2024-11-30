@@ -306,26 +306,38 @@ const ViewProjectComponent = () => {
     }
 
     const completeProject = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/completeProject', {
-                projData: projDetailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to mark this Project as Completed?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/project/completeProject', {
+                        projData: projDetailsList
+                    });
 
-            if (response.status === 200) {
-                //fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            } else if (response.status === 500) {
-                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    } else if (response.status === 500) {
+                        Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    fetchProjects();
+                    //setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            fetchProjects();
-            //setLoading(false);
-        }
+        });
     }
 
     const resumeProject = async () => {
@@ -534,16 +546,16 @@ const ViewProjectComponent = () => {
                 setLoading(true);
                 try {
                     const reason = result.value;
-    
+
                     const reportData = {
                         proj_id: projDetailsList.proj_id,
                         reason: reason
                     }
-    
+
                     const response = await axios.post('/project/reportProject', {
                         reportData: reportData
                     });
-    
+
                     if (response.status === 200) {
                         closeModal();
                         Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
@@ -650,7 +662,7 @@ const ViewProjectComponent = () => {
                             scrollable
                             aria-labelledby="milestone_details_modal"
                             autoFocus={false}
-                            enforceFocus={false} 
+                            enforceFocus={false}
                         >
                             <Modal.Header closeButton>
                                 <Modal.Title id="milestone_details_modal" className='modal_text_header'>

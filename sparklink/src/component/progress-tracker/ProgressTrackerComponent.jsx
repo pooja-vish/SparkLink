@@ -107,10 +107,22 @@ const ProgressTrackerComponent = () => {
     }, [milestoneList]);
 
     const deleteMilestone = (index) => {
-        setMilestoneList(prevList => {
-            const updatedList = [...prevList];
-            updatedList.splice(index, 1);
-            return updatedList;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Cancel adding this milestone? This change cannot be undone',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setMilestoneList(prevList => {
+                    const updatedList = [...prevList];
+                    updatedList.splice(index, 1);
+                    return updatedList;
+                });
+            }
         });
     }
 
@@ -340,81 +352,117 @@ const ProgressTrackerComponent = () => {
     };
 
     const removeMilestone = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/progressTracker/deleteMilestone', {
-                milestoneList: detailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Delete this Milestone?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/progressTracker/deleteMilestone', {
+                        milestoneList: detailsList
+                    });
 
-            if (response.status === 200) {
-                fetchMilestone();
-                closeModal();
-                Swal.fire({
-                    title: 'Success',
-                    text: response.data.message,
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                });
+                    if (response.status === 200) {
+                        fetchMilestone();
+                        closeModal();
+                        Swal.fire({
+                            title: 'Success',
+                            text: response.data.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    setMilestoneList([]);
+                    setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            setMilestoneList([]);
-            setLoading(false);
-        }
+        });
     }
 
     const completeMilestone = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/progressTracker/completeMilestone', {
-                milestoneList: detailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to mark this Milestone as Completed?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/progressTracker/completeMilestone', {
+                        milestoneList: detailsList
+                    });
 
-            if (response.status === 200) {
-                fetchMilestone();
-                closeModal();
-                Swal.fire({
-                    title: 'Success',
-                    text: response.data.message,
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                });
+                    if (response.status === 200) {
+                        fetchMilestone();
+                        closeModal();
+                        Swal.fire({
+                            title: 'Success',
+                            text: response.data.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    setMilestoneList([]);
+                    setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            setMilestoneList([]);
-            setLoading(false);
-        }
+        });
     }
 
     const resumeMilestone = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/progressTracker/resumeMilestone', {
-                milestoneList: detailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Resume this Milestone?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/progressTracker/resumeMilestone', {
+                        milestoneList: detailsList
+                    });
 
-            if (response.status === 200) {
-                fetchMilestone();
-                closeModal();
-                Swal.fire({
-                    title: 'Success',
-                    text: response.data.message,
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                });
+                    if (response.status === 200) {
+                        fetchMilestone();
+                        closeModal();
+                        Swal.fire({
+                            title: 'Success',
+                            text: response.data.message,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    setMilestoneList([]);
+                    setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            setMilestoneList([]);
-            setLoading(false);
-        }
+        });
     }
 
     const getUserRoleAccess = async (proj_id) => {
