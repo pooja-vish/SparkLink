@@ -13,12 +13,14 @@ const acceptProject = async (req, res) => {
       role: role,
       created_by: user_id,
       modified_by: user_id,
+      is_active: 'Y'
     };
 
     const student_exists = await project_allocation.count({
       where: {
         proj_id: proj_id,
-        role: role
+        role: role,
+        is_active: 'Y'
       }
     });
 
@@ -30,12 +32,14 @@ const acceptProject = async (req, res) => {
       {
         is_active: 'Y', // Change the status to inactive
         is_approved: 'Y', // Mark as approved
+        is_rejected: 'N'
       },
       {
         where: {
           proj_id: proj_id,
           user_id: user_id,
           role: role,
+          is_active: 'Y'
         },
       }
     );
@@ -83,8 +87,9 @@ const rejectProject = async (req, res) => {
     // Update the record to mark it as inactive and rejected
     await project_application.update(
       {
-        is_active: 'N',
-        is_approved: 'N', // Assuming you want to mark the application as rejected
+        is_active: 'Y',
+        is_rejected: 'Y',
+        is_approved: 'N',
       },
       {
         where: {

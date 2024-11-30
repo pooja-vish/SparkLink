@@ -2,15 +2,18 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
 
 /**
- * Composite Primary key (proj_id, user_id)
- * Foreign key (proj_id)
- * Foreign key (user_id)
- * Foreign key (role)
+ * Primary key (id)
+ * Unique Index [proj_id, user_id, role where is_active = 'Y']
  */
 
 const ProjAllocation = sequelize.define(
   "ProjAllocation",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     proj_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -20,7 +23,6 @@ const ProjAllocation = sequelize.define(
       },
       onUpdate: "NO ACTION",
       onDelete: "NO ACTION",
-      primaryKey: true,
     },
     user_id: {
       type: DataTypes.INTEGER,
@@ -31,7 +33,6 @@ const ProjAllocation = sequelize.define(
       },
       onUpdate: "NO ACTION",
       onDelete: "NO ACTION",
-      primaryKey: true,
     },
     role: {
       type: DataTypes.INTEGER,
@@ -61,14 +62,34 @@ const ProjAllocation = sequelize.define(
       allowNull: false,
       defaultValue: sequelize.literal("NOW()"),
     },
+    is_active: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: 'Y',
+      validate: {
+        isIn: [['Y', 'N']],
+      },
+    },
+    notification: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: 'Y',
+      validate: {
+        isIn: [['Y', 'N']],
+      },
+    },
   },
   {
     tableName: "t_proj_allocation",
     timestamps: false,
     indexes: [
       {
+        name: "t_proj_allocation_active_unique",
         unique: true,
-        fields: ["proj_id", "user_id"], // Composite primary key
+        fields: ["proj_id", "user_id", "role"],
+        where: {
+          is_active: 'Y'
+        }
       },
     ],
   }

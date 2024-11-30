@@ -14,16 +14,11 @@ const Student_Profile = sequelize.define('Student_Profile', {
       },
     skills: {
         type: DataTypes.STRING(250),
-        allowNull: false
+        allowNull: true,
     },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+    profile_name: {
+        type: DataTypes.STRING(250),
+        allowNull: true,
     },
     address: {
         type: DataTypes.TEXT,

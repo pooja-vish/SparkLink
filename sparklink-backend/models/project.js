@@ -12,7 +12,19 @@ const Project = sequelize.define('Project', {
     type: DataTypes.STRING(150),
     allowNull: false,
   },
-  proj_desc: {
+  purpose: {
+    type: DataTypes.STRING(250),
+    allowNull: false,
+  },
+  product: {
+    type: DataTypes.STRING(250),
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.STRING(250),
+    allowNull: false,
+  },
+  features: {
     type: DataTypes.STRING(250),
     allowNull: false,
   },

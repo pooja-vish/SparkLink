@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './MasterComponent.css';
 import sparklink_logo from '../assets/SparkLink_Logo_3.png';
 import { useAuth } from '../AuthContext';
@@ -10,6 +10,7 @@ const MasterComponent = () => {
     const { isAuthenticated, setIsAuthenticated, user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+    const [loading, setLoading] = useState(false);
 
     const logout = async (req, res) => {
         const response = await axios.post("/api/users/logout");
@@ -19,6 +20,23 @@ const MasterComponent = () => {
             Swal.fire('Success', response.message, 'success');
         } else {
             Swal.fire('Error', response.message, 'error');
+        }
+    }
+
+    const fetchUserProfile = async (user_id) => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/profile', {
+                params: { user_id: user_id }
+            });
+
+            if (response.status === 200) {
+                navigate(`/profile?user_id=${user_id}`);
+            }
+        } catch (error) {
+            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -40,13 +58,28 @@ const MasterComponent = () => {
                             <Link className={getNavItemClass('/login')} to='/login'>
                                 <button className={`text-center button_text button-card`}>
                                     Login</button></Link>
+                                    &nbsp;&nbsp;
+                            <Link className={getNavItemClass('/register')} to='/register'>
+                                <button className={`text-center button_text button-card`}>
+                                    Register</button></Link>
                         </span>)}
                         {isAuthenticated && (<span className='d-flex align-items-center justify-content-end'>
-                            <span className='heading'>Welcome {user.username}!</span>&nbsp;&nbsp;
+                            <span className='heading' onClick={() => fetchUserProfile(user.user_id)} >Welcome {user.username}!</span>&nbsp;&nbsp;
                             <button onClick={logout} className="text-center button_text button-card">Logout</button>
                         </span>)}
                     </div>
                 </div>
+
+                {/* Loading overlay */}
+                {loading && (
+                    <div className="loading-overlay d-flex justify-content-center align-items-center">
+                        <div className="text-center">
+                            <div className="spinner-border text-light" style={{ width: "5rem", height: "5rem" }} role="status">
+                            </div>
+                            <div className="text-light mt-2">Processing...</div>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

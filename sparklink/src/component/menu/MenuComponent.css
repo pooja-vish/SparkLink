@@ -26,15 +26,16 @@
 
 .navBackground:hover {
     width: 235px;
-    background-color: #2f5972; 
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+    background-color: #005596;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.navBackground, .navBackground_expanded {
+.navBackground,
+.navBackground_expanded {
     /* background: linear-gradient(135deg, #c4d0cf, #9fc5d1, #7ab2c7, #829bb4, #b2a3b6); */
     /* background: linear-gradient(135deg, #b2a3b6, #829bb4, #7ab2c7, #9fc5d1, #c4d0cf); */
     /* background-color: #1D3A5F; */
-    background-color: #2f5972;
+    background-color: #005596;
     color: #ecf0f1;
 }
 
@@ -70,7 +71,7 @@
 
 .nav-item span:hover,
 .nav-item a:hover {
-    color: #FFD700 !important; 
+    color: #FFD700 !important;
     font-size: 16px;
     transition: color 1s ease-out;
 }
@@ -91,7 +92,8 @@ nav {
 .nav-item {
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
-    color: #E6E6E6; /* Default text color */
+    color: #E6E6E6;
+    /* Default text color */
     font-style: normal;
     text-decoration: none !important;
     height: 45px;
@@ -101,7 +103,7 @@ nav {
 
 /* Styles for hovered items */
 .nav-item:hover {
-    color: #FFD700 !important; 
+    color: #FFD700 !important;
     font-size: 16px;
     /* transition: color 0.1s ease-in-out, font-size 0.1s ease-in-out; */
 }
@@ -109,7 +111,8 @@ nav {
 /* Ensure that span does not override link styling */
 .nav-item span {
     display: inline-block;
-    text-decoration: none !important; /* Remove underline from span */
+    text-decoration: none !important;
+    /* Remove underline from span */
 }
 
 .nav_menu_icon {
@@ -130,4 +133,39 @@ nav {
 
 .nav_sub_menu_icon {
     height: 25px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    transform: translate(50%, -50%);
+    background-color: #FF3300;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    height: 18px;
+    width: 21px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+.notifcation-badge-expand {
+    background-color: #FF3300;
+    color: white;
+    font-size: 12px;
+    top: -4px;
+    right: -4px;
+    font-weight: bold;
+    height: 18px;
+    width: 21px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
 }

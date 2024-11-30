@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import "./MenuComponent.css";
 import Collapse from "react-bootstrap/Collapse";
@@ -10,24 +10,25 @@ import contact_icon from "../../assets/contact_us.png";
 import milestone_icon from "../../assets/Milestone_Tracker.png";
 import profile_icon from "../../assets/profile.png";
 import create_icon from "../../assets/create_project.png";
+import notification_icon from "../../assets/notification.png";
 import axios from "axios";
 import LoginComponent from "../login/LoginComponent";
 import { useNavigate } from "react-router-dom";
 import logout_icon from "../../assets/logout.png";
 import login_icon from "../../assets/login.png";
 import { useAuth } from "../../AuthContext";
+import Swal from 'sweetalert2';
 
 const MenuComponent = () => {
-     const navigate = useNavigate();
-    const location = useLocation();
-    const [open, setOpen] = useState(false); // MouseEvent
-    const [role, setRole] = useState(''); // UserRole
-    const { isAuthenticated, setIsAuthenticated } = useAuth();
-    const getNavItemClass = (path) => {
-        return location.pathname === path ? 'nav-item active' : 'nav-item';
-    };
-
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [open, setOpen] = useState(false); // MouseEvent
+  const [role, setRole] = useState(''); // UserRole
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const [notifCount, setNotifCount] = useState([]);
+  const getNavItemClass = (path) => {
+    return location.pathname === path ? 'nav-item active' : 'nav-item';
+  };
 
   const logout = async (req, res) => {
     const response = await axios.post("/api/users/logout");
@@ -46,6 +47,22 @@ const MenuComponent = () => {
     console.log(response.data);
   };
 
+  const fetchNotifCount = async () => {
+    try {
+      const response = await axios.get('/apply/notifCount');
+      setNotifCount(response.data.notifCount);
+
+    } catch (error) {
+      Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+    }
+  }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchNotifCount();
+    }
+  }, []);
+
   return (
     <>
       <div className="container-fluid">
@@ -55,9 +72,8 @@ const MenuComponent = () => {
             onMouseLeave={() => setOpen(false)}
           >
             <nav
-              className={`navbar content ${
-                open ? "navBackground_expanded" : "navBackground"
-              }`}
+              className={`navbar content ${open ? "navBackground_expanded" : "navBackground"
+                }`}
               style={{ position: "absolute" }}
             >
               {open ? (
@@ -192,7 +208,7 @@ const MenuComponent = () => {
                       )}
                       {role === "" && (
                         <li className={getNavItemClass("/projApplications")}>
-                          <span style={{ cursor: "pointer" }}>
+                          <span style={{ position: "relative", display: "inline-block", cursor: "pointer" }}>
                             <Link
                               style={{
                                 fontFamily: '"Poppins", sans-serif',
@@ -203,12 +219,13 @@ const MenuComponent = () => {
                               to="/projApplications"
                             >
                               <img
-                                src={milestone_icon}
+                                src={notification_icon}
                                 className="nav_sub_menu_icon"
                                 alt=""
                                 style={{ marginLeft: 15 }}
                               ></img>
                               &nbsp;&nbsp;&nbsp;Notifications
+                              {isAuthenticated && <span className="notifcation-badge-expand text-center">{notifCount > 9 ? '9+' : notifCount}</span>}
                             </Link>
                           </span>
                         </li>
@@ -341,6 +358,17 @@ const MenuComponent = () => {
                           </span>
                         </li>
                       )}
+                      <li className="nav-item">
+                        <span style={{ position: "relative", display: "inline-block", cursor: "pointer" }}>
+                          <img
+                            src={notification_icon}
+                            className="nav_sub_menu_icon"
+                            alt=""
+                            style={{ marginLeft: 15 }}
+                          ></img>
+                          {isAuthenticated && <span className="notification-badge text-center">{notifCount > 9 ? '9+' : notifCount}</span>}
+                        </span>
+                      </li>
 
                       <li className="nav-item">
                         <span style={{ cursor: "pointer" }}>

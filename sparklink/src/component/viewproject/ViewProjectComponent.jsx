@@ -26,6 +26,8 @@ import photo7 from '../../assets/project_images/photo7.jpg';
 import photo8 from '../../assets/project_images/photo8.jpg';
 import photo9 from '../../assets/project_images/photo9.jpg';
 import photo10 from '../../assets/project_images/photo10.jpg';
+import remove_icon from '../../assets/remove_icon.png';
+import report_icon from '../../assets/report_icon.png';
 
 // Array of images
 const imageArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10];
@@ -55,6 +57,7 @@ const ViewProjectComponent = () => {
     const { user } = useAuth();
     const [userData, setUserData] = useState({});
     const [accessVal, setAccessVal] = useState('');
+    const today = new Date().toISOString().split("T")[0];
 
     // useEffect(() => {
     //     const handleResize = () => {
@@ -71,7 +74,8 @@ const ViewProjectComponent = () => {
     const fetchProjects = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('/project');
+            const response = await axios.get('/project/getAllProjects');
+            console.log(response.data);
             setProjectList(response.data.projects);
             setOriginalProjectList(response.data.projects);
             if (isAuthenticated) {
@@ -145,27 +149,34 @@ const ViewProjectComponent = () => {
         }
     }
 
-    useEffect(() => {
-        if (projDetailsList && triggerModalFlag) {
-            let splitDesc = projDetailsList.proj_desc.split(";");
-            let filterDesc = [];
-            for (let i = 0; i < splitDesc.length; i++) {
-                filterDesc[i] = splitDesc[i].trim().split(":");
-            }
-            setProjDescList(filterDesc);
-        }
-    }, [projDetailsList, triggerModalFlag]);
+    // useEffect(() => {
+    //     if (projDetailsList && triggerModalFlag) {
+    //         let splitDesc = projDetailsList.proj_desc.split(";");
+    //         let filterDesc = [];
+    //         for (let i = 0; i < splitDesc.length; i++) {
+    //             filterDesc[i] = splitDesc[i].trim().split(":");
+    //         }
+    //         setProjDescList(filterDesc);
+    //     }
+    // }, [projDetailsList, triggerModalFlag]);
+
+    // useEffect(() => {
+    //     if (projDescList.length > 0) {
+    //         fetchUserRoles();
+    //     }
+    // }, [projDescList]);
 
     useEffect(() => {
-        if (projDescList.length > 0) {
+        if (triggerModalFlag && projDetailsList && projDetailsList.proj_id) {
             fetchUserRoles();
         }
-    }, [projDescList]);
+    }, [triggerModalFlag]);
 
     const closeModal = () => {
         setProjDetailsList(null);
-        setProjDescList([]);
+        //setProjDescList([]);
         setTriggerDetails(false);
+        setTriggerModalFlag(false);
         setEditFlag(false);
     }
 
@@ -173,11 +184,11 @@ const ViewProjectComponent = () => {
         if (triggerKey === 'U') {
             setEditFlag(true);
             setCopyOfProjDetailsList(projDetailsList);
-            setCopyOfProjDescList(projDescList);
+            //setCopyOfProjDescList(projDescList);
         } else if (triggerKey === 'C') {
             setEditFlag(false);
             setProjDetailsList(copyOfProjDetailsList);
-            setProjDescList(copyOfProjDescList);
+            //setProjDescList(copyOfProjDescList);
         }
     }
 
@@ -188,6 +199,7 @@ const ViewProjectComponent = () => {
                 projDetailsList: projDetailsList
             });
 
+            console.log(response.data);
             if (response.status === 200) {
                 if (editFlag) {
                     setEditFlag(false);
@@ -195,9 +207,25 @@ const ViewProjectComponent = () => {
                 Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
                 Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+            } else if (response.status === 400) {
+                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
         } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+            if (err.response) {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: err.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            }
             //setError(err.message);
         } finally {
             setLoading(false);
@@ -205,34 +233,34 @@ const ViewProjectComponent = () => {
         }
     }
 
-    const handleUpdateProjDescChange = (event) => {
-        const { name, value } = event.target;
+    // const handleUpdateProjDescChange = (event) => {
+    //     const { name, value } = event.target;
 
-        const updatedTempProjDescList = tempProjDescList.map((p) => {
-            if (p[0] === name) {
-                return [p[0], value];
-            }
-            return p;
-        });
+    //     const updatedTempProjDescList = tempProjDescList.map((p) => {
+    //         if (p[0] === name) {
+    //             return [p[0], value];
+    //         }
+    //         return p;
+    //     });
 
-        setTempProjDescList(updatedTempProjDescList);
-    };
+    //     setTempProjDescList(updatedTempProjDescList);
+    // };
 
-    const handleProjDescBlur = () => {
-        const trimmedProjDescList = tempProjDescList.map(p => [p[0].trim(), p[1].trim()]);
-        setProjDescList(trimmedProjDescList);
+    // const handleProjDescBlur = () => {
+    //     const trimmedProjDescList = tempProjDescList.map(p => [p[0].trim(), p[1].trim()]);
+    //     setProjDescList(trimmedProjDescList);
 
-        setProjDetailsList(prevDetails => {
-            const updatedProjDescString = trimmedProjDescList
-                .map(p => `${p[0]}: ${p[1]}`)
-                .join('; ');
-            return { ...prevDetails, proj_desc: updatedProjDescString };
-        });
-    };
+    //     setProjDetailsList(prevDetails => {
+    //         const updatedProjDescString = trimmedProjDescList
+    //             .map(p => `${p[0]}: ${p[1]}`)
+    //             .join('; ');
+    //         return { ...prevDetails, proj_desc: updatedProjDescString };
+    //     });
+    // };
 
-    useEffect(() => {
-        setTempProjDescList(projDescList);
-    }, [projDescList]);
+    // useEffect(() => {
+    //     setTempProjDescList(projDescList);
+    // }, [projDescList]);
 
     const handleUpdateProjDetailsChange = (event) => {
         const { name, value } = event.target;
@@ -243,26 +271,38 @@ const ViewProjectComponent = () => {
     };
 
     const deleteProject = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/deleteProject', {
-                projData: projDetailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Delete this project? This change cannot be undone',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/project/deleteProject', {
+                        projData: projDetailsList
+                    });
 
-            if (response.status === 200) {
-                fetchProjects();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            } else if (response.status === 500) {
-                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    } else if (response.status === 500) {
+                        Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    closeModal();
+                    fetchProjects();
+                    //setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            closeModal();
-            fetchProjects();
-            //setLoading(false);
-        }
+        });
     }
 
     const completeProject = async () => {
@@ -273,7 +313,7 @@ const ViewProjectComponent = () => {
             });
 
             if (response.status === 200) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
@@ -298,7 +338,7 @@ const ViewProjectComponent = () => {
             if (response.status === 200) {
                 //fetchProjects();
                 closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                Swal.fire({ title: 'Success', icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 500) {
                 Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
@@ -312,49 +352,109 @@ const ViewProjectComponent = () => {
     }
 
     const cancelProject = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/cancelProject', {
-                projData: projDetailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Cancel this project?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/project/cancelProject', {
+                        projData: projDetailsList
+                    });
 
-            if (response.status === 200) {
-                fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            } else if (response.status === 500) {
-                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    } else if (response.status === 500) {
+                        Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    fetchProjects();
+                    //setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            fetchProjects();
-            //setLoading(false);
-        }
+        });
     }
 
     const delayProject = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/delayProject', {
-                projData: projDetailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to Delay this project?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/project/delayProject', {
+                        projData: projDetailsList
+                    });
 
-            if (response.status === 200) {
-                fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            } else if (response.status === 500) {
-                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    } else if (response.status === 500) {
+                        Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    fetchProjects();
+                    //setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            fetchProjects();
-            //setLoading(false);
-        }
+        });
+    }
+
+    const removeStakeholder = async (proj_id, role, user_id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to remove them from the project? This change cannot be undone',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const removeObj = {
+                        proj_id: proj_id,
+                        role: role,
+                        user_id: user_id
+                    }
+                    const response = await axios.post('/project/removeStakeholder', {
+                        removeData: removeObj
+                    });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    }
+                } catch (error) {
+                    Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+                } finally {
+                    closeModal();
+                    fetchProjects();
+                }
+            }
+        });
     }
 
     const submitApplication = async () => {
@@ -364,11 +464,11 @@ const ViewProjectComponent = () => {
                 proj_id: projDetailsList.proj_id
             });
             if (response.status === 200 && response.data.success) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Application Successful', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
             } else if (response.status === 200 && !response.data.success) {
-                fetchProjects();
+                //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Application Unsuccessful', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
             }
@@ -399,8 +499,76 @@ const ViewProjectComponent = () => {
         }
     }
 
+    const fetchUserProfile = async (user_id) => {
+        setLoading(true);
+        try {
+            const response = await axios.get('/profile', {
+                params: { user_id: user_id }
+            });
+
+            if (response.status === 200) {
+                navigate(`/profile?user_id=${user_id}`);
+            }
+        } catch (error) {
+            Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const viewMilestones = async () => {
         navigate("/progress", { state: { projId: projDetailsList.proj_id } });
+    }
+
+    const reportProject = async () => {
+        Swal.fire({
+            title: 'Please enter a reason',
+            input: 'text',
+            inputPlaceholder: 'Enter your reason for reporting this project',
+            showCancelButton: true,
+            confirmButtonText: 'Submit Report',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const reason = result.value;
+    
+                    const reportData = {
+                        proj_id: projDetailsList.proj_id,
+                        reason: reason
+                    }
+    
+                    const response = await axios.post('/project/reportProject', {
+                        reportData: reportData
+                    });
+    
+                    if (response.status === 200) {
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    }
+                } catch (error) {
+                    if (error.response) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: error.response.data.message,
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: error.message,
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    }
+                } finally {
+                    setLoading(false);
+                }
+            }
+        });
     }
 
     if (error) {
@@ -433,33 +601,40 @@ const ViewProjectComponent = () => {
 
                                         <div className="progress-background-card">
                                             <div className="row progress-card-layout">
-                                                {projectList.map((item, index) => (
-                                                    <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
-                                                        key={index} onClick={() => openProjectDetails(item.proj_id)}>
+                                                {projectList.map((item, index) => {
+                                                    let projectProgress = item.progress;
+                                                    if (item.progress > 1 && item.progress === 100 && item.status !== 5) {
+                                                        projectProgress = item.progress - 1;
+                                                    }
 
-                                                        <div className="progress-image"
-                                                            style={{
-                                                                backgroundImage: `url(${imageArray[item.image_url]})`,
-                                                                backgroundSize: 'cover',
-                                                                backgroundPosition: 'center'
+                                                    return (
+                                                        <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
+                                                            key={index} onClick={() => openProjectDetails(item.proj_id)}>
 
-                                                            }}
-                                                            loading="lazy">
-                                                        </div>
-                                                        <div className="progress-content">
-                                                            {/* <span className="progress-category">{item.project_name}</span> */}
-                                                            {/* <span className="progress-category">Software</span> */}
-                                                            <div className="progress-title">{item.project_name}</div>
-                                                            <div className="progress-bar-container">
-                                                                <div className="progress-bar">
-                                                                    <div className="progress" style={{ width: `${item.progress}%` }}></div>
+                                                            <div className="progress-image"
+                                                                style={{
+                                                                    backgroundImage: `url(${imageArray[Number(item.image_url)] || ''})`,
+                                                                    backgroundSize: 'cover',
+                                                                    backgroundPosition: 'center'
+
+                                                                }}
+                                                                loading="lazy">
+                                                            </div>
+                                                            <div className="progress-content">
+                                                                {/* <span className="progress-category">{item.project_name}</span> */}
+                                                                {/* <span className="progress-category">Software</span> */}
+                                                                <div className="progress-title">{item.project_name}</div>
+                                                                <div className="progress-bar-container">
+                                                                    <div className="progress-bar">
+                                                                        <div className="progress" style={{ width: `${item.progress}%` }}></div>
+                                                                    </div>
+                                                                    {/* <span className="progress-text">{item.progress}%</span> */}
+                                                                    <span className="progress-text">{projectProgress}%</span>
                                                                 </div>
-                                                                {/* <span className="progress-text">{item.progress}%</span> */}
-                                                                <span className="progress-text">{item.progress}%</span>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    )
+                                                })}
                                             </div>
                                         </div>
                                     </div>
@@ -474,6 +649,8 @@ const ViewProjectComponent = () => {
                             onEscapeKeyDown={closeModal}
                             scrollable
                             aria-labelledby="milestone_details_modal"
+                            autoFocus={false}
+                            enforceFocus={false} 
                         >
                             <Modal.Header closeButton>
                                 <Modal.Title id="milestone_details_modal" className='modal_text_header'>
@@ -487,55 +664,70 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
-                                                            (projDetailsList.status !== 7 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                            <span className='ms-1'><img
+                                                                src={report_icon}
+                                                                className='complete_icon'
+                                                                title='Report Project'
+                                                                onClick={reportProject}
+                                                                alt=''
+                                                            /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                            (projDetailsList.status !== 7 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) &&
+                                                            <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={fail_icon}
                                                                 className='complete_icon'
                                                                 title='Mark Project as Cancelled'
                                                                 onClick={cancelProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
-                                                            (projDetailsList.status !== 6 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                            (projDetailsList.status !== 6 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) &&
+                                                            <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={delay_icon}
                                                                 className='complete_icon'
                                                                 title='Mark Project as Delayed'
                                                                 onClick={delayProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) && <span className='ms-1' style={{ float: 'right' }}><img
-                                                            src={complete_icon}
-                                                            className='complete_icon'
-                                                            title='Mark Project as Complete'
-                                                            onClick={completeProject}
-                                                            alt=''
-                                                        /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag &&
-                                                            (projDetailsList.status === 5 || projDetailsList.status === 6 || projDetailsList.status === 7) && <span className='ms-1' style={{ float: 'right' }}><img
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) &&
+                                                            <span className='ms-1' style={{ float: 'right' }}><img
+                                                                src={complete_icon}
+                                                                className='complete_icon'
+                                                                title='Mark Project as Complete'
+                                                                onClick={completeProject}
+                                                                alt=''
+                                                            /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                            (projDetailsList.status === 5 || projDetailsList.status === 6 || projDetailsList.status === 7) &&
+                                                            <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={resume_icon}
                                                                 className='complete_icon'
                                                                 title='Resume Project'
                                                                 onClick={resumeProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && projDetailsList.status === 3 && <span className='ms-1' style={{ float: 'right' }}><img
-                                                            src={resume_icon}
-                                                            className='complete_icon'
-                                                            title='Start Project'
-                                                            onClick={resumeProject}
-                                                            alt=''
-                                                        /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && !editFlag && <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
-                                                            title='Click to edit Project Details' alt=""
-                                                            onClick={() => triggerUpdate('U')} /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S') && editFlag && <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
-                                                            title='Click to cancel editing' alt=''
-                                                            onClick={() => triggerUpdate('C')}
-                                                        /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && projDetailsList.status === 3 &&
+                                                            <span className='ms-1' style={{ float: 'right' }}><img
+                                                                src={resume_icon}
+                                                                className='complete_icon'
+                                                                title='Start Project'
+                                                                onClick={resumeProject}
+                                                                alt=''
+                                                            /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                            <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
+                                                                title='Click to edit Project Details' alt=""
+                                                                onClick={() => triggerUpdate('U')} /></span>}
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && editFlag &&
+                                                            <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
+                                                                title='Click to cancel editing' alt=''
+                                                                onClick={() => triggerUpdate('C')}
+                                                            /></span>}
                                                     </td>
                                                 </tr>
-                                                {projDescList.map((p, i) => (
-                                                    <tr key={i}>
+                                                {/* {projDescList.map((p, i) => (
+                                                    <tr key={`projDesc-${i}`}>
                                                         {!editFlag && <>
                                                             <td className='proj-details-sub-header'>{p[0]}</td>
                                                             <td className='proj-details-data'>{p[1]}</td>
@@ -550,14 +742,74 @@ const ViewProjectComponent = () => {
                                                                     value={tempProjDescList.find(item => item[0] === p[0])?.[1] || ""}
                                                                     onChange={(e) => handleUpdateProjDescChange(e)}
                                                                     onBlur={handleProjDescBlur}
-                                                                    placeholder="Enter milestone title, e.g., Project Kickoff"
+                                                                    placeholder={`Enter ${p[0]}`}
                                                                     maxLength={100}
                                                                     required
                                                                 />
                                                             </td>
                                                         </>}
                                                     </tr>
-                                                ))}
+                                                ))} */}
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Purpose</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.purpose}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="purpose"
+                                                            placeholder='e.g., E-Commerce'
+                                                            value={projDetailsList.purpose || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Product</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.product}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="product"
+                                                            placeholder='e.g., Website'
+                                                            value={projDetailsList.product || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Description</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.description}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="description"
+                                                            placeholder='e.g., This website is intended for MAC Faculty and Students'
+                                                            value={projDetailsList.description || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
+                                                <tr>
+                                                    <td className="proj-details-sub-header">Features</td>
+                                                    {!editFlag && <td className='proj-details-data'>{projDetailsList.features}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="text"
+                                                            className="milestone_input_text"
+                                                            name="features"
+                                                            placeholder='e.g., Recommendation System'
+                                                            value={projDetailsList.features || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
                                                 <tr>
                                                     <td className='proj-details-sub-header'>End Date</td>
                                                     {!editFlag && <td className='proj-details-data'>{projDetailsList.end_date}</td>}
@@ -566,6 +818,7 @@ const ViewProjectComponent = () => {
                                                             type="date"
                                                             className="milestone_input_date milestone_datepicker"
                                                             name="end_date"
+                                                            min={today}
                                                             value={projDetailsList.end_date || ""}
                                                             onChange={(e) => handleUpdateProjDetailsChange(e)}
                                                             required
@@ -576,26 +829,44 @@ const ViewProjectComponent = () => {
                                                     <td className="proj-details-sub-header">Status</td>
                                                     <td className="proj-details-data">{projDetailsList.status_desc}</td>
                                                 </tr>
-                                                {['business_owner', 'supervisor', 'student'].map((role) => {
-                                                    const stakeholdersByRole = (projDetailsList?.stakeholder || [])
-                                                        .filter((stakeholder) => stakeholder.role === role)
-                                                        .map((stakeholder) => stakeholder.name);
+                                                {["business_owner", "supervisor", "student"].map(role => {
+                                                    const stakeholdersByRole = (projDetailsList?.stakeholder || []).filter(
+                                                        stakeholder => stakeholder.role === role
+                                                    );
 
                                                     if (stakeholdersByRole.length > 0) {
                                                         return (
                                                             <tr key={role}>
-                                                                <td className='proj-details-sub-header'>
-                                                                    {role === 'business_owner' && 'Business Owner'}
-                                                                    {role === 'supervisor' && 'Supervisor(s)'}
-                                                                    {role === 'student' && 'Student(s)'}
+                                                                <td className="proj-details-sub-header">
+                                                                    {role === "business_owner" && "Business Owner"}
+                                                                    {role === "supervisor" && "Supervisor(s)"}
+                                                                    {role === "student" && "Student(s)"}
                                                                 </td>
-                                                                <td className='proj-details-data'>
-                                                                    {stakeholdersByRole.join(', ')}
+                                                                <td className="proj-details-data">
+                                                                    {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
+                                                                        <div
+                                                                            key={`${role}-${user_id}`}
+                                                                            className="stakeholder-button"
+                                                                            onClick={!editFlag ? () => fetchUserProfile(user_id) : undefined}
+                                                                        >
+                                                                            {name}
+                                                                            {editFlag &&
+                                                                                (((accessVal === "E" || accessVal === "SB") && role === "student") ||
+                                                                                    (accessVal === "S" && role !== "business_owner")) && (
+                                                                                    <img
+                                                                                        src={remove_icon}
+                                                                                        onClick={() => removeStakeholder(proj_id, role, user_id)}
+                                                                                        className="remove_icon"
+                                                                                        alt=""
+                                                                                    />
+                                                                                )}
+                                                                        </div>
+                                                                    ))}
                                                                 </td>
                                                             </tr>
                                                         );
                                                     }
-                                                    return null; // Skip rendering if no stakeholders for the role
+                                                    return null;
                                                 })}
 
 
@@ -622,9 +893,9 @@ const ViewProjectComponent = () => {
                                             onClick={UpdateProjDetails}>Save Changes</button>}
                                         {(accessVal === 'A') && <button className="ms-3 text-center button_text button-home"
                                             onClick={submitApplication}>Click to Apply</button>}
-                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B') && <button className="ms-3 text-center button_text button-home"
+                                        {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-home"
                                             onClick={viewMilestones}>View Milestones</button>}
-                                        {(accessVal === 'S' || accessVal === 'B') && <button className="ms-3 text-center button_text button-delete"
+                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
