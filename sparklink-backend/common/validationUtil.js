@@ -1,7 +1,7 @@
 const express = require('express');
 
 function isConsecSplChar(input) {
-    const pattern = /[^A-Za-z0-9]+[^A-Za-z0-9]+/;
+    const pattern = /[^A-Za-z0-9\s][^A-Za-z0-9\s]/;
 
     return pattern.test(input);
 }
