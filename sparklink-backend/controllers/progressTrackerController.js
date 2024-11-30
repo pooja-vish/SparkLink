@@ -227,7 +227,8 @@ exports.getUserRoleAccess = async (req, res) => {
                 where: {
                     proj_id: proj_id,
                     user_id: user_id,
-                    role: role
+                    role: role,
+                    is_active: 'Y'
                 }
             });
 
@@ -241,7 +242,8 @@ exports.getUserRoleAccess = async (req, res) => {
                 where: {
                     proj_id: proj_id,
                     user_id: user_id,
-                    role: role
+                    role: role,
+                    is_active: 'Y'
                 }
             });
 
@@ -332,6 +334,7 @@ exports.filterProjMilestones = async (req, res) => {
         WHERE pr.project_name ILIKE '%' || :project_name || '%'
             and pa.proj_id = pr.proj_id
             and pa.user_id = :user_id
+            and pa.is_active = 'Y'
 		GROUP BY pr.project_name, pr.proj_id;`
 
         const replacements = {

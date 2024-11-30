@@ -306,26 +306,38 @@ const ViewProjectComponent = () => {
     }
 
     const completeProject = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/project/completeProject', {
-                projData: projDetailsList
-            });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to mark this Project as Completed?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setLoading(true);
+                try {
+                    const response = await axios.post('/project/completeProject', {
+                        projData: projDetailsList
+                    });
 
-            if (response.status === 200) {
-                //fetchProjects();
-                closeModal();
-                Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
-            } else if (response.status === 500) {
-                Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    if (response.status === 200) {
+                        //fetchProjects();
+                        closeModal();
+                        Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                    } else if (response.status === 500) {
+                        Swal.fire({ title: 'Error', text: response.data.message, icon: 'error', confirmButtonText: 'Ok' });
+                    }
+                } catch (err) {
+                    Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
+                    //setError(err.message);
+                } finally {
+                    fetchProjects();
+                    //setLoading(false);
+                }
             }
-        } catch (err) {
-            Swal.fire({ title: 'Error', text: err.message, icon: 'error', confirmButtonText: 'Ok' });
-            //setError(err.message);
-        } finally {
-            fetchProjects();
-            //setLoading(false);
-        }
+        });
     }
 
     const resumeProject = async () => {
@@ -534,16 +546,16 @@ const ViewProjectComponent = () => {
                 setLoading(true);
                 try {
                     const reason = result.value;
-    
+
                     const reportData = {
                         proj_id: projDetailsList.proj_id,
                         reason: reason
                     }
-    
+
                     const response = await axios.post('/project/reportProject', {
                         reportData: reportData
                     });
-    
+
                     if (response.status === 200) {
                         closeModal();
                         Swal.fire({ title: 'Success', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
@@ -608,7 +620,7 @@ const ViewProjectComponent = () => {
                                                     }
 
                                                     return (
-                                                        <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
+                                                        <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3" title={item.project_name}
                                                             key={index} onClick={() => openProjectDetails(item.proj_id)}>
 
                                                             <div className="progress-image"
@@ -623,7 +635,9 @@ const ViewProjectComponent = () => {
                                                             <div className="progress-content">
                                                                 {/* <span className="progress-category">{item.project_name}</span> */}
                                                                 {/* <span className="progress-category">Software</span> */}
-                                                                <div className="progress-title">{item.project_name}</div>
+                                                                <div className="progress-title">{item.project_name.length > 15
+                                                                    ? `${item.project_name.slice(0, 18)}...`
+                                                                    : item.project_name}</div>
                                                                 <div className="progress-bar-container">
                                                                     <div className="progress-bar">
                                                                         <div className="progress" style={{ width: `${item.progress}%` }}></div>
@@ -650,7 +664,7 @@ const ViewProjectComponent = () => {
                             scrollable
                             aria-labelledby="milestone_details_modal"
                             autoFocus={false}
-                            enforceFocus={false} 
+                            enforceFocus={false}
                         >
                             <Modal.Header closeButton>
                                 <Modal.Title id="milestone_details_modal" className='modal_text_header'>
@@ -663,8 +677,12 @@ const ViewProjectComponent = () => {
                                         <Table responsive='sm' bordered hover>
                                             <tbody>
                                                 <tr>
-                                                    <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {(accessVal === 'E' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                    <td colSpan={12} className='proj-details-header' title={projDetailsList.project_name}>Project Name: {projDetailsList?.project_name
+                                                        ? projDetailsList.project_name.length > 25
+                                                            ? `${projDetailsList.project_name.slice(0, 25)}...`
+                                                            : projDetailsList.project_name
+                                                        : "N/A"}
+                                                        {(accessVal === 'E' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             <span className='ms-1'><img
                                                                 src={report_icon}
                                                                 className='complete_icon'
@@ -672,7 +690,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={reportProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             (projDetailsList.status !== 7 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={fail_icon}
@@ -681,7 +699,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={cancelProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             (projDetailsList.status !== 6 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={delay_icon}
@@ -690,7 +708,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={delayProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={complete_icon}
                                                                 className='complete_icon'
@@ -698,7 +716,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={completeProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             (projDetailsList.status === 5 || projDetailsList.status === 6 || projDetailsList.status === 7) &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={resume_icon}
@@ -707,7 +725,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={resumeProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && projDetailsList.status === 3 &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag && projDetailsList.status === 3 &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={resume_icon}
                                                                 className='complete_icon'
@@ -715,11 +733,11 @@ const ViewProjectComponent = () => {
                                                                 onClick={resumeProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
                                                                 title='Click to edit Project Details' alt=""
                                                                 onClick={() => triggerUpdate('U')} /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && editFlag &&
                                                             <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
                                                                 title='Click to cancel editing' alt=''
                                                                 onClick={() => triggerUpdate('C')}
@@ -891,11 +909,11 @@ const ViewProjectComponent = () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-home"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {(accessVal === 'A') && <button className="ms-3 text-center button_text button-home"
+                                        {(accessVal === 'A' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-home"
                                             onClick={submitApplication}>Click to Apply</button>}
                                         {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-home"
                                             onClick={viewMilestones}>View Milestones</button>}
-                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-delete"
+                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
