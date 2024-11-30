@@ -664,7 +664,7 @@ const ViewProjectComponent = () => {
                                             <tbody>
                                                 <tr>
                                                     <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
-                                                        {(accessVal === 'E' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             <span className='ms-1'><img
                                                                 src={report_icon}
                                                                 className='complete_icon'
@@ -672,7 +672,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={reportProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             (projDetailsList.status !== 7 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={fail_icon}
@@ -681,7 +681,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={cancelProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             (projDetailsList.status !== 6 && projDetailsList.status !== 5 && projDetailsList.status !== 3 && projDetailsList.status !== 2 && projDetailsList.status !== 1) &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={delay_icon}
@@ -690,7 +690,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={delayProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag && (projDetailsList.status === 4 || projDetailsList.status === 6) &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={complete_icon}
                                                                 className='complete_icon'
@@ -698,7 +698,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={completeProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             (projDetailsList.status === 5 || projDetailsList.status === 6 || projDetailsList.status === 7) &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={resume_icon}
@@ -707,7 +707,7 @@ const ViewProjectComponent = () => {
                                                                 onClick={resumeProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag && projDetailsList.status === 3 &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag && projDetailsList.status === 3 &&
                                                             <span className='ms-1' style={{ float: 'right' }}><img
                                                                 src={resume_icon}
                                                                 className='complete_icon'
@@ -715,11 +715,11 @@ const ViewProjectComponent = () => {
                                                                 onClick={resumeProject}
                                                                 alt=''
                                                             /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && !editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             <span style={{ float: 'right' }}><img src={edit_icon} className='edit_icon'
                                                                 title='Click to edit Project Details' alt=""
                                                                 onClick={() => triggerUpdate('U')} /></span>}
-                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB') && editFlag &&
+                                                        {(accessVal === 'E' || accessVal === 'B' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && editFlag &&
                                                             <span style={{ float: 'right' }}><img src={cancel_icon} className='cancel_icon'
                                                                 title='Click to cancel editing' alt=''
                                                                 onClick={() => triggerUpdate('C')}
