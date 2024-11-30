@@ -196,24 +196,28 @@ const CreateProjectComponent = () => {
         title: "Supervise Project?",
         text: "Do you want to supervise this project?",
         icon: "question",
-        showCancelButton: true,  // Show the cancel button
-        confirmButtonText: "Yes",
-        cancelButtonText: "No",
+        showCancelButton: true,    // Show the Cancel button
+        showDenyButton: true,      // Show the Deny (No) button
+        confirmButtonText: "Yes",  // Text for the Confirm button
+        denyButtonText: "No",      // Text for the Deny button
+        cancelButtonText: "Cancel", // Text for the Cancel button
       });
-  
+    
       // Handle user response
       if (result.isConfirmed) {
         form_data.supervise = true; // Add supervise field to form data
         console.log("User opted to supervise the project.");
-      } else if (result.isDismissed) {
-        // If canceled (pressed "Cancel"), stop execution and prevent API call
-        console.log("User canceled the action, not proceeding with API call.");
-        return;  // Stop execution and prevent API call
-      } else {
+      } else if (result.isDenied) {
         form_data.supervise = false; // Add supervise = false if user clicked "No"
-        console.log("User declined to supervise the project, proceeding without supervise flag.");
+        console.log("User declined to supervise the project.");
+      } else if (result.isDismissed) {
+        console.log("User canceled or closed the modal, stopping execution.");
+        return; // Stop execution if the modal was closed or canceled
       }
     }
+    
+    // Proceed with the rest of the logic
+    
   
     // Proceed with loading state after SweetAlert decision
     setLoading(true);
