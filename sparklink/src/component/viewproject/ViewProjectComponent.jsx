@@ -677,7 +677,7 @@ const ViewProjectComponent = () => {
                                         <Table responsive='sm' bordered hover>
                                             <tbody>
                                                 <tr>
-                                                    <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList?.project_name
+                                                    <td colSpan={12} className='proj-details-header' title={projDetailsList.project_name}>Project Name: {projDetailsList?.project_name
                                                         ? projDetailsList.project_name.length > 25
                                                             ? `${projDetailsList.project_name.slice(0, 25)}...`
                                                             : projDetailsList.project_name
