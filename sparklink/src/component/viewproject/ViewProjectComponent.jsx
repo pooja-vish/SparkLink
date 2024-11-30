@@ -891,11 +891,11 @@ const ViewProjectComponent = () => {
                                             onClick={closeModal}>Close</button>
                                         {editFlag && <button className="ms-3 text-center button_text button-home"
                                             onClick={UpdateProjDetails}>Save Changes</button>}
-                                        {(accessVal === 'A') && <button className="ms-3 text-center button_text button-home"
+                                        {(accessVal === 'A' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-home"
                                             onClick={submitApplication}>Click to Apply</button>}
                                         {(accessVal === 'S' || accessVal === 'E' || accessVal === 'M' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-home"
                                             onClick={viewMilestones}>View Milestones</button>}
-                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB') && <button className="ms-3 text-center button_text button-delete"
+                                        {(accessVal === 'S' || accessVal === 'B' || accessVal === 'SB' || accessVal === 'SBA') && <button className="ms-3 text-center button_text button-delete"
                                             onClick={deleteProject}>Delete Project</button>}
                                     </div>
                                 </div>
