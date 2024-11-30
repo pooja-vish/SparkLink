@@ -7,6 +7,7 @@ import './ProfileComponent.css';
 import { useAuth } from '../../AuthContext';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
+import { useSearchParams } from 'react-router-dom';
 
 const ProfileComponent = () => {
     const { user, isAuthenticated } = useAuth();
@@ -22,6 +23,8 @@ const ProfileComponent = () => {
     const [selectedProject, setSelectedProject] = useState(null); // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
     const [isScrollable, setIsScrollable] = useState(false);
+    const [searchParams] = useSearchParams();
+    const user_id_param = searchParams.get('user_id');
 
     const fetchProfile = async (user_id) => {
         //const user_id = user.user_id;
@@ -65,7 +68,7 @@ const ProfileComponent = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            fetchProfile(user.user_id);
+            fetchProfile(user_id_param || user.user_id);
         }
     }, [user]);
 

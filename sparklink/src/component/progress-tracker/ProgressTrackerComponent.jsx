@@ -542,10 +542,14 @@ const ProgressTrackerComponent = () => {
                                                                         <div className="header">
                                                                             {/* <span className="icon">{index + 1}</span>
                                                                             &nbsp; */}
-                                                                            <span className='milestone_title_text'>{milestone.milestone_title}</span>
+                                                                            <span className='milestone_title_text'>{milestone.milestone_title.length > 20
+                                                                                ? `${milestone.milestone_title.slice(0, 18)}...`
+                                                                                : milestone.milestone_title}</span>
                                                                         </div>
                                                                         <span className='milestone_text'>{milestone.end_date}</span>
-                                                                        <p className='milestone_text'>{milestone.milestone_desc}</p>
+                                                                        <p className='milestone_text'>{milestone.milestone_desc.length > 50
+                                                                            ? `${milestone.milestone_desc.slice(0, 18)}...`
+                                                                            : milestone.milestone_desc}</p>
                                                                     </div>
                                                                 </div>
                                                             );

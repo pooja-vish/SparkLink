@@ -620,7 +620,7 @@ const ViewProjectComponent = () => {
                                                     }
 
                                                     return (
-                                                        <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3"
+                                                        <div className="col-8 col-md-4 col-sm-10 col-lg-2 px-4 progress-card mb-4 mt-3" title={item.project_name}
                                                             key={index} onClick={() => openProjectDetails(item.proj_id)}>
 
                                                             <div className="progress-image"
@@ -635,7 +635,9 @@ const ViewProjectComponent = () => {
                                                             <div className="progress-content">
                                                                 {/* <span className="progress-category">{item.project_name}</span> */}
                                                                 {/* <span className="progress-category">Software</span> */}
-                                                                <div className="progress-title">{item.project_name}</div>
+                                                                <div className="progress-title">{item.project_name.length > 15
+                                                                    ? `${item.project_name.slice(0, 18)}...`
+                                                                    : item.project_name}</div>
                                                                 <div className="progress-bar-container">
                                                                     <div className="progress-bar">
                                                                         <div className="progress" style={{ width: `${item.progress}%` }}></div>
@@ -675,7 +677,11 @@ const ViewProjectComponent = () => {
                                         <Table responsive='sm' bordered hover>
                                             <tbody>
                                                 <tr>
-                                                    <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList.project_name}
+                                                    <td colSpan={12} className='proj-details-header'>Project Name: {projDetailsList?.project_name
+                                                        ? projDetailsList.project_name.length > 25
+                                                            ? `${projDetailsList.project_name.slice(0, 25)}...`
+                                                            : projDetailsList.project_name
+                                                        : "N/A"}
                                                         {(accessVal === 'E' || accessVal === 'S' || accessVal === 'SB' || accessVal === 'SBA') && !editFlag &&
                                                             <span className='ms-1'><img
                                                                 src={report_icon}
