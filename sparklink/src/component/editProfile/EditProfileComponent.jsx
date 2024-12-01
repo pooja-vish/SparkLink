@@ -152,7 +152,9 @@ const EditProfileComponent = () => {
                                 <div className="form-group">
                                     <div className="col-sm-10 col-sm-offset-2">
                                         <button type="submit" className="btn btn-primary">Submit</button>
-                                        <a href="/Profile" className="btn btn-secondary">Cancel</a>
+                                        {/* <a href="/Profile" className="btn btn-secondary">Cancel</a> */}
+                                        <a href={`/Profile?user_id=${user.user_id}`} className="btn btn-secondary">Cancel</a>
+
                                     </div>
                                 </div>
 
@@ -260,7 +262,9 @@ const EditProfileComponent = () => {
                                 <div className="form-group">
                                     <div className="col-sm-10 col-sm-offset-2">
                                         <button type="submit" className="btn btn-primary">Submit</button>
-                                        <a href="/Profile" className="btn btn-secondary">Cancel</a>
+                                        {/* <a href="/Profile" className="btn btn-secondary">Cancel</a> */}
+                                        <a href={`/Profile?user_id=${user.user_id}`} className="btn btn-secondary">Cancel</a>
+
                                     </div>
                                 </div>
 
@@ -365,7 +369,9 @@ const EditProfileComponent = () => {
                                 <div className="form-group">
                                     <div className="col-sm-10 col-sm-offset-2">
                                         <button type="submit" className="btn btn-primary">Submit</button>
-                                        <a href="/Profile" className="btn btn-secondary">Cancel</a>
+                                        {/* <a href="/Profile" className="btn btn-secondary">Cancel</a> */}
+                                        <a href={`/Profile?user_id=${user.user_id}`} className="btn btn-secondary">Cancel</a>
+
                                     </div>
                                 </div>
 

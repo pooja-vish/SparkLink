@@ -197,10 +197,10 @@ exports.logout = (req, res) => {
 exports.checkSession = (req, res) => {
   if (req.isAuthenticated()) {
     // User is authenticated, send back user details
-    const { username, email, role } = req.user; // Assuming req.user contains these fields
+    const { username, email, role, user_id} = req.user; // Assuming req.user contains these fields
     return res.status(200).json({
       isAuthenticated: true,
-      user: { username, email, role },
+      user: { username, email, role , user_id},
     });
   } else {
     // User is not authenticated
