@@ -16,6 +16,7 @@ import fail_icon from '../../assets/fail_icon.png';
 import { useAuth } from '../../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { useNotification } from "../../notificationContext"; 
 import photo1 from '../../assets/project_images/photo1.jpg';
 import photo2 from '../../assets/project_images/photo2.jpg';
 import photo3 from '../../assets/project_images/photo3.jpg';
@@ -35,6 +36,7 @@ const imageArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, phot
 
 const ViewProjectComponent = () => {
     const navigate = useNavigate();
+    const { updateNotifyCount } = useNotification(); 
     const [projectList, setProjectList] = useState([]);
     const [originalProjectList, setOriginalProjectList] = useState([]);
     const [error, setError] = useState(null);
@@ -479,6 +481,7 @@ const ViewProjectComponent = () => {
                 //fetchProjects();
                 closeModal();
                 Swal.fire({ title: 'Application Successful', text: response.data.message, icon: 'success', confirmButtonText: 'Ok' });
+                updateNotifyCount();
             } else if (response.status === 200 && !response.data.success) {
                 //fetchProjects();
                 closeModal();

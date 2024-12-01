@@ -93,3 +93,16 @@
 .btn-reject:hover {
   background-color: #c82333;
 }
+
+
+.no-notifications {
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.no-notifications-message {
+  margin: 0;
+}
