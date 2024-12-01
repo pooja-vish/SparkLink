@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
+const User = require("../models/user");
+const Project = require("../models/project");
 
 /**
  * Primary key (id)
@@ -78,6 +80,22 @@ const ProjAllocation = sequelize.define(
         isIn: [['Y', 'N']],
       },
     },
+    b_notification: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: 'Y',
+      validate: {
+        isIn: [['Y', 'N']],
+      },
+    },
+    s_notification: {
+      type: DataTypes.CHAR(1),
+      allowNull: false,
+      defaultValue: 'Y',
+      validate: {
+        isIn: [['Y', 'N']],
+      },
+    },
   },
   {
     tableName: "t_proj_allocation",
@@ -94,5 +112,19 @@ const ProjAllocation = sequelize.define(
     ],
   }
 );
+
+ProjAllocation.belongsTo(User, {
+  foreignKey: "user_id",
+  targetKey: "user_id",
+  as: "user",
+});
+User.hasMany(ProjAllocation, { foreignKey: "user_id", as: "allocations" });
+
+ProjAllocation.belongsTo(Project, {
+  foreignKey: "proj_id",
+  targetKey: "proj_id",
+  as: "project",
+});
+Project.hasMany(ProjAllocation, { foreignKey: "proj_id", as: "allocations" });
 
 module.exports = ProjAllocation;

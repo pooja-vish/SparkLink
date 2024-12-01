@@ -42,18 +42,21 @@ const MenuComponent = () => {
     }
   };
 
-  const fetchApplications = async (req, res) => {
-    const response = await axios.post("/apply/getApps");
-    console.log(response.data);
-  };
+  // const fetchApplications = async (req, res) => {
+  //   const response = await axios.post("/apply/getApps");
+  //   console.log(response.data);
+  // };
 
   const fetchNotifCount = async () => {
     try {
-      const response = await axios.get('/apply/notifCount');
+      
+      const response = await axios.get('/notify/count');
+      console.log("message ---> ",response.data.message);
+      console.log("count ---> ",response.data.notifCount);
       setNotifCount(response.data.notifCount);
 
     } catch (error) {
-      Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+      Swal.fire({ title: 'Error', text: error, icon: 'error', confirmButtonText: 'Ok' });
     }
   }
 

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const sequelize = require('../config/db');
-const ProjAllocation = require('../models/proj_allocation');
+// const ProjAllocation = require('../models/proj_allocation');
 
 const User = sequelize.define('User', {
   user_id: {
@@ -89,10 +89,10 @@ User.prototype.validPassword = async function (password) {
 };
 
 
-User.hasMany(ProjAllocation, {
-  foreignKey: 'user_id',  // Correct foreign key used in ProjAllocation
-  as: 'projectAllocations', // Alias for the association
-});
+// User.hasMany(ProjAllocation, {
+//   foreignKey: 'user_id',  // Correct foreign key used in ProjAllocation
+//   as: 'projectAllocations', // Alias for the association
+// });
 
 
 module.exports = User;
