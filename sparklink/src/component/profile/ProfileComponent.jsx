@@ -70,7 +70,7 @@ const ProfileComponent = () => {
         if (isAuthenticated) {
             fetchProfile(user_id_param || user.user_id);
         }
-    }, [user]);
+    }, [user, user_id_param]);
 
     useEffect(() => {
         console.log("projects count : ", projects.length);
@@ -79,16 +79,16 @@ const ProfileComponent = () => {
 
     useEffect(() => {
         console.log("selectedProjectDetails =1", selectedProjectDetails);
-        if (selectedProject && selectedProjectDetails) {
-            console.log('split wala =>', selectedProjectDetails.proj_desc);
-            let splitDesc = selectedProjectDetails.proj_desc.split(";");
-            console.log("splitDesc=>", splitDesc);
-            let filterDesc = [];
-            for (let i = 0; i < splitDesc.length; i++) {
-                filterDesc[i] = splitDesc[i].trim().split(":");
-            }
-            setProjDescList(filterDesc);
-        }
+        // if (selectedProject && selectedProjectDetails) {
+        //     console.log('split wala =>', selectedProjectDetails.proj_desc);
+        //     let splitDesc = selectedProjectDetails.proj_desc.split(";");
+        //     console.log("splitDesc=>", splitDesc);
+        //     let filterDesc = [];
+        //     for (let i = 0; i < splitDesc.length; i++) {
+        //         filterDesc[i] = splitDesc[i].trim().split(":");
+        //     }
+        //     setProjDescList(filterDesc);
+        // }
     }, [selectedProjectDetails]);
 
     if (loading) {
@@ -133,7 +133,11 @@ const ProfileComponent = () => {
                                             </li>
                                         </ul>
                                     </div>
-                                    <a href="/editProfile" className="button">Manage Profile</a>
+                                    {user_id_param ? (
+                                        user.user_id === Number(user_id_param) && (
+                                            <a href="/editProfile" className="button">Manage Profile</a>
+                                        )
+                                    ) : null}
                                 </div>
                             </div>
 
@@ -256,7 +260,7 @@ const ProfileComponent = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>==
+                            </div>
                         </div>
                     </div>
                     <Modal
@@ -280,7 +284,27 @@ const ProfileComponent = () => {
                                             <tr>
                                                 <td colSpan={12} className='proj-details-header'>Project Name: {selectedProjectDetails.project_name}</td>
                                             </tr>
-                                            {projDescList.map((p, i) => (
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Purpose</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.purpose}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Product</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.product}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Description</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.description}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Features</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.features}</td>}
+                                            </tr>
+                                            {/* <tr>
+                                                <td className='proj-details-sub-header'>End Date</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
+                                            </tr> */}
+                                            {/* {projDescList.map((p, i) => (
                                                 <tr key={i}>
                                                     <>
                                                         <td className='proj-details-sub-header'>{p[0]}</td>
@@ -288,7 +312,7 @@ const ProfileComponent = () => {
                                                     </>
 
                                                 </tr>
-                                            ))}
+                                            ))} */}
                                             <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
                                                 {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
@@ -323,7 +347,7 @@ const ProfileComponent = () => {
                             <div className="col-lg-4 col-md-5 xs-margin-30px-bottom">
                                 <div className="team-single-img">
                                     <img className="image" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="" />
-                                                                  </div>
+                                </div>
                                 <div className="bg-light-gray padding-30px-all md-padding-25px-all sm-padding-20px-all text-center">
                                     <h4 className="margin-10px-bottom font-size24 md-font-size22 sm-font-size20 font-weight-600">Full Stack Developer</h4>
                                     <p className="sm-width-95 sm-margin-auto">{profile.skills}</p>
@@ -331,11 +355,15 @@ const ProfileComponent = () => {
                                         <ul className="no-margin">
                                             <li><a href={profile.linkedin}><i className="fab fa-linkedin-in"></i></a></li>
                                             <li><a href={profile.github}><i className="fab fa-github"></i></a></li>
-                                            <li><a href="javascript:void(0)"><i className="fab fa-google-plus-g"></i></a></li>
-                                            <li><a href="javascript:void(0)"><i className="fab fa-instagram"></i></a></li>
+                                            {/* <li><a href="javascript:void(0)"><i className="fab fa-google-plus-g"></i></a></li>
+                                            <li><a href="javascript:void(0)"><i className="fab fa-instagram"></i></a></li> */}
                                         </ul>
                                     </div>
-                                    <a href="/editProfile" class="button">Manage Profile</a>
+                                    {user_id_param ? (
+                                        user.user_id === Number(user_id_param) && (
+                                            <a href="/editProfile" className="button">Manage Profile</a>
+                                        )
+                                    ) : null}
                                 </div>
                             </div>
 
@@ -369,7 +397,7 @@ const ProfileComponent = () => {
                                                         <strong className="margin-10px-left text-yellow">Experience:</strong>
                                                     </div>
                                                     <div className="col-md-7 col-7">
-                                                    {profile.experience ? (
+                                                        {profile.experience ? (
                                                             <p>{profile.experience}</p>
                                                         ) : (
                                                             <p style={{ color: "light gray" }}>Add your experience, by clicking Manage Profile</p>
@@ -439,7 +467,7 @@ const ProfileComponent = () => {
                                             </li>
                                         </ul>
                                     </div>
-                                
+
                                     <h2>Projects you are supervising currently : </h2>
                                     <div className="progress-background-card">
                                         <div className="progress-card-layout">
@@ -561,7 +589,11 @@ const ProfileComponent = () => {
                                             <li><a href="javascript:void(0)"><i className="fab fa-instagram"></i></a></li>
                                         </ul>
                                     </div>
-                                    <a href="/editProfile" class="button">Manage Profile</a>
+                                    {user_id_param ? (
+                                        user.user_id === Number(user_id_param) && (
+                                            <a href="/editProfile" className="button">Manage Profile</a>
+                                        )
+                                    ) : null}
                                 </div>
                             </div>
 
@@ -579,7 +611,7 @@ const ProfileComponent = () => {
                                                         <strong className="margin-10px-left text-orange">Business Type:</strong>
                                                     </div>
                                                     <div className="col-md-7 col-7">
-                                                    {profile.business_type ? (
+                                                        {profile.business_type ? (
                                                             <p>{profile.business_type}</p>
                                                         ) : (
                                                             <p style={{ color: "light gray" }}>Add your Business Type, by clicking Manage Profile</p>
@@ -671,7 +703,7 @@ const ProfileComponent = () => {
                                                                 {project.category}
                                                             </span>
                                                             <div className="progress-title">
-                                                               {project.project_name || "Default Project Name"}
+                                                                {project.project_name || "Default Project Name"}
                                                             </div>
                                                             <div className="progress-bar-container">
                                                                 <div className="progress-bar">
