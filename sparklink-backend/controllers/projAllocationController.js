@@ -4,7 +4,9 @@ const Project = require("../models/project");
 
 const acceptProject = async (req, res) => {
   try {
-    const { proj_id, user_id, role } = req.body;
+    const user = req.user;
+    const { proj_id, user_id } = req.body;
+    const role = 4;
 
     // Define the new allocation object
     const allocationList = {
@@ -66,7 +68,8 @@ const acceptProject = async (req, res) => {
 };
 
 const rejectProject = async (req, res) => {
-  const { proj_id, user_id, role } = req.body;
+  const { proj_id, user_id } = req.body;
+  const role = 4;
 
   try {
     // Check if the project application exists

@@ -18,14 +18,17 @@ import logout_icon from "../../assets/logout.png";
 import login_icon from "../../assets/login.png";
 import { useAuth } from "../../AuthContext";
 import Swal from 'sweetalert2';
+import { useSearchParams } from 'react-router-dom';
 
 const MenuComponent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false); // MouseEvent
   const [role, setRole] = useState(''); // UserRole
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, user } = useAuth();
   const [notifCount, setNotifCount] = useState([]);
+  const [searchParams] = useSearchParams();
+  const user_id_param = searchParams.get('user_id');
   const getNavItemClass = (path) => {
     return location.pathname === path ? 'nav-item active' : 'nav-item';
   };
@@ -42,22 +45,26 @@ const MenuComponent = () => {
     }
   };
 
-  const fetchApplications = async (req, res) => {
-    const response = await axios.post("/apply/getApps");
-    console.log(response.data);
-  };
+  // const fetchApplications = async (req, res) => {
+  //   const response = await axios.post("/apply/getApps");
+  //   console.log(response.data);
+  // };
 
   const fetchNotifCount = async () => {
     try {
-      const response = await axios.get('/apply/notifCount');
+
+      
+      const response = await axios.get('/notify/count');
+      console.log("message ---> ",response.data.message);
+      console.log("count ---> ",response.data.notifCount);
       setNotifCount(response.data.notifCount);
 
     } catch (error) {
-      Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
+      Swal.fire({ title: 'Error', text: error, icon: 'error', confirmButtonText: 'Ok' });
     }
   }
 
-  useEffect(() => {
+   useEffect(() => {
     if (isAuthenticated) {
       fetchNotifCount();
     }
@@ -101,7 +108,10 @@ const MenuComponent = () => {
                       </div>
                       <li className={getNavItemClass("/profile")}>
                         <span style={{ cursor: "pointer" }}>
-                          <Link className="text-menu" to="/profile">
+                          <Link
+                            className="text-menu"
+                            to={`/profile?user_id=${user.user_id}`} // Include user_id as a query parameter
+                          >
                             <img
                               src={profile_icon}
                               className="nav_sub_menu_icon"

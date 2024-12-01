@@ -26,6 +26,7 @@ exports.createProject = async (req, res) => {
       features,
       project_deadline,
       image_url,
+      supervise,
     } = req.body;
 
     // Validate required fields
@@ -65,11 +66,7 @@ exports.createProject = async (req, res) => {
         .json({ message: "The project deadline must be a future date." });
     }
 
-    // Combine fields to form proj_desc
-    //const proj_desc = `Purpose: ${purpose}; Product: ${product}; Description: ${project_description}; Features: ${features}`;
-
     const user = req.user;
-
 
     const projectData = {
       project_name: project_name,
@@ -89,7 +86,22 @@ exports.createProject = async (req, res) => {
     // Create the project in the database
     const project = await Project.create(projectData, { transaction: t });
 
-    const projAllocationData = {
+    // If supervise is true, insert two records with different roles (2 and 3)
+    if (supervise) {
+      // Insert the record with role 3
+      const projAllocationDataRole3 = {
+        proj_id: project.proj_id,
+        user_id: user.user_id,
+        role: 3,
+        created_by: user.user_id,
+        modified_by: user.user_id,
+      };
+
+      await ProjAllocation.create(projAllocationDataRole3, { transaction: t });
+    }
+
+    // Insert the record with role 2
+    const projAllocationDataRole2 = {
       proj_id: project.proj_id,
       user_id: user.user_id,
       role: 2,
@@ -97,8 +109,8 @@ exports.createProject = async (req, res) => {
       modified_by: user.user_id,
     };
 
-    // Create the project allocation record in the database
-    const allocation = await ProjAllocation.create(projAllocationData, { transaction: t });
+    // Create the project allocation record in the database with role 2
+    const allocation = await ProjAllocation.create(projAllocationDataRole2, { transaction: t });
 
     // Commit the transaction
     await t.commit();
@@ -116,6 +128,7 @@ exports.createProject = async (req, res) => {
       .json({ message: "Error creating project", error: error.message });
   }
 };
+
 // Get all projects
 /*exports.getAllProjects = async (req, res) => {
   try {
@@ -636,6 +649,7 @@ exports.applyProject = async (req, res) => {
 /**
  * access_val === 'S' -> User has admin access can take every action on the Project
  * access_val === 'SB' -> User is the Business Owner and a Supersor of the project and has edit and delete access to the Project
+ * access_val === 'SBA' -> User is the Business Owner and a Supersor of the project and has Apply access to the Project
  * access_val === 'E' -> User has supervisor role and edit access on the Project
  * access_val === 'A' -> User has access to Apply to the Project
  * access_val === 'B' -> User has access to Edit and Delete access to the Project
@@ -687,7 +701,9 @@ exports.getUserRoleAccess = async (req, res) => {
         }
       });
 
-      if (supervisor_business_owner === 1) {
+      if (supervisor_business_owner === 1 && supervisor_exists !== 1) {
+        return res.status(200).json({ success: true, message: "Valid User", access_val: 'SBA' });
+      } else if (supervisor_business_owner === 1 && supervisor_exists === 1) {
         return res.status(200).json({ success: true, message: "Valid User", access_val: 'SB' });
       }
 
@@ -782,7 +798,7 @@ exports.removeStakeholder = async (req, res) => {
   }
 
   try {
-    const applicationUpdate = ProjApplication.update({
+    const applicationUpdate = await ProjApplication.update({
       is_active: 'N'
     }, {
       where: {
@@ -792,7 +808,7 @@ exports.removeStakeholder = async (req, res) => {
       }
     });
 
-    const allocationUpdate = ProjAllocation.update({
+    const allocationUpdate = await ProjAllocation.update({
       is_active: 'N'
     }, {
       where: {
@@ -801,6 +817,55 @@ exports.removeStakeholder = async (req, res) => {
         user_id: removeData.user_id
       }
     });
+
+    const supervisor_count = await ProjAllocation.count({
+      where: {
+        proj_id: removeData.proj_id,
+        role: 3,
+        is_active: 'Y'
+      }
+    });
+
+    const student_count = await ProjAllocation.count({
+      where: {
+        proj_id: removeData.proj_id,
+        role: 4,
+        is_active: 'Y'
+      }
+    });
+
+    if (role_id === 3) {
+      if (supervisor_count === 0) {
+        const status_update = await Project.update({
+          status: 1,
+          modified_by: req.user.user_id
+        }, {
+          where: {
+            proj_id: removeData.proj_id
+          }
+        });
+      }
+    } else if (role_id === 4) {
+      if (student_count === 0 && supervisor_count > 0) {
+        const status_update = await Project.update({
+          status: 2,
+          modified_by: req.user.user_id
+        }, {
+          where: {
+            proj_id: removeData.proj_id
+          }
+        });
+      } else if (student_count === 0 && supervisor_count === 0) {
+        const status_update = await Project.update({
+          status: 1,
+          modified_by: req.user.user_id
+        }, {
+          where: {
+            proj_id: removeData.proj_id
+          }
+        });
+      }
+    }
 
     return res.status(200).json({ message: "Stakeholder removed successfully from the project" });
   } catch (error) {
