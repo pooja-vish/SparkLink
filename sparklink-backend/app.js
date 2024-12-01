@@ -23,6 +23,7 @@ const projApplicationRouter = require('./routes/projectApplicationRoutes');
 const projAllocationRouter = require('./routes/projectAllocationRoutes');
 //const userRouter = require('./routes/userRoutes');
 const progressTrackerRouter = require('./routes/progressTrackerRoutes');
+const notificationRouter = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -111,6 +112,7 @@ app.use('/profile', profileRouter);
 app.use('/editProfile', EditProfileRouter);
 app.use('/apply', projApplicationRouter);
 app.use('/alloc', projAllocationRouter);
+app.use('/notify', notificationRouter);
 
 
 
