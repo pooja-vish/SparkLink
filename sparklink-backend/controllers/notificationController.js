@@ -279,11 +279,11 @@ exports.fetchNotificationCount = async (req, res) => {
   try {
     const user = req.user;
 
-    let notifCount  = 0;
+    let notifCount = 0;
 
     if (user.role === "2") {
       // Business Owner
-      notifCount  = await Project.findAll({
+      notifCount = await Project.findAll({
         where: {
           user_id: user.user_id,
           is_active: "Y",
@@ -292,7 +292,7 @@ exports.fetchNotificationCount = async (req, res) => {
       }).then(async (projects) => {
         // Extract proj_ids from the fetched projects
         const projIds = projects.map((project) => project.proj_id);
-      
+
         // Fetch the count of allocations matching proj_ids
         const allocationCount = await ProjAllocation.count({
           where: {
@@ -301,7 +301,7 @@ exports.fetchNotificationCount = async (req, res) => {
             is_active: "Y",
           },
         });
-        console.log("allocationCount ---> ",allocationCount);
+        console.log("allocationCount ---> ", allocationCount);
         return allocationCount;
       });
     } else if (user.role === "3") {
@@ -339,18 +339,16 @@ exports.fetchNotificationCount = async (req, res) => {
       });
 
       allocations.forEach((allocation) => {
-        const {  role} = allocation;
+        const { role } = allocation;
         const user_id = allocation.user.user_id;
-        if (role === 2 && user_id !== user.user_id){
-            return;
-        } else{
-            notifCount++;
+        if (role === 2 && user_id !== user.user_id) {
+          return;
+        } else {
+          notifCount++;
         }
-
       });
-      
 
-      console.log("Before notifCount ---> ",notifCount);
+      console.log("Before notifCount ---> ", notifCount);
       notifCount += await ProjApplication.count({
         where: {
           proj_id: projIds,
@@ -360,8 +358,7 @@ exports.fetchNotificationCount = async (req, res) => {
         },
       });
 
-      console.log("After notifCount ---> ",notifCount);
-
+      console.log("After notifCount ---> ", notifCount);
     } else if (user.role === "4") {
       // Student
       notifCount = await ProjAllocation.count({
@@ -371,7 +368,7 @@ exports.fetchNotificationCount = async (req, res) => {
         },
       });
     }
-    console.log("notifCount ---> ",notifCount);
+    console.log("notifCount ---> ", notifCount);
     res.status(200).json({
       message: "Notification count fetched successfully.",
       notifCount,
@@ -389,37 +386,92 @@ exports.NotificationOkay = async (req, res) => {
   try {
     const user = req.user;
     const { proj_id, user_id, code } = req.body;
+    console.log(proj_id, user_id, code);
 
-    // Define the fields to update based on the notification code
-    let updateField = null;
-
-    if (["BP", "BT"].includes(code)) {
-      updateField = { b_notification: "N" };
-    } else if (code === "SP") {
-      updateField = { s_notification: "N" };
-    } else if (["SV", "SS", "ST"].includes(code)) {
-      updateField = { s_notification: "N" };
-    } else if (["TA", "TR"].includes(code)) {
-      updateField = { notification: "N" };
+    if (!proj_id || !code) {
+      return res
+        .status(400)
+        .json({ message: "Project ID and code are required" });
     }
 
-    if (updateField) {
-      // Update the ProjAllocation table with the relevant field
+    console.log(
+      `Processing notification: proj_id=${proj_id}, user_id=${user_id}, code=${code}`
+    );
+
+    // Mapping notification codes to their corresponding updates
+    const notificationUpdates = {
+      BS: { b_notification: "N" },
+      BT: { b_notification: "N" },
+      SP: { s_notification: "N" },
+      SV: { s_notification: "N" },
+      SS: { s_notification: "N" },
+      ST: { s_notification: "N" },
+      TA: { notification: "N" },
+    };
+
+    // Handle special cases directly
+    if (code === "BP") {
+      await ProjAllocation.update(
+        { b_notification: "N" },
+        {
+          where: {
+            user_id: user.user_id,
+            proj_id,
+            is_active: "Y", // Ensure the record is active
+          },
+        }
+      );
+    } else if (code === "SP") {
+      await ProjAllocation.update(
+        { s_notification: "N" },
+        {
+          where: {
+            user_id,
+            proj_id,
+            role:2,
+            is_active: "Y",
+          },
+        }
+      );
+    } else if (code === "SV") {
+        await ProjAllocation.update(
+          { s_notification: "N" },
+          {
+            where: {
+              user_id,
+              proj_id,
+              role:3,
+              is_active: "Y",
+            },
+          }
+        );
+      } else if (code === "TR") {
+      await ProjAllocation.update(
+        { notification: "N" },
+        {
+          where: {
+            user_id,
+            proj_id,
+            is_active: "N", // Ensure the record is inactive for TR
+          },
+        }
+      );
+    } else if (notificationUpdates[code]) {
+      const updateField = notificationUpdates[code];
       await ProjAllocation.update(updateField, {
         where: {
           user_id,
           proj_id,
           is_active: "Y", // Ensure the record is active
-          ...(code === "SP" ? { role: 2 } : {}), // Role check for SP
         },
       });
-
-      res.status(200).json({ message: "Notification updated successfully" });
     } else {
-      res.status(400).json({ message: "Invalid notification code" });
+      return res.status(400).json({ message: "Invalid notification code" });
     }
+
+    res.status(200).json({ message: "Notification updated successfully" });
   } catch (error) {
-    console.error("Error updating notification:", error);
+    console.error("Error updating notification:", error.message);
     res.status(500).json({
       message: "Error updating notification",
       error: error.message,

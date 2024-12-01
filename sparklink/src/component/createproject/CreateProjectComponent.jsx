@@ -13,10 +13,12 @@ import MasterComponent from '../MasterComponent';
 import FooterComponent from "../footer/FooterComponent";
 import axios from "axios";
 import { useAuth } from '../../AuthContext';
+import { useNotification } from "../../notificationContext"; 
 import Swal from "sweetalert2";
 
 const CreateProjectComponent = () => {
   const dateInputRef = useRef(null);
+  const { updateNotifyCount } = useNotification(); 
   const [isOtherPurposeChecked, setIsOtherPurposeChecked] = useState(false);
   const [isOtherProductChecked, setIsOtherProductChecked] = useState(false);
   const [otherPurposeText, setOtherPurposeText] = useState("");
@@ -229,6 +231,7 @@ const CreateProjectComponent = () => {
       if (response) {
         const project = response.data;
         setSuccessMessage("Project created successfully!");
+        updateNotifyCount();
         console.log("Project created successfully:", project);
         emptyForm(); // Reset form after successful submission
       } else {
