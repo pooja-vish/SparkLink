@@ -9,6 +9,8 @@ const ProjReport = require('../models/proj_report');
 const ValidationUtil = require("../common/validationUtil");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
+const SupervisorProfile = require("../models/supervisor_profile");
+const skillQueue = require("../queue/skillextraction");
 
 // Create a new project
 exports.createProject = async (req, res) => {
@@ -46,25 +48,63 @@ exports.createProject = async (req, res) => {
     }
 
     // Validations
-    if (project_name.length > 150) {
-      console.log("project_name length : " + project_name.length);
-      return res
-        .status(500)
-        .json({ message: "Project name should be less than 150 characters" });
-    }
-    if (project_budget < 0) {
-      return res
-        .status(500)
-        .json({
-          message: "The project budget must be greater than or equal to zero.",
-        });
+    const isValidPurpose = !ValidationUtil.isEmptyString(purpose) &&
+      !ValidationUtil.isConsecSplChar(purpose) &&
+      ValidationUtil.isValidString(purpose, 5, 250);
+
+    const isValidProduct = !ValidationUtil.isEmptyString(product) &&
+      !ValidationUtil.isConsecSplChar(product) &&
+      ValidationUtil.isValidString(product, 5, 250);
+
+    const isValidProjectName = !ValidationUtil.isEmptyString(project_name) &&
+      !ValidationUtil.isConsecSplChar(project_name) &&
+      ValidationUtil.isValidString(project_name, 5, 250);
+
+    const isValidDescription = !ValidationUtil.isEmptyString(project_description) &&
+      !ValidationUtil.isConsecSplChar(project_description) &&
+      ValidationUtil.isValidString(project_description, 5, 250);
+
+    const isValidFeatures = !ValidationUtil.isEmptyString(features) &&
+      !ValidationUtil.isConsecSplChar(features) &&
+      ValidationUtil.isValidString(features, 5, 250);
+
+    const isValidDate = ValidationUtil.isValidDate(project_deadline);
+
+    if (!isValidDate) {
+      return res.status(400).json({ message: "Please select a valid date" });
+    } else if (!isValidProjectName) {
+      return res.status(400).json({ message: "Please enter a valid Project Name - You may not enter consecutive special characters" });
+    } else if (!isValidPurpose) {
+      return res.status(400).json({ message: "Please enter a valid Purpose - You may not enter consecutive special characters" });
+    } else if (!isValidProduct) {
+      return res.status(400).json({ message: "Please enter valid Product(s) - You may not enter consecutive special characters" });
+    } else if (!isValidDescription) {
+      return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
+    } else if (!isValidFeatures) {
+      return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });
+    } else if (project_budget < 0) {
+      return res.status(400).json({ message: "The project budget must be greater than or equal to zero." });
     }
 
-    if (project_deadline < today) {
-      return res
-        .status(500)
-        .json({ message: "The project deadline must be a future date." });
-    }
+    // if (project_name.length > 150) {
+    //   console.log("project_name length : " + project_name.length);
+    //   return res
+    //     .status(500)
+    //     .json({ message: "Project name should be less than 150 characters" });
+    // }
+    // if (project_budget < 0) {
+    //   return res
+    //     .status(500)
+    //     .json({
+    //       message: "The project budget must be greater than or equal to zero.",
+    //     });
+    // }
+
+    // if (project_deadline < today) {
+    //   return res
+    //     .status(500)
+    //     .json({ message: "The project deadline must be a future date." });
+    // }
 
     const user = req.user;
 
@@ -115,6 +155,10 @@ exports.createProject = async (req, res) => {
     // Commit the transaction
     await t.commit();
 
+    await skillQueue.add({
+      projectId: project.proj_id,
+      projectDescription: project_description,
+    });
     // Respond with success message and the created project data
     res.status(201).json({ message: "Project created successfully", project, allocation });
   } catch (error) {
@@ -432,6 +476,10 @@ exports.UpdateProjDetails = async (req, res) => {
       !ValidationUtil.isConsecSplChar(projDetailsList.features) &&
       ValidationUtil.isValidString(projDetailsList.features, 5, 250);
 
+    const isValidSkills = !ValidationUtil.isEmptyString(projDetailsList.skills_req) &&
+      !ValidationUtil.isConsecSplChar(projDetailsList.skills_req) &&
+      ValidationUtil.isValidString(projDetailsList.skills_req, 5, 250);
+
     if (!isValidDate) {
       return res.status(400).json({ message: "Please select a valid date" });
     } else if (!isValidPurpose) {
@@ -442,6 +490,8 @@ exports.UpdateProjDetails = async (req, res) => {
       return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
     } else if (!isValidFeatures) {
       return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });
+    } else if (!isValidSkills) {
+      return res.status(400).json({ message: "Please enter valid Skill(s) - You may not enter consecutive special characters" });
     } else if (projDetailsList.budget < 0) {
       return res.status(400).json({ message: "The project budget must be greater than or equal to zero." });
     }

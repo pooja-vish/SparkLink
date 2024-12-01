@@ -19,6 +19,7 @@ import login_icon from "../../assets/login.png";
 import { useAuth } from "../../AuthContext";
 import Swal from 'sweetalert2';
 import { useSearchParams } from 'react-router-dom';
+import { useNotification } from "../../notificationContext"; 
 
 const MenuComponent = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const MenuComponent = () => {
   const [notifCount, setNotifCount] = useState([]);
   const [searchParams] = useSearchParams();
   const user_id_param = searchParams.get('user_id');
+  const { notifyCount, updateNotifyCount } = useNotification(); 
   const getNavItemClass = (path) => {
     return location.pathname === path ? 'nav-item active' : 'nav-item';
   };
@@ -52,8 +54,7 @@ const MenuComponent = () => {
 
   const fetchNotifCount = async () => {
     try {
-
-      
+      updateNotifyCount();
       const response = await axios.get('/notify/count');
       console.log("message ---> ",response.data.message);
       console.log("count ---> ",response.data.notifCount);
@@ -106,22 +107,27 @@ const MenuComponent = () => {
                       <div className="text-menu-category text-start px-3">
                         Home
                       </div>
-                      <li className={getNavItemClass("/profile")}>
-                        <span style={{ cursor: "pointer" }}>
-                          <Link
-                            className="text-menu"
-                            to={`/profile?user_id=${user.user_id}`} // Include user_id as a query parameter
-                          >
-                            <img
-                              src={profile_icon}
-                              className="nav_sub_menu_icon"
-                              alt=""
-                              style={{ marginLeft: 15 }}
-                            ></img>
-                            &nbsp;&nbsp;&nbsp;User Profile
-                          </Link>
-                        </span>
-                      </li>
+                      {isAuthenticated && (
+                        <>
+                         <li className={getNavItemClass("/profile")}>
+                         <span style={{ cursor: "pointer" }}>
+                           <Link
+                             className="text-menu"
+                             to={`/profile?user_id=${user.user_id}`} // Include user_id as a query parameter
+                           >
+                             <img
+                               src={profile_icon}
+                               className="nav_sub_menu_icon"
+                               alt=""
+                               style={{ marginLeft: 15 }}
+                             ></img>
+                             &nbsp;&nbsp;&nbsp;User Profile
+                           </Link>
+                         </span>
+                       </li>
+                       </>
+                      )}
+                     
                       {role === "" && (
                         <li className={getNavItemClass("/about")}>
                           <span style={{ cursor: "pointer" }}>
@@ -235,7 +241,7 @@ const MenuComponent = () => {
                                 style={{ marginLeft: 15 }}
                               ></img>
                               &nbsp;&nbsp;&nbsp;Notifications
-                              {isAuthenticated && <span className="notifcation-badge-expand text-center">{notifCount > 9 ? '9+' : notifCount}</span>}
+                              {isAuthenticated && <span className="notifcation-badge-expand text-center">{notifyCount > 9 ? '9+' : notifyCount}</span>}
                             </Link>
                           </span>
                         </li>
@@ -376,7 +382,7 @@ const MenuComponent = () => {
                             alt=""
                             style={{ marginLeft: 15 }}
                           ></img>
-                          {isAuthenticated && <span className="notification-badge text-center">{notifCount > 9 ? '9+' : notifCount}</span>}
+                          {isAuthenticated && <span className="notification-badge text-center">{notifyCount > 9 ? '9+' : notifyCount}</span>}
                         </span>
                       </li>
 

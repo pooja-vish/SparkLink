@@ -13,10 +13,12 @@ import MasterComponent from '../MasterComponent';
 import FooterComponent from "../footer/FooterComponent";
 import axios from "axios";
 import { useAuth } from '../../AuthContext';
+import { useNotification } from "../../notificationContext";
 import Swal from "sweetalert2";
 
 const CreateProjectComponent = () => {
   const dateInputRef = useRef(null);
+  const { updateNotifyCount } = useNotification();
   const [isOtherPurposeChecked, setIsOtherPurposeChecked] = useState(false);
   const [isOtherProductChecked, setIsOtherProductChecked] = useState(false);
   const [otherPurposeText, setOtherPurposeText] = useState("");
@@ -39,7 +41,7 @@ const CreateProjectComponent = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const { isAuthenticated, user } = useAuth();
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("the user logged in is", user)
   })
 
@@ -79,7 +81,7 @@ const CreateProjectComponent = () => {
 
   const handleProductCheckBoxChange = (e) => {
     const { checked, value } = e.target;
-  
+
     if (checked) {
       if (value === "Other") {
         setIsOtherProductChecked(true);
@@ -92,13 +94,13 @@ const CreateProjectComponent = () => {
         setProduct((prevProduct) =>
           prevProduct.filter((p) => p !== otherProductText)
         );
-        setOtherProductText(""); 
+        setOtherProductText("");
         return;
       }
       setProduct((prevProduct) => prevProduct.filter((p) => p !== value));
     }
   };
-  
+
 
   const handleOtherProducttextChange = (e) => {
     const text = e.target.value;
@@ -141,7 +143,7 @@ const CreateProjectComponent = () => {
     "photo9",
     "photo10",
   ];
-  
+
   // Function to get a random image name
   const getRandomImageName = () => {
     const randomIndex = Math.floor(Math.random() * imageNames.length);
@@ -151,17 +153,17 @@ const CreateProjectComponent = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Clear previous messages
     setErrorMessage("");
     setSuccessMessage("");
     setLoading(false);
-  
+
     if (setIsOtherPurposeChecked) {
       setPurpose((prevPurpose) => [...prevPurpose, otherPurposeText]);
       console.log("purpose --- > " + purpose);
     }
-  
+
     // Basic form validation
     if (
       !projectName ||
@@ -176,7 +178,7 @@ const CreateProjectComponent = () => {
       setLoading(false);
       return;
     }
-  
+
     const form_data = {
       project_name: projectName,
       purpose: purpose.join(", "),
@@ -187,9 +189,9 @@ const CreateProjectComponent = () => {
       project_deadline: projectDeadline,
       image_url: getRandomImageName(), // Include the image URL in the form data
     };
-  
+
     console.log("Form Data Submitted:", form_data);
-  
+
     // Check if the user role is supervisor (role 3)
     if (user.role === "3") {
       const result = await Swal.fire({
@@ -202,7 +204,7 @@ const CreateProjectComponent = () => {
         denyButtonText: "No",      // Text for the Deny button
         cancelButtonText: "Cancel", // Text for the Cancel button
       });
-    
+
       // Handle user response
       if (result.isConfirmed) {
         form_data.supervise = true; // Add supervise field to form data
@@ -215,39 +217,62 @@ const CreateProjectComponent = () => {
         return; // Stop execution if the modal was closed or canceled
       }
     }
-    
+
     // Proceed with the rest of the logic
-    
-  
+
+
     // Proceed with loading state after SweetAlert decision
     setLoading(true);
-  
+
     try {
       // Make the API request only if user confirmed to supervise or declined but not canceled
       const response = await axios.post("/project", form_data);
-  
+
       if (response) {
         const project = response.data;
-        setSuccessMessage("Project created successfully!");
+        Swal.fire({ title: 'Success', text: 'Project Created Successfully', icon: 'success', confirmButtonText: 'Ok' });
+        //setSuccessMessage("Project created successfully!");
+        updateNotifyCount();
         console.log("Project created successfully:", project);
         emptyForm(); // Reset form after successful submission
       } else {
-        setErrorMessage("Failed to create project");
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to create project',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+        //setErrorMessage("Failed to create project");
       }
     } catch (error) {
-      setErrorMessage("Error submitting form: " + error.message);
+      // setErrorMessage("Error submitting form: " + error.message);
+      if (error.response) {
+        Swal.fire({
+          title: 'Error',
+          text: error.response.data.message,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: error.message,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
     } finally {
       setLoading(false); // Hide loading indicator after the operation completes
     }
   };
-  
+
 
   return (
     <>
       <div className="container-fluid">
         <MenuComponent />
         <div className="row">
-        <MasterComponent />
+          <MasterComponent />
           <div className="col-1"></div>
           <div className="col-11">
             <div className="progress-tracker">
@@ -332,7 +357,7 @@ const CreateProjectComponent = () => {
                       3. What type of product do you want to build?
                       <span className="text-danger"> *</span>
                     </label>
-                    
+
                     <div className="radio_button_container ">
                       <div>
                         <input
@@ -454,7 +479,7 @@ const CreateProjectComponent = () => {
                       required
                     />
 
-                
+
                     <div className="message">
                       {errorMessage && (
                         <div className="error-message">{errorMessage}</div>
@@ -463,9 +488,13 @@ const CreateProjectComponent = () => {
                         <div className="success-message">{successMessage}</div>
                       )}
                     </div>
-                    <button className="submit button-home" type="submit">
-                      Submit
-                    </button>
+                    <div className="row">
+                      <div className="col-12 text-center">
+                        <button className="text-center button_text button-home" type="submit">
+                          Submit
+                        </button>
+                      </div>
+                    </div>
                   </form>
                 </div>
               </div>

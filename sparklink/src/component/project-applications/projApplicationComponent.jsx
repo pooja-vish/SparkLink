@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNotification } from "../../notificationContext"; 
 import "./projApplicationComponent.css";
 import MenuComponent from "../menu/MenuComponent";
 import MasterComponent from "../MasterComponent";
 
 const ProjApplicationComponent = () => {
-  const [acceptedProjects, setAcceptedProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [notifications, setNotifications] = useState([]);
-
+  const { notifyCount, updateNotifyCount } = useNotification(); 
   // States for success and error messages
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -27,6 +27,7 @@ const ProjApplicationComponent = () => {
 
       if (response.status === 200 || response.status === 201) {
         // Update the state to reflect the accepted project
+        
         fetchNotifications();
         setSuccessMessage("Project application accepted successfully!"); // Success message
         setErrorMessage(""); // Clear any previous error message
@@ -56,7 +57,6 @@ const ProjApplicationComponent = () => {
 
       if (response.status === 200 || response.status === 201) {
         fetchNotifications();
-
         setSuccessMessage("Project application rejected successfully!"); // Success message
         setErrorMessage(""); // Clear any previous error message
       } else {
@@ -85,27 +85,16 @@ const ProjApplicationComponent = () => {
       });
 
       if (response.status === 200 || response.status === 201) {
-        console.log("proj_id --> ",proj_id);
-        console.log("user_id --> ",user_id);
-        console.log("code --> ",code);
-        // setNotifications((prevNotifications) =>
-        //   prevNotifications.filter(
-        //     (notification) =>
-        //       notification.proj_id !== proj_id &&
-        //       notification.user_id !== user_id &&
-        //       notification.code !== code
-        //   )
-        // );
-        fetchNotifications(); 
-        setSuccessMessage("Project application accepted successfully!"); // Success message
+        fetchNotifications();
+        setSuccessMessage("notification update successfully"); // Success message
         setErrorMessage(""); // Clear any previous error message
       } else {
-        setErrorMessage("Failed to accept project: " + response.data); // Error message
+        setErrorMessage("Failed to update the notification: " + response.data); // Error message
         setSuccessMessage(""); // Clear any previous success message
       }
     } catch (error) {
-      console.error("Error accepting project:", error);
-      setErrorMessage("Error accepting project: " + error.message); // Error message
+      console.error("Error ", error);
+      setErrorMessage("Error updating notification: " + error.message); // Error message
       setSuccessMessage(""); // Clear any previous success message
     } finally {
       setLoading(false); // Hide loading indicator after the operation completes
@@ -115,6 +104,7 @@ const ProjApplicationComponent = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
+      updateNotifyCount();
       const response = await axios.get("/notify");
       console.log("APP DATA>>>>>>>>", response.data);
       setNotifications(response.data.notifications);
@@ -123,7 +113,7 @@ const ProjApplicationComponent = () => {
       setError(error.message);
     } finally {
       setLoading(false);
-    }
+    } 
   };
 
   useEffect(() => {
@@ -236,68 +226,74 @@ const ProjApplicationComponent = () => {
           <div className="notification-page">
             <h1 className="section-heading">Notifications</h1>
             <div className="notifications-section">
-              <div className="notifications-list">
-                {notifications.map((notification, index) => (
-                  <div className="notification-card" key={index}>
-                    <div className="notification-details">
-                      <p className="notification-message">
-                        {getNotificationMessage(notification)}
-                      </p>
-                      <p className="notification-timestamp">
-                        {new Date(notification.created_on).toLocaleString()}
-                      </p>
-                    </div>
-                    {notification.code === "SA" && (
-                      <div className="action-buttons">
-                        {acceptedProjects.includes(notification.user_id) ? (
-                          <span className="status-accepted">
-                            Student Accepted
-                          </span>
-                        ) : (
+              {notifications.length === 0 ? (
+                // Show message when there are no notifications
+                <div className="no-notifications">
+                  <p className="no-notifications-message">
+                    No notifications available at the moment.
+                  </p>
+                </div>
+              ) : (
+                // Render the notifications list when notifications are present
+                <div className="notifications-list">
+                  {notifications.map((notification, index) => (
+                    <div className="notification-card" key={index}>
+                      <div className="notification-details">
+                        <p className="notification-message">
+                          {getNotificationMessage(notification)}
+                        </p>
+                        <p className="notification-timestamp">
+                          {new Date(notification.created_on).toLocaleString()}
+                        </p>
+                      </div>
+                      {notification.code === "SA" && (
+                        <div className="action-buttons">
+                          (
+                            <button
+                              className="btn-accept"
+                              onClick={() =>
+                                handleAccept(
+                                  notification.proj_id,
+                                  notification.user_id
+                                )
+                              }
+                            >
+                              Accept
+                            </button>
+                          )
                           <button
-                            className="btn-accept"
+                            className="btn-reject"
                             onClick={() =>
-                              handleAccept(
+                              handleReject(
                                 notification.proj_id,
                                 notification.user_id
                               )
                             }
                           >
-                            Accept
+                            Reject
                           </button>
-                        )}
-                        <button
-                          className="btn-reject"
-                          onClick={() =>
-                            handleReject(
-                              notification.proj_id,
-                              notification.user_id
-                            )
-                          }
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    )}
-                    {notification.code !== "SA" && (
-                      <div className="action-buttons">
-                        <button
-                          className="btn-accept"
-                          onClick={() =>
-                            handleOkay(
-                              notification.proj_id,
-                              notification.user_id,
-                              notification.code
-                            )
-                          }
-                        >
-                          Okay
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                        </div>
+                      )}
+                      {notification.code !== "SA" && (
+                        <div className="action-buttons">
+                          <button
+                            className="btn-accept"
+                            onClick={() =>
+                              handleOkay(
+                                notification.proj_id,
+                                notification.user_id,
+                                notification.code
+                              )
+                            }
+                          >
+                            Okay
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="message">
                 {errorMessage && (
                   <div className="error-message">{errorMessage}</div>
