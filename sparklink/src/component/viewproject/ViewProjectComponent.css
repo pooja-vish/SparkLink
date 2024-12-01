@@ -102,7 +102,7 @@
 /* Progress Background Card */
 .progress-background-card {
     /* height: auto; */
-    min-height: fit-content !important;
+    /* min-height: fit-content !important; */
     max-height: 100vh !important;
     max-width: 100% !important;
     background-color: rgba(211, 211, 211, 0.1);
@@ -145,6 +145,8 @@
 
 @media (max-width: 768px) {
     .progress-items {
+        display: flex;
+        gap: 20px;
         overflow-x: auto;
         padding-bottom: 15px;
     }
@@ -155,6 +157,17 @@
 
     .arrow-container {
         display: none;
+    }
+
+    .progress-card {
+        margin-right: 15px;
+    }
+
+    .progress-card-layout {
+        padding: 0 5px 0 0;
+        max-height: 100vh !important;
+        max-width: 100% !important;
+        overflow-y: auto;
     }
 }
 
@@ -296,6 +309,7 @@
     border: 2px #999 dashed;
     border-radius: 4px;
     vertical-align: middle;
+    cursor: pointer !important;
 }
 
 .remove_icon {

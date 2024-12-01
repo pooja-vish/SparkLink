@@ -9,6 +9,8 @@ const ProjReport = require('../models/proj_report');
 const ValidationUtil = require("../common/validationUtil");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
+const SupervisorProfile = require("../models/supervisor_profile");
+const skillQueue = require("../queue/skillextraction");
 
 // Create a new project
 exports.createProject = async (req, res) => {
@@ -115,6 +117,10 @@ exports.createProject = async (req, res) => {
     // Commit the transaction
     await t.commit();
 
+    await skillQueue.add({
+      projectId: project.proj_id,
+      projectDescription: project_description,
+    });
     // Respond with success message and the created project data
     res.status(201).json({ message: "Project created successfully", project, allocation });
   } catch (error) {
@@ -442,6 +448,8 @@ exports.UpdateProjDetails = async (req, res) => {
       return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
     } else if (!isValidFeatures) {
       return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });
+    } else if (projDetailsList.budget < 0) {
+      return res.status(400).json({ message: "The project budget must be greater than or equal to zero." });
     }
 
     const updatedData = await Project.update({

@@ -19,6 +19,7 @@
     "react-router-dom": "^6.27.0",
     "react-scripts": "5.0.1",
     "react-select": "^5.8.1",
+    "react-toastify": "^10.0.6",
     "react-tsparticles": "^2.12.2",
     "sweetalert2": "^11.14.5",
     "tsparticles": "^3.5.0",

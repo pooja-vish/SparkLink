@@ -107,22 +107,27 @@ const MenuComponent = () => {
                       <div className="text-menu-category text-start px-3">
                         Home
                       </div>
-                      <li className={getNavItemClass("/profile")}>
-                        <span style={{ cursor: "pointer" }}>
-                          <Link
-                            className="text-menu"
-                            // to={`/profile?user_id=${user.user_id}`} // Include user_id as a query parameter
-                          >
-                            <img
-                              src={profile_icon}
-                              className="nav_sub_menu_icon"
-                              alt=""
-                              style={{ marginLeft: 15 }}
-                            ></img>
-                            &nbsp;&nbsp;&nbsp;User Profile
-                          </Link>
-                        </span>
-                      </li>
+                      {isAuthenticated && (
+                        <>
+                         <li className={getNavItemClass("/profile")}>
+                         <span style={{ cursor: "pointer" }}>
+                           <Link
+                             className="text-menu"
+                             to={`/profile?user_id=${user.user_id}`} // Include user_id as a query parameter
+                           >
+                             <img
+                               src={profile_icon}
+                               className="nav_sub_menu_icon"
+                               alt=""
+                               style={{ marginLeft: 15 }}
+                             ></img>
+                             &nbsp;&nbsp;&nbsp;User Profile
+                           </Link>
+                         </span>
+                       </li>
+                       </>
+                      )}
+                     
                       {role === "" && (
                         <li className={getNavItemClass("/about")}>
                           <span style={{ cursor: "pointer" }}>
