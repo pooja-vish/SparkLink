@@ -442,6 +442,8 @@ exports.UpdateProjDetails = async (req, res) => {
       return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
     } else if (!isValidFeatures) {
       return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });
+    } else if (projDetailsList.budget < 0) {
+      return res.status(400).json({ message: "The project budget must be greater than or equal to zero." });
     }
 
     const updatedData = await Project.update({

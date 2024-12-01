@@ -829,6 +829,22 @@ const ViewProjectComponent = () => {
                                                     </td>}
                                                 </tr>
                                                 <tr>
+                                                    <td className="proj-details-sub-header">Budget</td>
+                                                    {!editFlag && <td className='proj-details-data'>{Math.trunc(projDetailsList.budget)}</td>}
+                                                    {editFlag && <td className='proj-details-data'>
+                                                        <input
+                                                            type="number"
+                                                            className="milestone_input_text"
+                                                            name="budget"
+                                                            placeholder='e.g., 5000'
+                                                            min="0"
+                                                            value={Math.trunc(projDetailsList.budget) || ""}
+                                                            onChange={(e) => handleUpdateProjDetailsChange(e)}
+                                                            required
+                                                        />
+                                                    </td>}
+                                                </tr>
+                                                <tr>
                                                     <td className='proj-details-sub-header'>End Date</td>
                                                     {!editFlag && <td className='proj-details-data'>{projDetailsList.end_date}</td>}
                                                     {editFlag && <td className='proj-details-data'>

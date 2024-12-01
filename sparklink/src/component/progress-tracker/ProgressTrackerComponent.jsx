@@ -556,7 +556,7 @@ const ProgressTrackerComponent = () => {
                                                         })}
                                                     </div>
                                                 )}
-                                                <Table responsive='sm' bordered>
+                                                {!isMobileView && (<Table responsive='sm' bordered>
                                                     <tbody>
                                                         {milestoneList.length > 0 &&
                                                             (<tr className='row text-center'>
@@ -622,7 +622,80 @@ const ProgressTrackerComponent = () => {
                                                             </tr>
                                                         ))}
                                                     </tbody>
-                                                </Table>
+                                                </Table>)}
+
+                                                {isMobileView && (<Table responsive='sm' striped bordered hover className='modal_text_body'>
+                                                    {milestoneList.map((milestone, index) => (
+                                                        <tbody key={`milestone_${index}`}>
+                                                            {/* <div key={`milestone_${index}`}> */}
+                                                                <tr>
+                                                                    <td>
+                                                                        Title
+                                                                    </td>
+                                                                    <td>
+                                                                        <input
+                                                                            type="text"
+                                                                            className="milestone_input_text"
+                                                                            name="milestone_title"
+                                                                            value={milestone.milestone_title || ""}
+                                                                            onChange={(e) => handleMilestoneChange(index, e)}
+                                                                            placeholder="Enter milestone title, e.g., Project Kickoff"
+                                                                            maxLength={100}
+                                                                            required
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        Description
+                                                                    </td>
+                                                                    <td>
+                                                                        <input
+                                                                            type="text"
+                                                                            className="milestone_input_text"
+                                                                            name="milestone_desc"
+                                                                            value={milestone.milestone_desc}
+                                                                            onChange={(e) => handleMilestoneChange(index, e)}
+                                                                            placeholder="Describe your milestone, e.g., Prototype Development"
+                                                                            maxLength={250}
+                                                                            required
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        End Date
+                                                                    </td>
+                                                                    <td>
+                                                                        <input
+                                                                            type="date"
+                                                                            className="milestone_input_date milestone_datepicker"
+                                                                            name="end_date"
+                                                                            value={milestone.end_date || ""}
+                                                                            min={today}
+                                                                            onChange={(e) => handleMilestoneChange(index, e)}
+                                                                            required
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        Delete
+                                                                    </td>
+                                                                    <td>
+                                                                        <img
+                                                                            src={delete_icon}
+                                                                            className='delete_icon'
+                                                                            title='Click to delete'
+                                                                            onClick={() => deleteMilestone(index)}
+                                                                            alt=''
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            {/* </div> */}
+                                                        </tbody>
+                                                    ))}
+                                                </Table>)}
                                                 <Modal
                                                     size="lg"
                                                     show={triggerDetails}
