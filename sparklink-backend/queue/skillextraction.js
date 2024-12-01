@@ -5,7 +5,7 @@ const project = require('../models/project')
 const skillQueue = new Bull('skill-extraction', {
   redis: {
     host: '127.0.0.1', // Replace with your Redis host
-    port: 6371, // Replace with your Redis port
+    port: 6378, // Replace with your Redis port
   },
 });
 
