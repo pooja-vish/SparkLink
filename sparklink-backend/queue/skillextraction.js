@@ -1,6 +1,6 @@
 const Bull = require('bull');
 const axios = require('axios');
-
+const project = require('../models/project')
 // Create a new queue for skill extraction
 const skillQueue = new Bull('skill-extraction', {
   redis: {
@@ -21,12 +21,12 @@ skillQueue.process(async (job) => {
     });
 
     // Extract the skills from the response
-    const skills = response.data.required_skills || [];
+    const r_skills = response.data.required_skills || [];
 
     // Save the skills to the database (you'll need a Skills model for this)
-    //await saveSkillsToDatabase(projectId, skills);
+    await saveSkillsToDatabase(projectId, r_skills);
 
-    console.log(`Skills for project ${projectId} with ${skills} have been saved successfully`);
+    console.log(`Skills for project ${projectId} with ${r_skills} have been saved successfully`);
   } catch (error) {
     console.error(`Error processing skill extraction for project ${projectId}:`, error);
     throw new Error('Error during skill extraction');
@@ -34,18 +34,21 @@ skillQueue.process(async (job) => {
 });
 
 // Function to save skills to the database
-// async function saveSkillsToDatabase(projectId, skills) {
-//   // Assuming you have a Skills model to save skills linked to the project
-//   // This is just an example, adjust it as needed
-//   const skillData = skills.map(skill => ({
-//     project_id: projectId,
-//     skill_name: skill,
-//     created_at: new Date(),
-//     updated_at: new Date(),
-//   }));
-
-//   // Replace with your actual database saving logic
-//   await Skill.bulkCreate(skillData);
-// }
+async function saveSkillsToDatabase(projectId, skills) {
+  // Assuming you have a Skills model to save skills linked to the project
+  // This is just an example, adjust it as needed
+  const skillsString = skills.join(', '); 
+  const skillData = project.update(
+   {
+    skills_req: skillsString
+  } ,{
+    where : {
+      proj_id: projectId
+    }
+  }
+  );
+  // Replace with your actual database saving logic
+  
+}
 
 module.exports = skillQueue;
