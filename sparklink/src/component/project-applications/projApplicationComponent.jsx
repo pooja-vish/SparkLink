@@ -4,6 +4,7 @@ import { useNotification } from "../../notificationContext";
 import "./projApplicationComponent.css";
 import MenuComponent from "../menu/MenuComponent";
 import MasterComponent from "../MasterComponent";
+import Swal from 'sweetalert2';
 
 const ProjApplicationComponent = () => {
   const [loading, setLoading] = useState(false);
@@ -29,14 +30,17 @@ const ProjApplicationComponent = () => {
         // Update the state to reflect the accepted project
         
         fetchNotifications();
-        setSuccessMessage("Project application accepted successfully!"); // Success message
-        setErrorMessage(""); // Clear any previous error message
+        Swal.fire({ title: 'Success', text: 'Project application accepted successfully!', icon: 'success', confirmButtonText: 'Ok' });
+        // setSuccessMessage("Project application accepted successfully!"); // Success message
+        // setErrorMessage(""); // Clear any previous error message
       } else {
-        setErrorMessage("Failed to accept project: " + response.data); // Error message
-        setSuccessMessage(""); // Clear any previous success message
+        Swal.fire({ title: 'Error', text: response.data, icon: 'error', confirmButtonText: 'Ok' });
+        // setErrorMessage("Failed to accept project: " + response.data); // Error message
+        // setSuccessMessage(""); // Clear any previous success message
       }
     } catch (error) {
       console.error("Error accepting project:", error);
+      Swal.fire({ title: 'Error', text: error.message, icon: 'error', confirmButtonText: 'Ok' });
       setErrorMessage("Error accepting project: " + error.message); // Error message
       setSuccessMessage(""); // Clear any previous success message
     } finally {
@@ -57,14 +61,17 @@ const ProjApplicationComponent = () => {
 
       if (response.status === 200 || response.status === 201) {
         fetchNotifications();
-        setSuccessMessage("Project application rejected successfully!"); // Success message
-        setErrorMessage(""); // Clear any previous error message
+        Swal.fire({ title: 'Success', text: 'Project application rejected successfully!', icon: 'success', confirmButtonText: 'Ok' });
+        // setSuccessMessage("Project application rejected successfully!"); // Success message
+        // setErrorMessage(""); // Clear any previous error message
       } else {
         setErrorMessage("Failed to reject project: " + response.data); // Error message
+        Swal.fire({ title: 'Error', text: `"Failed to reject project: ", ${response.data}`, icon: 'error', confirmButtonText: 'Ok' });
         setSuccessMessage(""); // Clear any previous success message
       }
     } catch (error) {
       console.error("Error rejecting project:", error);
+      Swal.fire({ title: 'Error', text: `"Error rejecting project: ", ${error.message}`, icon: 'error', confirmButtonText: 'Ok' });
       setErrorMessage("Error rejecting project: " + error.message); // Error message
       setSuccessMessage(""); // Clear any previous success message
     } finally {
@@ -86,15 +93,15 @@ const ProjApplicationComponent = () => {
 
       if (response.status === 200 || response.status === 201) {
         fetchNotifications();
-        setSuccessMessage("notification update successfully"); // Success message
-        setErrorMessage(""); // Clear any previous error message
+        // setSuccessMessage("notification update successfully"); // Success message
+        // setErrorMessage(""); // Clear any previous error message
       } else {
-        setErrorMessage("Failed to update the notification: " + response.data); // Error message
+        console.log("Failed to update the notification: " + response.data); // Error message
         setSuccessMessage(""); // Clear any previous success message
       }
     } catch (error) {
-      console.error("Error ", error);
-      setErrorMessage("Error updating notification: " + error.message); // Error message
+      console.error("Error updating notification: " + error.message);
+      // setErrorMessage("Error updating notification: " + error.message); // Error message
       setSuccessMessage(""); // Clear any previous success message
     } finally {
       setLoading(false); // Hide loading indicator after the operation completes
@@ -208,7 +215,7 @@ const ProjApplicationComponent = () => {
         return (
           <span>
             You have been removed from the project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a> by.
+            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
           </span>
         );
       default:
@@ -248,7 +255,6 @@ const ProjApplicationComponent = () => {
                       </div>
                       {notification.code === "SA" && (
                         <div className="action-buttons">
-                          (
                             <button
                               className="btn-accept"
                               onClick={() =>
@@ -260,7 +266,6 @@ const ProjApplicationComponent = () => {
                             >
                               Accept
                             </button>
-                          )
                           <button
                             className="btn-reject"
                             onClick={() =>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './MasterComponent.css';
-import sparklink_logo from '../assets/SparkLink_Logo_3.png';
+import sparklink_logo from '../assets/SparkLink_Logo_4.png';
 import { useAuth } from '../AuthContext';
 import Swal from 'sweetalert2';
 import axios from "axios";
