@@ -433,13 +433,15 @@ exports.filterProject = async (req, res) => {
       return res.status(400).json({ message: "Invalid projName parameter" });
     }
 
-    const filter = projName
-      ? {
-        project_name: {
-          [Op.iLike]: `%${projName}%`, // Use iLike for case-insensitive search
-        },
+    const filter = {
+      is_active: 'Y',
+    };
+
+    if (projName) {
+      filter.project_name = {
+        [Op.iLike]: `%${projName}%`, // Use iLike for case-insensitive search
       }
-      : {}; // If projName is not provided, no filter is applied
+    } // If projName is not provided, no filter is applied
 
     // Fetch projects using the filter
     const projects = await Project.findAll({
