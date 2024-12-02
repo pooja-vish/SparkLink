@@ -848,7 +848,7 @@ const ViewProjectComponent = () => {
                                                     </td>}
                                                 </tr>
                                                 <tr>
-                                                    <td className='proj-details-sub-header'>Skill Required</td>
+                                                    <td className='proj-details-sub-header'>Skill(s) Required</td>
                                                     {!editFlag && <td className='proj-details-data'>{projDetailsList.skills_req}</td>}
                                                     {editFlag && <td className='proj-details-data'>
                                                         <input
