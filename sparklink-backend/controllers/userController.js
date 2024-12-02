@@ -363,7 +363,7 @@ exports.resetPassword = async (req, res) => {
       .json({ message: "Error resetting password.", error: error.message });
   }
 };
-
+ 
 exports.getallusers = async (req, res) => {
   try {
     const users = await User.findAll();

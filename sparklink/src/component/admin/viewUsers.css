@@ -1,7 +1,34 @@
-.usertable{
-    padding-left: 65px !important;
+.usertable {
+  padding-left: 55px !important;
+  text-align: center;
 }
 
-.button-edit{
-    border-radius: 20px;
+.button-edit {
+  border-radius: 20px;
+}
+
+.search-box input {
+  font-size: 16px;
+  /* border: 1px solid #ddd; */
+  border-radius: 20px;
+  width: 250px;
+  transition: all 0.3s ease;
+}
+
+.search-box input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.search-box input::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+.search-box input:focus {
+  border-color: #007bff;
+}
+
+.search-box input::placeholder {
+  color: #aaa;
 }
