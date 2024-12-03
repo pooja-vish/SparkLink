@@ -171,6 +171,8 @@ const MenuComponent = () => {
                       <div className="text-menu-category text-start px-3">
                         Project
                       </div>
+                      {isAuthenticated && user && (user.role === '2' ||  user.role === '3' || user.role === '1') && (
+                        <>
                       <li className={getNavItemClass("/create-project")}>
                         <span style={{ cursor: "pointer" }}>
                           <Link className="text-menu" to="/create-project">
@@ -184,7 +186,9 @@ const MenuComponent = () => {
                           </Link>
                         </span>
                       </li>
-                      {isAuthenticated  && (
+                      </>
+                      )}
+                      {isAuthenticated && (
                         <>
                         <li className={getNavItemClass("/view-project")}>
                           <span style={{ cursor: "pointer" }}>
@@ -202,7 +206,7 @@ const MenuComponent = () => {
                         </>
                       )}
                       
-                      {isAuthenticated && (
+                      {isAuthenticated &&  user && user.role === '4' &&  (
                         <>
                         <li className={getNavItemClass("/view-Recomended-project")}>
                           <span style={{ cursor: "pointer" }}>
