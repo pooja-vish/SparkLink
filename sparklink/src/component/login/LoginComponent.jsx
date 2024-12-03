@@ -13,6 +13,7 @@ const LoginComponent = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const { isAuthenticated, setIsAuthenticated } = useAuth();
   const { user, setUser } = useAuth();
+  const [showPassword, setShowPassword] = useState(false); 
   const navigate = useNavigate();
   const location = useLocation(); // Use useLocation to access query parameters
 
@@ -101,15 +102,20 @@ const LoginComponent = () => {
                 />
               </div>
 
-              <div data-mdb-input-init className="form-outline mb-4">
+              <div data-mdb-input-init className="form-outline mb-4 position-relative ">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}  // Toggle input type between text and password
                   id="form3Example4"
                   className="password_field form-control form-control-lg"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="password"
+                  placeholder="Password"
                 />
+                <i
+                  className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
+                  style={{ right: 10, top: 17, cursor: "pointer" }}
+                  onClick={() => setShowPassword(!showPassword)}  // Toggle password visibility
+                ></i>
               </div>
 
 
