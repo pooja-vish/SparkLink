@@ -5,7 +5,7 @@ import React from 'react';
 import './AboutComponent.css'
 import Pooja from './images/Pooja.jpg';
 import Gireesh from './images/Gireesh.jpg';
-import Avatar from './images/Avatar.jpg';
+import Aman from './images/Aman.jpg';
 import Joshua from './images/Joshua.jpeg';
 import Micheal from './images/Micheal.jpeg';
 import Kausar from './images/Kausar.jpg';
@@ -57,7 +57,7 @@ const AboutComponent = () => {
       name: 'Amanbhai Arifbhai',
       role: 'Mobile UI & Recommendation System',
       responsibilities: 'Designed the mobile UI and implemented the recommendation system.',
-      image: Avatar,
+      image: Aman,
       LinkedIn:'',
     },
   ];
