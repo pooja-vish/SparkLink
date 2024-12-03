@@ -42,41 +42,67 @@ exports.getProfile = async (req, res) => {
     console.log(`Role: ${roleDesc}`);
 
     // Fetch the profile based on the role
-    let profile,projects,project_details;
+    let profile,projects,project_details,projIds,role_id;
     if (roleDesc === 'student') {
       profile = await Student_profile.findOne({ where: { user_id } });
-      projects = await ProjAllocation.findAll({
-        where: {
-          user_id: user_id,   
-          role: 4,  
-        },
-      });
+      // projects = await ProjAllocation.findAll({
+      //   where: {
+      //     user_id: user_id,   
+      //     role: 4,  
+      //   },
+      // });
+      role_id = 4;
     } else if (roleDesc === 'supervisor') {
       profile = await Supervisor_profile.findOne({ where: { user_id } });
-      projects = await ProjAllocation.findAll({
-        where: {
-          user_id: user_id,   
-          role: 3,  
-        },
-      });
+      // projects = await ProjAllocation.findAll({
+      //   where: {
+      //     user_id: user_id,   
+      //     role: 3,  
+      //   },
+      // });
+      role_id = 3;
     } else if (roleDesc === 'business_owner') {
       profile = await Owner_profile.findOne({ where: { user_id } });
-      projects = await ProjAllocation.findAll({
-        where: {
-          user_id: user_id,   
-          role: 2,  
-        },
-      });
+      // projects = await ProjAllocation.findAll({
+      //   where: {
+      //     user_id: user_id,   
+      //     role: 2,  
+      //   },
+      // });
+      role_id = 2;
     } else {
-      
       return res.status(400).json({ message: "Invalid role" });
     }
 
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
-    }
-    project_details = await Project.findAll();
-    if (project_details && project_details.length > 0) {
+    } 
+    // if(projects){
+    //   projIds = projects.map(project => project.proj_id);
+    //   console.log(">>>>>>>>>project ids = ", projIds);
+    // }else{
+    //   return res.status(404).json({ message: "Projects not found" });
+    // }
+    // project_details = await Project.findAll({
+    //   where: {
+    //     proj_id: {
+    //       [Op.in]: projIds, // Filters projects where proj_id is in the projIds array
+    //     },
+    //   },
+    // });
+    project_details = await ProjAllocation.findAll({
+      where: {
+        user_id,
+        role: role_id,
+      },
+      include: [
+        {
+          model: Project,
+          as: 'project', // Use the alias defined in the association
+        },
+      ],
+    });
+   if (project_details && project_details.length > 0) {
       for (let i = 0; i < project_details.length; i++) {
         let proj_id = project_details[i].proj_id;
 

@@ -47,7 +47,8 @@ const EditProfileComponent = () => {
         e.preventDefault();
         try {
             const response = await axios.post('/editProfile', profile);
-            navigate('/profile');
+            // navigate('/profile');
+            navigate(`/profile?user_id=${user.user_id}`);
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to update profile FE.');
         }
