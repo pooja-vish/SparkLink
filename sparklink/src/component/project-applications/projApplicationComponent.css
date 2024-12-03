@@ -106,3 +106,8 @@
 .no-notifications-message {
   margin: 0;
 }
+
+.no-underline-link {
+  text-decoration: none; /* Removes underline */
+  color: black;          /* Sets text color to black */
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNotification } from "../../notificationContext"; 
+import { useNotification } from "../../notificationContext";
 import "./projApplicationComponent.css";
 import MenuComponent from "../menu/MenuComponent";
 import MasterComponent from "../MasterComponent";
@@ -10,7 +10,7 @@ const ProjApplicationComponent = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [notifications, setNotifications] = useState([]);
-  const { notifyCount, updateNotifyCount } = useNotification(); 
+  const { notifyCount, updateNotifyCount } = useNotification();
   // States for success and error messages
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -28,7 +28,7 @@ const ProjApplicationComponent = () => {
 
       if (response.status === 200 || response.status === 201) {
         // Update the state to reflect the accepted project
-        
+
         fetchNotifications();
         Swal.fire({ title: 'Success', text: 'Project application accepted successfully!', icon: 'success', confirmButtonText: 'Ok' });
         // setSuccessMessage("Project application accepted successfully!"); // Success message
@@ -120,7 +120,7 @@ const ProjApplicationComponent = () => {
       setError(error.message);
     } finally {
       setLoading(false);
-    } 
+    }
   };
 
   useEffect(() => {
@@ -139,68 +139,86 @@ const ProjApplicationComponent = () => {
         return (
           <span>
             You successfully created a new project:{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
+            <b> {proj_name}</b>.
           </span>
         );
       case "BS":
         return (
           <span>
-            <a href={`/profile/${user_id}`}>{user_name}</a> has been assigned as
+             <b>
+              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+                {user_name}
+              </a>
+            </b>  {" "} has been assigned as
             the supervisor for your project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
+            <b> {proj_name}</b>.
           </span>
         );
       case "BT":
         return (
           <span>
-            <a href={`/profile/${user_id}`}>{user_name}</a> has been assigned as
+             <b>
+              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+                {user_name}
+              </a>
+            </b>  {" "} has been assigned as
             a student for your project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
+            <b> {proj_name}</b>.
           </span>
         );
       case "SP":
         return (
           <span>
             You successfully created a new project:{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
+            <b> {proj_name}</b>.
           </span>
         );
       case "SV":
         return (
           <span>
             You have been assigned as the supervisor for the project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
+            <b>"{proj_name}"</b>.
           </span>
         );
       case "SS":
         return (
           <span>
-            <a href={`/profile/${user_id}`}>{user_name}</a> has been assigned as
+             <b>
+              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+                {user_name}
+              </a>
+            </b>  {" "} has been assigned as
             the supervisor for your project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
+            <b> {proj_name}</b>.
           </span>
         );
       case "SA":
         return (
           <span>
-            <a href={`/profile/${user_id}`}>{user_name}</a> has applied for the
-            project <a href={`/projects/${proj_id}`}>{proj_name}</a> under your
-            supervision.
+             <b>
+              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+                {user_name}
+              </a>
+            </b>  {" "} has applied for the
+            project <b> {proj_name}</b>.
           </span>
         );
       case "ST":
         return (
           <span>
-            <a href={`/profile/${user_id}`}>{user_name}</a> has been assigned as
-            a student for your project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
+            <b>
+              <a className="no-underline-link" href={`/profile?user_id=${user_id}`}>
+                {user_name}
+              </a>
+            </b>  {" "} has been assigned as
+            a student for your project <b> {proj_name}</b>.
           </span>
         );
       case "TS":
         return (
           <span>
             Your application for the project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a> has been
+            <b> {proj_name}</b> has been
             successfully submitted.
           </span>
         );
@@ -208,14 +226,14 @@ const ProjApplicationComponent = () => {
         return (
           <span>
             Your application for the project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a> has been accepted.
+            <b> {proj_name}</b> has been accepted.
           </span>
         );
       case "TR":
         return (
           <span>
             You have been removed from the project{" "}
-            <a href={`/projects/${proj_id}`}>{proj_name}</a>.
+            <b> {proj_name}</b>.
           </span>
         );
       default:
@@ -255,17 +273,17 @@ const ProjApplicationComponent = () => {
                       </div>
                       {notification.code === "SA" && (
                         <div className="action-buttons">
-                            <button
-                              className="btn-accept"
-                              onClick={() =>
-                                handleAccept(
-                                  notification.proj_id,
-                                  notification.user_id
-                                )
-                              }
-                            >
-                              Accept
-                            </button>
+                          <button
+                            className="btn-accept"
+                            onClick={() =>
+                              handleAccept(
+                                notification.proj_id,
+                                notification.user_id
+                              )
+                            }
+                          >
+                            Accept
+                          </button>
                           <button
                             className="btn-reject"
                             onClick={() =>
