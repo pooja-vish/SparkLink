@@ -8,7 +8,16 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const passport = require("../config/passportConfig");
 const { Op } = require("sequelize");
+const { getTop5RecommendedProjects } = require("../queue/skillextraction");
+const  sequelize  = require("../config/db");
+const { OpenAI } = require("openai");
 
+const openai = new OpenAI({
+  apiKey: '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'
+  ,
+  engine: 'gpt-3.5-turbo' 
+  // Using your API key securely from environment variables
+});
 // Register a new user with role
 
 exports.register = async (req, res) => {
@@ -429,5 +438,217 @@ exports.deleteUser = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error deleting user", error: error.message });
+  }
+};
+
+exports.get5recommendedProjects = async (req, res) => {
+  try {
+    const user = req.user; // Get the whole user object from req.user
+    console.log("user skills");
+
+    // Fetching the student profile based on user_id
+    const studentProfile = await StudentProfile.findOne({
+      where: { user_id: user.user_id }, // Querying by user_id (from req.user)
+      attributes: ['skills'], // Only fetch the specified fields
+    });
+
+    if (!studentProfile) {
+      return res.status(404).json({ message: 'Student profile not found' });
+    }
+
+    // Split and trim the skills list
+    const skillsList = studentProfile.skills
+      ? studentProfile.skills
+          .split(',')
+          .map(skill => skill.trim())  // Remove any surrounding spaces
+          .filter(skill => skill.length > 0)  // Remove any empty strings
+      : [];
+
+    // Fetch projects associated with the user
+    const projectsWithSkills = await sequelize.query(
+      `
+      SELECT DISTINCT tp.skills_req
+      FROM t_proj_allocation tup
+      JOIN t_project tp ON tup.proj_id = tp.proj_id
+      WHERE tup.user_id = :userId
+      AND tup.is_active = 'Y'
+      `,
+      {
+        replacements: { userId: user.user_id },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    // Extract and combine skills from the fetched projects
+    const projectSkills = projectsWithSkills
+      .map(project => project.skills_req)  // Get the required skills field
+      .filter(skills => skills)  // Make sure skills_req exists
+      .map(skills => skills.split(','))
+      .flat()
+      .map(skill => skill.trim())
+      .filter(skill => skill.length > 0);
+
+    console.log(projectSkills);
+
+    const allSkills = [...new Set([...skillsList, ...projectSkills])];
+    console.log('Merged Skills List:', allSkills);
+    // Fetch all projects with required skills
+    const projectsWithSkillsa = await sequelize.query(
+      `
+      SELECT proj_id, skills_req
+FROM t_project tp
+WHERE skills_req IS NOT NULL
+AND NOT EXISTS (
+    SELECT 1
+    FROM t_proj_allocation tpa
+    WHERE tpa.proj_id = tp.proj_id
+    AND tpa.user_id = :userId -- Exclude projects where the user is already allocated
+)
+      `,
+      { replacements: { userId: user.user_id },
+        type: sequelize.QueryTypes.SELECT }
+    );
+
+    const recommendedProjects = [];
+
+    for (const project of projectsWithSkillsa) {
+      const { proj_id, skills_req } = project;
+
+      // Check if skills_req is valid
+      if (skills_req) {
+        // Split and trim the project's required skills
+        const projectSkills = skills_req
+          .split(',')
+          .map(skill => skill.trim())
+          .filter(skill => skill.length > 0);
+
+        // Find the intersection of user skills and project skills
+        const commonSkills = allSkills.filter(skill => projectSkills.includes(skill));
+
+        // Calculate the match percentage
+        const matchPercentage = (commonSkills.length / projectSkills.length) * 100;
+
+        // If matchPercentage is more than 60%, add to recommended list
+        if (matchPercentage > 40) {
+          recommendedProjects.push({
+            proj_id,
+            matchPercentage,
+            commonSkills,
+          });
+        }
+      } else {
+        console.log(`Project ${proj_id} has no required skills.`);
+      }
+    }
+
+    // Sort projects by match percentage in descending order
+    recommendedProjects.sort((a, b) => b.matchPercentage - a.matchPercentage);
+
+    // Limit to top 5 recommended projects
+    const top5Projects = recommendedProjects.slice(0, 5);
+
+    console.log(top5Projects)
+    const recommendedProjectIds = top5Projects.map(project => project.proj_id); // Extracting the proj_id of the top 5 recommended projects
+
+    const projectsQuery = `
+  SELECT pr.*, ps.status_desc
+  FROM t_project pr
+  JOIN t_proj_status ps ON pr.status = ps.status_id
+  WHERE pr.is_active = 'Y'
+  AND pr.proj_id IN (:recommendedProjectIds)  
+  ORDER BY pr.created_on DESC
+  LIMIT 50;
+`;
+const projects = await sequelize.query(projectsQuery, {
+  replacements: { recommendedProjectIds: recommendedProjectIds },
+  type: sequelize.QueryTypes.SELECT,
+});
+
+if (projects && projects.length > 0) {
+  const projIds = projects.map(project => project.proj_id);
+
+  const stakeholdersQuery = `
+    SELECT pa.proj_id, u.username || ' ' || u.name as name, u.user_id,
+    CASE 
+      WHEN pa.role = 2 THEN 'business_owner'
+      WHEN pa.role = 3 THEN 'supervisor'
+      WHEN pa.role = 4 THEN 'student'
+    END AS role
+    FROM t_proj_allocation pa, t_usermst u 
+    WHERE pa.user_id = u.user_id
+    and pa.is_active = 'Y'
+    and pa.proj_id IN (:projIds)
+    order by proj_id desc;
+  `;
+  const stakeholders = await sequelize.query(stakeholdersQuery, {
+    replacements: { projIds },
+    type: sequelize.QueryTypes.SELECT,
+  });
+
+  const stakeholderMap = stakeholders.reduce((map, stakeholder) => {
+    if (!map[stakeholder.proj_id]) {
+      map[stakeholder.proj_id] = [];
+    }
+    map[stakeholder.proj_id].push({
+      name: stakeholder.name,
+      role: stakeholder.role,
+      user_id: stakeholder.user_id,
+      proj_id: stakeholder.proj_id
+    });
+    return map;
+  }, {});
+
+  const milestonesQuery = `
+    SELECT proj_id, 
+      COUNT(CASE WHEN is_active = 'Y' THEN 1 END) AS active_milestones,
+      COUNT(CASE WHEN is_active = 'Y' AND is_completed = 'Y' THEN 1 END) AS completed_milestones
+    FROM t_proj_milestone
+    WHERE proj_id IN (:projIds)
+    GROUP BY proj_id;
+  `;
+  const milestones = await sequelize.query(milestonesQuery, {
+    replacements: { projIds },
+    type: sequelize.QueryTypes.SELECT,
+  });
+
+  // Map milestones by project
+  const milestoneMap = milestones.reduce((map, milestone) => {
+    const progress = milestone.active_milestones > 0
+      ? Math.round((milestone.completed_milestones / milestone.active_milestones) * 100)
+      : 0;
+    map[milestone.proj_id] = progress || 0;
+    return map;
+  }, {});
+
+  // Combine all data into the projects array
+  projects.forEach(project => {
+    project.status_desc = project.status_desc || '';
+    project.stakeholder = stakeholderMap[project.proj_id] || [];
+    project.progress = milestoneMap[project.proj_id] || 0;
+  });
+}
+
+res.status(200).json({
+  projects,
+  user: {
+    user_id: user.user_id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    isAuthenticated: true,
+  },
+});
+
+    // Respond with the projects whose match percentage is more than 60%
+    
+    // Handle case where no projects with required skills were found
+    
+
+   
+    
+
+  } catch (error) {
+    console.error('Error fetching recommended projects:', error);
+    return res.status(500).json({ message: 'Error fetching recommended projects' });
   }
 };

@@ -10,7 +10,7 @@ const ValidationUtil = require("../common/validationUtil");
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
 const SupervisorProfile = require("../models/supervisor_profile");
-const skillQueue = require("../queue/skillextraction");
+const { skillQueue } = require("../queue/skillextraction");
 
 // Create a new project
 exports.createProject = async (req, res) => {
@@ -121,7 +121,7 @@ exports.createProject = async (req, res) => {
       projectId: project.proj_id,
       projectDescription: project_description,
     });
-    // Respond with success message and the created project data
+   // Respond with success message and the created project data
     res.status(201).json({ message: "Project created successfully", project, allocation });
   } catch (error) {
     // If any error occurs, roll back the transaction
