@@ -8,6 +8,7 @@ const Role = require('../models/role');
 const Project = require('../models/project');
 const { Op } = require("sequelize");
 const sequelize = require('../config/db');
+const { getTop5RecommendedProjects } = require("../queue/skillextraction");
 
 exports.getProfile = async (req, res) => {
   try {
