@@ -217,7 +217,7 @@ const MenuComponent = () => {
                                 alt=""
                                 style={{ marginLeft: 15 }}
                               ></img>
-                              &nbsp;&nbsp;&nbsp;View Rec
+                              &nbsp;&nbsp;&nbsp;Recommendations
                             </Link>
                           </span>
                         </li>
