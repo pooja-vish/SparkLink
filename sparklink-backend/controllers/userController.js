@@ -10,14 +10,7 @@ const passport = require("../config/passportConfig");
 const { Op } = require("sequelize");
 const { getTop5RecommendedProjects } = require("../queue/skillextraction");
 const  sequelize  = require("../config/db");
-const { OpenAI } = require("openai");
 
-const openai = new OpenAI({
-  apiKey: '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'
-  ,
-  engine: 'gpt-3.5-turbo' 
-  // Using your API key securely from environment variables
-});
 // Register a new user with role
 
 exports.register = async (req, res) => {
