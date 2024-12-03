@@ -8,6 +8,21 @@ import { useAuth } from '../../AuthContext';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 import { useSearchParams } from 'react-router-dom';
+import photo1 from '../../assets/project_images/photo1.jpg';
+import photo2 from '../../assets/project_images/photo2.jpg';
+import photo3 from '../../assets/project_images/photo3.jpg';
+import photo4 from '../../assets/project_images/photo4.jpg';
+import photo5 from '../../assets/project_images/photo5.jpg';
+import photo6 from '../../assets/project_images/photo6.jpg';
+import photo7 from '../../assets/project_images/photo7.jpg';
+import photo8 from '../../assets/project_images/photo8.jpg';
+import photo9 from '../../assets/project_images/photo9.jpg';
+import photo10 from '../../assets/project_images/photo10.jpg';
+import remove_icon from '../../assets/remove_icon.png';
+import report_icon from '../../assets/report_icon.png';
+
+// Array of images
+const imageArray = [photo1, photo2, photo3, photo4, photo5, photo6, photo7, photo8, photo9, photo10];
 
 const ProfileComponent = () => {
     const { user, isAuthenticated } = useAuth();
@@ -25,6 +40,7 @@ const ProfileComponent = () => {
     const [isScrollable, setIsScrollable] = useState(false);
     const [searchParams] = useSearchParams();
     const user_id_param = searchParams.get('user_id');
+    const [projectList, setProjectList] = useState([]);
 
     const fetchProfile = async (user_id) => {
         //const user_id = user.user_id;
@@ -34,13 +50,18 @@ const ProfileComponent = () => {
                 const response = await axios.get("/profile", {
                     params: { user_id: user_id }
                 });
-                console.log('profile data = ', response.data);
+                // console.log('profile data = ', response.data);
+                // setRole(response.data.role);
+                // setProfile(response.data.profile);
+                // setUserDetails(response.data.user_details);
+                // // setProjects(response.data.projects);
+                // setProjectDetails(response.data.project_details);
                 setRole(response.data.role);
                 setProfile(response.data.profile);
                 setUserDetails(response.data.user_details);
-                // setProjects(response.data.projects);
-                setProjectDetails(response.data.project_details);
-                console.log("Is Array:", Array.isArray(projectDetails));
+                setProjectList(response.data.projects);
+                console.log("VOILA>>>>>", response.data);
+                // console.log("Is Array:", Array.isArray(projectDetails));
                 setLoading(false);
             } catch (err) {
                 setError('Error fetching profile FE');
@@ -51,10 +72,14 @@ const ProfileComponent = () => {
         }
     };
 
+    useEffect(() => {
+        console.log("TEST PROJ FETCH>>>>>", projectDetails);
+    }, [projectDetails])
+
     const openModal = (project) => {
         console.log('==project==', project);
         setSelectedProject(project);
-        const project_Desc = projectDetails.find(p => p.proj_id === project.proj_id);
+        const project_Desc = projectList.find(p => p.proj_id === project.proj_id);
         setSelectedProjectDetails(project_Desc);
         console.log("selected project desc 1= >", selectedProjectDetails);
         console.log("selected project desc 2= >", selectedProjectDetails.proj_desc);
@@ -213,26 +238,25 @@ const ProfileComponent = () => {
                                         <div className="progress-card-layout">
                                             {/* <div className="progress-items"> */}
                                             <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projectDetails.map((project, index) => (
+                                                {projectList.map((project, index) => (
                                                     <div
                                                         className="progress-card profile"
                                                         key={index}
                                                         onClick={() => openModal(project)}
                                                     >
-                                                        <div className="progress-image">
-                                                            <img
-                                                                className="image"
-                                                                src="/img2.jpg"
-                                                                alt="project"
-                                                            />
+                                                        <div className="progress-image"
+                                                            style={{
+                                                                backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
+                                                                backgroundSize: 'cover',
+                                                                backgroundPosition: 'center'
+
+                                                            }}
+                                                            loading="lazy">
                                                         </div>
                                                         <div className="progress-content">
-                                                            <span className="progress-category">
-                                                                {project.category}
-                                                            </span>
                                                             <div className="progress-title">
                                                                 {/* {project.project_name} */}
-                                                                {project.project.project_name || "Default Project Name"}
+                                                                {project.project_name}
                                                             </div>
                                                             <div className="progress-bar-container">
                                                                 <div className="progress-bar">
@@ -274,28 +298,8 @@ const ProfileComponent = () => {
                                     <Table responsive='sm' bordered hover>
                                         <tbody>
                                             <tr>
-                                                <td colSpan={12} className='proj-details-header'>Project Name: {selectedProjectDetails.project.project_name}</td>
+                                                <td colSpan={12} className='proj-details-header'>Project Name: {selectedProjectDetails.project_name}</td>
                                             </tr>
-                                            <tr>
-                                                <td className='proj-details-sub-header'>Purpose</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.project.purpose}</td>}
-                                            </tr>
-                                            <tr>
-                                                <td className='proj-details-sub-header'>Product</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.project.product}</td>}
-                                            </tr>
-                                            <tr>
-                                                <td className='proj-details-sub-header'>Description</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.project.description}</td>}
-                                            </tr>
-                                            <tr>
-                                                <td className='proj-details-sub-header'>Features</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.project.features}</td>}
-                                            </tr>
-                                            {/* <tr>
-                                                <td className='proj-details-sub-header'>End Date</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
-                                            </tr> */}
                                             {/* {projDescList.map((p, i) => (
                                                 <tr key={i}>
                                                     <>
@@ -306,13 +310,66 @@ const ProfileComponent = () => {
                                                 </tr>
                                             ))} */}
                                             <tr>
+                                                <td className='proj-details-sub-header'>Purpose</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.purpose}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Product</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.product}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Description</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.description}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Features</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.features}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Budget</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.budget}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Skill(s) Required</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.skills_req}</td>}
+                                            </tr>
+                                            <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.project.end_date}</td>}
+                                                {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
                                             </tr>
                                             <tr>
                                                 <td className="proj-details-sub-header">Status</td>
-                                                <td className="proj-details-data">{selectedProjectDetails.project.status_desc}</td>
+                                                <td className="proj-details-data">{selectedProjectDetails.status_desc}</td>
                                             </tr>
+
+                                            {["business_owner", "supervisor", "student"].map(role => {
+                                                const stakeholdersByRole = (selectedProjectDetails?.stakeholder || []).filter(
+                                                    stakeholder => stakeholder.role === role
+                                                );
+
+                                                if (stakeholdersByRole.length > 0) {
+                                                    return (
+                                                        <tr key={role}>
+                                                            <td className="proj-details-sub-header">
+                                                                {role === "business_owner" && "Business Owner"}
+                                                                {role === "supervisor" && "Supervisor(s)"}
+                                                                {role === "student" && "Student(s)"}
+                                                            </td>
+                                                            <td className="proj-details-data">
+                                                                {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
+                                                                    <div
+                                                                        key={`${role}-${user_id}`}
+                                                                        className="stakeholder-button"
+                                                                    >
+                                                                        {name}
+                                                                    </div>
+                                                                ))}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                }
+                                                return null;
+                                            })}
                                         </tbody>
                                     </Table>
                                 </>
@@ -465,26 +522,25 @@ const ProfileComponent = () => {
                                         <div className="progress-card-layout">
                                             {/* <div className="progress-items"> */}
                                             <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projectDetails.map((project, index) => (
+                                                {projectList.map((project, index) => (
                                                     <div
                                                         className="progress-card profile"
                                                         key={index}
                                                         onClick={() => openModal(project)}
                                                     >
-                                                        <div className="progress-image">
-                                                            <img
-                                                                className="image"
-                                                                src="/img2.jpg"
-                                                                alt="project"
-                                                            />
+                                                        <div className="progress-image"
+                                                            style={{
+                                                                backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
+                                                                backgroundSize: 'cover',
+                                                                backgroundPosition: 'center'
+
+                                                            }}
+                                                            loading="lazy">
                                                         </div>
                                                         <div className="progress-content">
-                                                            <span className="progress-category">
-                                                                {project.category}
-                                                            </span>
                                                             <div className="progress-title">
                                                                 {/* {project.project_name} */}
-                                                                {project.project_name || "Default Project Name"}
+                                                                {project.project_name}
                                                             </div>
                                                             <div className="progress-bar-container">
                                                                 <div className="progress-bar">
@@ -528,7 +584,7 @@ const ProfileComponent = () => {
                                             <tr>
                                                 <td colSpan={12} className='proj-details-header'>Project Name: {selectedProjectDetails.project_name}</td>
                                             </tr>
-                                            {projDescList.map((p, i) => (
+                                            {/* {projDescList.map((p, i) => (
                                                 <tr key={i}>
                                                     <>
                                                         <td className='proj-details-sub-header'>{p[0]}</td>
@@ -536,7 +592,31 @@ const ProfileComponent = () => {
                                                     </>
 
                                                 </tr>
-                                            ))}
+                                            ))} */}
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Purpose</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.purpose}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Product</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.product}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Description</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.description}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Features</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.features}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Budget</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.budget}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Skill(s) Required</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.skills_req}</td>}
+                                            </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
                                                 {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
@@ -545,6 +625,35 @@ const ProfileComponent = () => {
                                                 <td className="proj-details-sub-header">Status</td>
                                                 <td className="proj-details-data">{selectedProjectDetails.status_desc}</td>
                                             </tr>
+
+                                            {["business_owner", "supervisor", "student"].map(role => {
+                                                const stakeholdersByRole = (selectedProjectDetails?.stakeholder || []).filter(
+                                                    stakeholder => stakeholder.role === role
+                                                );
+
+                                                if (stakeholdersByRole.length > 0) {
+                                                    return (
+                                                        <tr key={role}>
+                                                            <td className="proj-details-sub-header">
+                                                                {role === "business_owner" && "Business Owner"}
+                                                                {role === "supervisor" && "Supervisor(s)"}
+                                                                {role === "student" && "Student(s)"}
+                                                            </td>
+                                                            <td className="proj-details-data">
+                                                                {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
+                                                                    <div
+                                                                        key={`${role}-${user_id}`}
+                                                                        className="stakeholder-button"
+                                                                    >
+                                                                        {name}
+                                                                    </div>
+                                                                ))}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                }
+                                                return null;
+                                            })}
                                         </tbody>
                                     </Table>
                                 </>
@@ -675,25 +784,24 @@ const ProfileComponent = () => {
                                     <div className="progress-background-card">
                                         <div className="progress-card-layout">
                                             <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projectDetails.map((project, index) => (
+                                                {projectList.map((project, index) => (
                                                     <div
                                                         className="progress-card profile"
                                                         key={index}
                                                         onClick={() => openModal(project)}
                                                     >
-                                                        <div className="progress-image">
-                                                            <img
-                                                                className="image"
-                                                                src="/img2.jpg"
-                                                                alt="project"
-                                                            />
+                                                        <div className="progress-image"
+                                                            style={{
+                                                                backgroundImage: `url(${imageArray[Number(project.image_url)] || ''})`,
+                                                                backgroundSize: 'cover',
+                                                                backgroundPosition: 'center'
+
+                                                            }}
+                                                            loading="lazy">
                                                         </div>
                                                         <div className="progress-content">
-                                                            <span className="progress-category">
-                                                                {project.category}
-                                                            </span>
                                                             <div className="progress-title">
-                                                                {project.project.project_name || "Default Project Name"}
+                                                                {project.project_name}
                                                             </div>
                                                             <div className="progress-bar-container">
                                                                 <div className="progress-bar">
@@ -737,7 +845,7 @@ const ProfileComponent = () => {
                                             <tr>
                                                 <td colSpan={12} className='proj-details-header'>Project Name: {selectedProjectDetails.project_name}</td>
                                             </tr>
-                                            {projDescList.map((p, i) => (
+                                            {/* {projDescList.map((p, i) => (
                                                 <tr key={i}>
                                                     <>
                                                         <td className='proj-details-sub-header'>{p[0]}</td>
@@ -745,7 +853,31 @@ const ProfileComponent = () => {
                                                     </>
 
                                                 </tr>
-                                            ))}
+                                            ))} */}
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Purpose</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.purpose}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Product</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.product}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Description</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.description}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Features</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.features}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Budget</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.budget}</td>}
+                                            </tr>
+                                            <tr>
+                                                <td className='proj-details-sub-header'>Skill(s) Required</td>
+                                                {<td className='proj-details-data'>{selectedProjectDetails.skills_req}</td>}
+                                            </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
                                                 {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
@@ -754,6 +886,35 @@ const ProfileComponent = () => {
                                                 <td className="proj-details-sub-header">Status</td>
                                                 <td className="proj-details-data">{selectedProjectDetails.status_desc}</td>
                                             </tr>
+
+                                            {["business_owner", "supervisor", "student"].map(role => {
+                                                const stakeholdersByRole = (selectedProjectDetails?.stakeholder || []).filter(
+                                                    stakeholder => stakeholder.role === role
+                                                );
+
+                                                if (stakeholdersByRole.length > 0) {
+                                                    return (
+                                                        <tr key={role}>
+                                                            <td className="proj-details-sub-header">
+                                                                {role === "business_owner" && "Business Owner"}
+                                                                {role === "supervisor" && "Supervisor(s)"}
+                                                                {role === "student" && "Student(s)"}
+                                                            </td>
+                                                            <td className="proj-details-data">
+                                                                {stakeholdersByRole.map(({ name, user_id, proj_id }, index) => (
+                                                                    <div
+                                                                        key={`${role}-${user_id}`}
+                                                                        className="stakeholder-button"
+                                                                    >
+                                                                        {name}
+                                                                    </div>
+                                                                ))}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                }
+                                                return null;
+                                            })}
                                         </tbody>
                                     </Table>
                                 </>
