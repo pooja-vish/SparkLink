@@ -2,54 +2,70 @@ import MasterComponent from '../MasterComponent';
 import MenuComponent from '../menu/MenuComponent';
 import FooterComponent from '../footer/FooterComponent';
 import React from 'react';
+
 import './AboutComponent.css';
 import Avatar from './images/Avatar.jpg';
 import axios from 'axios';
 import  { useEffect } from 'react';
 
+import './AboutComponent.css'
+import Pooja from './images/Pooja.jpg';
+import Gireesh from './images/Gireesh.jpg';
+import Aman from './images/Aman.jpg';
+import Joshua from './images/Joshua.jpeg';
+import Micheal from './images/Micheal.jpeg';
+import Kausar from './images/Kausar.jpg';
+
+
 const AboutComponent = () => {
   const members = [
     {
       id: 1,
-      name: 'Kausar',
+      name: 'Kausar Fatema',
       role: 'Backend & Assisting Front End',
       responsibilities: 'Backend development and API integration.',
-      image: Avatar,
+      image: Kausar,
+      LinkedIn: 'https://www.linkedin.com/in/kausar-fatema-9060871b1/',
     },
     {
       id: 2,
-      name: 'Pooja',
+      name: 'Pooja Vishwakarma',
       role: 'Backend & JIRA Management',
-      responsibilities: 'Handling backend development and managing JIRA pages.',
-      image: Avatar,
+      responsibilities: 'Handled backend development and managed JIRA pages.',
+      image: Pooja,
+      LinkedIn:'https://www.linkedin.com/in/pooja-vishwakarma95/',
     },
     {
       id: 3,
-      name: 'Michael',
-      role: 'Software Tester & Assisting Front End',
-      responsibilities: 'Assisting front-end team, creating About Us and Contact pages, and writing test cases.',
-      image: Avatar,
+      name: 'Fajuko Michael',
+      role: 'Software and QA Automation Tester',
+      responsibilities: 'Assisted front-end team, created About Us page, and writing test cases.',
+      image: Micheal,
+      LinkedIn:'https://www.linkedin.com/in/fajuko-odunayo-5256a1265/',
     },
     {
       id: 4,
-      name: 'Joshua',
+      name: 'Joshua Daniel',
       role: 'Front End Developer',
-      responsibilities: 'Creating the Project screen and working on front-end components.',
-      image: Avatar,
+      responsibilities: 'Created the Project screen and worked on front-end components.',
+      image: Joshua,
+      LinkedIn:'https://www.linkedin.com/in/joshua-daniel1999/',
     },
     {
       id: 5,
-      name: 'Girish',
+      name: 'Gireesh Chandra',
       role: 'Front End Developer',
-      responsibilities: 'Developing the Landing and Progress Tracking screens.',
-      image: Avatar,
+      responsibilities: 'Developed the Landing and Progress Tracking screens.',
+      image: Gireesh,
+      LinkedIn:'https://www.linkedin.com/in/gireesh-busam/',
     },
     {
       id: 6,
-      name: 'Aman',
+      name: 'Amanbhai Arifbhai',
       role: 'Mobile UI & Recommendation System',
-      responsibilities: 'Designing the mobile UI and implementing the recommendation system.',
-      image: Avatar,
+      responsibilities: 'Designed the mobile UI and implemented the recommendation system.',
+      image: Aman,
+      LinkedIn:'',
     },
   ];
   useEffect(() => {
@@ -119,12 +135,22 @@ const AboutComponent = () => {
                       alt={`${member.name}'s profile`}
                       style={{
                         width: '100%',
-                        height: 'auto',
+                        height: '370px',
                         borderRadius: '5px',
                       }}
                     />
                   </div>
-                  <h3>{member.name}</h3>
+                  <h3>
+                  <a
+                      href={member.LinkedIn}
+                      color='black'
+                      rel="noopener noreferrer"
+                      style={{ textDecoration: 'none', color: 'black' }}
+                      className="member-link"
+                    >
+                      {member.name}
+                    </a>
+                  </h3>
                   <p>
                     <strong>Role:</strong> {member.role}
                   </p>

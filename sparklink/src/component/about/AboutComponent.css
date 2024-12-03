@@ -23,10 +23,10 @@
   
   /* Styling for the images */
   .card img {
-    width: 150px; /* Increase image width */
-    height: 150px; /* Increase image height */
-    border-radius: 0; /* Keep circular image */
-    margin: 0 auto; /* Center the image */
+    width: 150px; 
+    height: 150px; 
+    border-radius: 0; 
+    margin: 0 auto; 
     object-fit: cover;
   }
   
@@ -38,8 +38,8 @@
   .team-section {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Adds space between the cards */
-    justify-content: space-evenly; /* Even spacing between rows */
+    gap: 20px; 
+    justify-content: space-evenly; 
   }
   
   /* Styling for the overall page layout */
@@ -53,6 +53,15 @@
     color: #555;
   }
 
+  .member-link {
+    text-decoration: underline;
+    color: black;
+    transition: color 0.3s ease;
+  }
+  
+  .member-link:hover {
+    color: blue;
+  }
   
 
   
