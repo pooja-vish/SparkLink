@@ -184,7 +184,8 @@ const MenuComponent = () => {
                           </Link>
                         </span>
                       </li>
-                      {role === "" && (
+                      {isAuthenticated  && (
+                        <>
                         <li className={getNavItemClass("/view-project")}>
                           <span style={{ cursor: "pointer" }}>
                             <Link className="text-menu" to="/view-project">
@@ -198,6 +199,25 @@ const MenuComponent = () => {
                             </Link>
                           </span>
                         </li>
+                        </>
+                      )}
+                      
+                      {isAuthenticated && (
+                        <>
+                        <li className={getNavItemClass("/view-Recomended-project")}>
+                          <span style={{ cursor: "pointer" }}>
+                            <Link className="text-menu" to="/view-Recomended-project">
+                              <img
+                                src={view_icon}
+                                className="nav_sub_menu_icon"
+                                alt=""
+                                style={{ marginLeft: 15 }}
+                              ></img>
+                              &nbsp;&nbsp;&nbsp;View Rec
+                            </Link>
+                          </span>
+                        </li>
+                        </>
                       )}
                       {role === "" && (
                         <li className={getNavItemClass("/progress")}>

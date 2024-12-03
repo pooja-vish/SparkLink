@@ -15,7 +15,7 @@ import EditProfileComponent from "./component/editProfile/EditProfileComponent";
 import ViewUserComponent from "./component/admin/viewUsers";
 import ResetPasswordComponent from "./component/resetpassword/ResetPasswordComponent"
 import ResetPasswordEmailComponent from "./component/resetpasswordemail/ResetPasswordEmailComponent";
-
+import ViewRecomendedProject from "./component/viewproject/ViewRecommendedProject"
 
 const AppRoutes = () => {
     let routes = useRoutes([
@@ -36,6 +36,7 @@ const AppRoutes = () => {
                 { path: "progress", element: <ProgressTrackerComponent /> },
                 { path: "create-project", element: <CreateProjectComponent /> },
                 { path: "view-project", element: <ViewProjectComponent /> },
+                { path: "view-Recomended-project", element: <ViewRecomendedProject /> },
                 { path: "projApplications", element: <ProjApplicationComponent /> },
                 { path: "/profile", element: <ProfileComponent /> },
                 { path: "/editProfile", element: <EditProfileComponent /> },
