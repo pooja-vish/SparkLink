@@ -14,7 +14,7 @@ const ProfileComponent = () => {
     const [role, setRole] = useState(null);
     const [profile, setProfile] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
-    const [projects, setProjects] = useState([]);
+    // const [projects, setProjects] = useState([]);
     const [projectDetails, setProjectDetails] = useState([]);
     const [selectedProjectDetails, setSelectedProjectDetails] = useState([]);
     const [projDescList, setProjDescList] = useState([]);
@@ -38,7 +38,7 @@ const ProfileComponent = () => {
                 setRole(response.data.role);
                 setProfile(response.data.profile);
                 setUserDetails(response.data.user_details);
-                setProjects(response.data.projects);
+                // setProjects(response.data.projects);
                 setProjectDetails(response.data.project_details);
                 console.log("Is Array:", Array.isArray(projectDetails));
                 setLoading(false);
@@ -73,9 +73,9 @@ const ProfileComponent = () => {
     }, [user, user_id_param]);
 
     useEffect(() => {
-        console.log("projects count : ", projects.length);
-        setIsScrollable(projects.length > 3);
-    }, [projects]);
+        console.log("projects count : ", projectDetails.length);
+        setIsScrollable(projectDetails.length > 3);
+    }, [projectDetails]);
 
     useEffect(() => {
         console.log("selectedProjectDetails =1", selectedProjectDetails);
@@ -121,16 +121,8 @@ const ProfileComponent = () => {
                                     <p className="sm-width-95 sm-margin-auto">SKills : {profile.skills}</p>
                                     <div className="margin-20px-top team-single-icons">
                                         <ul className="no-margin">
-                                            <li>
-                                                <a href={profile.linkedin}>
-                                                    <i className="fab fa-linkedin-in"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href={profile.github}>
-                                                    <i className="fab fa-github"></i>
-                                                </a>
-                                            </li>
+                                            <li><a href={profile.linkedin}><i className="fab fa-linkedin-in"></i></a></li>
+                                            <li><a href={profile.github}><i className="fab fa-github"></i></a></li>
                                         </ul>
                                     </div>
                                     {user_id_param ? (
@@ -221,7 +213,7 @@ const ProfileComponent = () => {
                                         <div className="progress-card-layout">
                                             {/* <div className="progress-items"> */}
                                             <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projects.map((project, index) => (
+                                                {projectDetails.map((project, index) => (
                                                     <div
                                                         className="progress-card profile"
                                                         key={index}
@@ -240,7 +232,7 @@ const ProfileComponent = () => {
                                                             </span>
                                                             <div className="progress-title">
                                                                 {/* {project.project_name} */}
-                                                                {project.project_name || "Default Project Name"}
+                                                                {project.project.project_name || "Default Project Name"}
                                                             </div>
                                                             <div className="progress-bar-container">
                                                                 <div className="progress-bar">
@@ -282,23 +274,23 @@ const ProfileComponent = () => {
                                     <Table responsive='sm' bordered hover>
                                         <tbody>
                                             <tr>
-                                                <td colSpan={12} className='proj-details-header'>Project Name: {selectedProjectDetails.project_name}</td>
+                                                <td colSpan={12} className='proj-details-header'>Project Name: {selectedProjectDetails.project.project_name}</td>
                                             </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>Purpose</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.purpose}</td>}
+                                                {<td className='proj-details-data'>{selectedProjectDetails.project.purpose}</td>}
                                             </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>Product</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.product}</td>}
+                                                {<td className='proj-details-data'>{selectedProjectDetails.project.product}</td>}
                                             </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>Description</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.description}</td>}
+                                                {<td className='proj-details-data'>{selectedProjectDetails.project.description}</td>}
                                             </tr>
                                             <tr>
                                                 <td className='proj-details-sub-header'>Features</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.features}</td>}
+                                                {<td className='proj-details-data'>{selectedProjectDetails.project.features}</td>}
                                             </tr>
                                             {/* <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
@@ -315,11 +307,11 @@ const ProfileComponent = () => {
                                             ))} */}
                                             <tr>
                                                 <td className='proj-details-sub-header'>End Date</td>
-                                                {<td className='proj-details-data'>{selectedProjectDetails.end_date}</td>}
+                                                {<td className='proj-details-data'>{selectedProjectDetails.project.end_date}</td>}
                                             </tr>
                                             <tr>
                                                 <td className="proj-details-sub-header">Status</td>
-                                                <td className="proj-details-data">{selectedProjectDetails.status_desc}</td>
+                                                <td className="proj-details-data">{selectedProjectDetails.project.status_desc}</td>
                                             </tr>
                                         </tbody>
                                     </Table>
@@ -473,7 +465,7 @@ const ProfileComponent = () => {
                                         <div className="progress-card-layout">
                                             {/* <div className="progress-items"> */}
                                             <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projects.map((project, index) => (
+                                                {projectDetails.map((project, index) => (
                                                     <div
                                                         className="progress-card profile"
                                                         key={index}
@@ -585,8 +577,6 @@ const ProfileComponent = () => {
                                         <ul className="no-margin">
                                             <li><a href={profile.linkedin}><i className="fab fa-linkedin-in"></i></a></li>
                                             <li><a href={profile.github}><i className="fab fa-github"></i></a></li>
-                                            <li><a href="javascript:void(0)"><i className="fab fa-google-plus-g"></i></a></li>
-                                            <li><a href="javascript:void(0)"><i className="fab fa-instagram"></i></a></li>
                                         </ul>
                                     </div>
                                     {user_id_param ? (
@@ -685,7 +675,7 @@ const ProfileComponent = () => {
                                     <div className="progress-background-card">
                                         <div className="progress-card-layout">
                                             <div className={`progress-items profile ${isScrollable ? "scrollable" : ""}`}>
-                                                {projects.map((project, index) => (
+                                                {projectDetails.map((project, index) => (
                                                     <div
                                                         className="progress-card profile"
                                                         key={index}
@@ -703,7 +693,7 @@ const ProfileComponent = () => {
                                                                 {project.category}
                                                             </span>
                                                             <div className="progress-title">
-                                                                {project.project_name || "Default Project Name"}
+                                                                {project.project.project_name || "Default Project Name"}
                                                             </div>
                                                             <div className="progress-bar-container">
                                                                 <div className="progress-bar">
