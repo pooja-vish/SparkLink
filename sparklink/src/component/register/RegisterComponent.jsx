@@ -6,6 +6,7 @@ import sparklink_icon from "../../assets/SparkLink_icon.png";
 import backgroundImage from "../../assets/background3.jpg"; // Add your background image here
 import signupImage from "../../assets/signup-image.jpg";
 import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const RegistrationForm = () => {
   const [username, setUsername] = useState("");
@@ -17,6 +18,8 @@ const RegistrationForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword2, setShowPassword2] = useState(false); 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -116,9 +119,9 @@ const RegistrationForm = () => {
                   />
                 </div>
                 {/* Password Field */}
-                <div data-mdb-input-init className="form-outline mb-4">
+                <div data-mdb-input-init className="form-outline mb-4  position-relative" >
                   <input
-                    type="password"
+                     type={showPassword ? "text" : "password"} 
                     name="pass"
                     id="pass"
                     value={password}
@@ -127,11 +130,16 @@ const RegistrationForm = () => {
                     placeholder="Password"
                     required
                   />
+                  <i
+                  className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
+                  style={{ right: 10, top: 17, cursor: "pointer" }}
+                  onClick={() => setShowPassword(!showPassword)}  // Toggle password visibility
+                ></i>
                 </div>
                 {/* Repeat Password Field */}
-                <div data-mdb-input-init className="form-outline mb-4">
+                <div data-mdb-input-init className="form-outline mb-4 position-relative">
                   <input
-                    type="password"
+                    type={showPassword2 ? "text" : "password"}
                     name="re_pass"
                     id="re_pass"
                     value={confirmPassword}
@@ -140,6 +148,11 @@ const RegistrationForm = () => {
                     placeholder="Repeat your password"
                     required
                   />
+                   <i
+                  className={`fas ${showPassword2 ? "fa-eye-slash" : "fa-eye"} position-absolute`}  // FontAwesome eye icon
+                  style={{ right: 10, top: 17, cursor: "pointer" }}
+                  onClick={() => setShowPassword2(!showPassword2)}  // Toggle password visibility
+                ></i>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="roleSelect" className="form-label">

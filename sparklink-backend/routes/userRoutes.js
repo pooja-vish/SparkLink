@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { register, login, confirmEmail, logout, checkSession, authStatus, forgotPassword, verifyToken, resetPassword, getallusers, updateuser, deleteUser} = require('../controllers/userController');
+const { register, login, confirmEmail, logout, checkSession, authStatus, forgotPassword, verifyToken, resetPassword, getallusers, updateuser, deleteUser, get5recommendedProjects} = require('../controllers/userController');
 
 const router = express.Router();
 
@@ -16,6 +16,7 @@ router.post('/forgot-password', forgotPassword);
 router.get('/allusers',getallusers);
 router.put('/delete/:id',deleteUser);
 router.put('/:id',updateuser);
+router.get('/recommendedprojects',get5recommendedProjects);
 
 
 router.get("/reset-password", verifyToken);
