@@ -28,8 +28,16 @@ const Owner_Profile = sequelize.define('Owner_Profile', {
         type: DataTypes.STRING(15),
         allowNull: true
     },
-      address: {
+    address: {
         type: DataTypes.TEXT,
+        allowNull: true
+    },
+    github: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
+    linkedin: {
+        type: DataTypes.STRING(100),
         allowNull: true
     },
  }, {
