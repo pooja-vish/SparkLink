@@ -6,7 +6,7 @@ const { response } = require('express');
 
 // Create a Redis client
 const redisClient = createClient({
-  url: 'redis://127.0.0.1:6370',  // Correct port for Redis
+  url: 'redis://127.0.0.1:6379',  // Correct port for Redis
 });
 
 // Set up Redis client

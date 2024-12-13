@@ -2,7 +2,7 @@ const { createClient } = require('@redis/client'); // Use the latest Redis clien
 
 // Create a Redis client
 const redisClient = createClient({
-  url: 'redis://127.0.0.1:6370', // Change to the correct port if needed (6379 is default)
+  url: 'redis://127.0.0.1:6379', // Change to the correct port if needed (6379 is default)
 });
 
 redisClient.on('connect', () => {
