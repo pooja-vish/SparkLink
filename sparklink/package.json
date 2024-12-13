@@ -52,5 +52,6 @@
   },
   "devDependencies": {
     "ajv": "^7.2.4"
-  }
+  },
+  "proxy": "http://sparklink.cs.uwindsor.ca/"
 }
