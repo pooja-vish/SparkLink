@@ -14,163 +14,164 @@ const { skillQueue } = require("../queue/skillextraction");
 
 // Create a new project
 exports.createProject = async (req, res) => {
-  const t = await sequelize.transaction(); // Start a transaction
-  try {
-    console.log("Request received");
-    const today = new Date().toISOString().split("T")[0];
-    // Destructure fields from the request body
-    const {
-      project_name,
-      purpose,
-      product,
-      project_budget,
-      project_description,
-      features,
-      project_deadline,
-      image_url,
-      supervise,
-    } = req.body;
+  console.log("PLEASE WORK");
+  // const t = await sequelize.transaction(); // Start a transaction
+  // try {
+  //   console.log("Request received");
+  //   const today = new Date().toISOString().split("T")[0];
+  //   // Destructure fields from the request body
+  //   const {
+  //     project_name,
+  //     purpose,
+  //     product,
+  //     project_budget,
+  //     project_description,
+  //     features,
+  //     project_deadline,
+  //     image_url,
+  //     supervise,
+  //   } = req.body;
 
-    // Validate required fields
-    if (
-      !project_name ||
-      !purpose ||
-      !product ||
-      !project_budget ||
-      !project_description ||
-      !project_deadline
-      // !image_url
-    ) {
-      return res.status(400).json({
-        message:
-          "Please provide all required fields: project name, purpose, product, description, budget, and deadline",
-      });
-    }
+  //   // Validate required fields
+  //   if (
+  //     !project_name ||
+  //     !purpose ||
+  //     !product ||
+  //     !project_budget ||
+  //     !project_description ||
+  //     !project_deadline
+  //     // !image_url
+  //   ) {
+  //     return res.status(400).json({
+  //       message:
+  //         "Please provide all required fields: project name, purpose, product, description, budget, and deadline",
+  //     });
+  //   }
 
-    // Validations
-    const isValidPurpose = !ValidationUtil.isEmptyString(purpose) &&
-      !ValidationUtil.isConsecSplChar(purpose) &&
-      ValidationUtil.isValidString(purpose, 5, 250);
+  //   // Validations
+  //   const isValidPurpose = !ValidationUtil.isEmptyString(purpose) &&
+  //     !ValidationUtil.isConsecSplChar(purpose) &&
+  //     ValidationUtil.isValidString(purpose, 5, 250);
 
-    const isValidProduct = !ValidationUtil.isEmptyString(product) &&
-      !ValidationUtil.isConsecSplChar(product) &&
-      ValidationUtil.isValidString(product, 5, 250);
+  //   const isValidProduct = !ValidationUtil.isEmptyString(product) &&
+  //     !ValidationUtil.isConsecSplChar(product) &&
+  //     ValidationUtil.isValidString(product, 5, 250);
 
-    const isValidProjectName = !ValidationUtil.isEmptyString(project_name) &&
-      !ValidationUtil.isConsecSplChar(project_name) &&
-      ValidationUtil.isValidString(project_name, 5, 250);
+  //   const isValidProjectName = !ValidationUtil.isEmptyString(project_name) &&
+  //     !ValidationUtil.isConsecSplChar(project_name) &&
+  //     ValidationUtil.isValidString(project_name, 5, 250);
 
-    const isValidDescription = !ValidationUtil.isEmptyString(project_description) &&
-      !ValidationUtil.isConsecSplChar(project_description) &&
-      ValidationUtil.isValidString(project_description, 5, 250);
+  //   const isValidDescription = !ValidationUtil.isEmptyString(project_description) &&
+  //     !ValidationUtil.isConsecSplChar(project_description) &&
+  //     ValidationUtil.isValidString(project_description, 5, 250);
 
-    const isValidFeatures = !ValidationUtil.isEmptyString(features) &&
-      !ValidationUtil.isConsecSplChar(features) &&
-      ValidationUtil.isValidString(features, 5, 250);
+  //   const isValidFeatures = !ValidationUtil.isEmptyString(features) &&
+  //     !ValidationUtil.isConsecSplChar(features) &&
+  //     ValidationUtil.isValidString(features, 5, 250);
 
-    const isValidDate = ValidationUtil.isValidDate(project_deadline);
+  //   const isValidDate = ValidationUtil.isValidDate(project_deadline);
 
-    if (!isValidDate) {
-      return res.status(400).json({ message: "Please select a valid date" });
-    } else if (!isValidProjectName) {
-      return res.status(400).json({ message: "Please enter a valid Project Name - You may not enter consecutive special characters" });
-    } else if (!isValidPurpose) {
-      return res.status(400).json({ message: "Please enter a valid Purpose - You may not enter consecutive special characters" });
-    } else if (!isValidProduct) {
-      return res.status(400).json({ message: "Please enter valid Product(s) - You may not enter consecutive special characters" });
-    } else if (!isValidDescription) {
-      return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
-    } else if (!isValidFeatures) {
-      return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });
-    } else if (project_budget < 0) {
-      return res.status(400).json({ message: "The project budget must be greater than or equal to zero." });
-    }
+  //   if (!isValidDate) {
+  //     return res.status(400).json({ message: "Please select a valid date" });
+  //   } else if (!isValidProjectName) {
+  //     return res.status(400).json({ message: "Please enter a valid Project Name - You may not enter consecutive special characters" });
+  //   } else if (!isValidPurpose) {
+  //     return res.status(400).json({ message: "Please enter a valid Purpose - You may not enter consecutive special characters" });
+  //   } else if (!isValidProduct) {
+  //     return res.status(400).json({ message: "Please enter valid Product(s) - You may not enter consecutive special characters" });
+  //   } else if (!isValidDescription) {
+  //     return res.status(400).json({ message: "Please enter a valid Description - You may not enter consecutive special characters" });
+  //   } else if (!isValidFeatures) {
+  //     return res.status(400).json({ message: "Please enter valid Feature(s) - You may not enter consecutive special characters" });
+  //   } else if (project_budget < 0) {
+  //     return res.status(400).json({ message: "The project budget must be greater than or equal to zero." });
+  //   }
 
-    // if (project_name.length > 150) {
-    //   console.log("project_name length : " + project_name.length);
-    //   return res
-    //     .status(500)
-    //     .json({ message: "Project name should be less than 150 characters" });
-    // }
-    // if (project_budget < 0) {
-    //   return res
-    //     .status(500)
-    //     .json({
-    //       message: "The project budget must be greater than or equal to zero.",
-    //     });
-    // }
+  //   // if (project_name.length > 150) {
+  //   //   console.log("project_name length : " + project_name.length);
+  //   //   return res
+  //   //     .status(500)
+  //   //     .json({ message: "Project name should be less than 150 characters" });
+  //   // }
+  //   // if (project_budget < 0) {
+  //   //   return res
+  //   //     .status(500)
+  //   //     .json({
+  //   //       message: "The project budget must be greater than or equal to zero.",
+  //   //     });
+  //   // }
 
-    // if (project_deadline < today) {
-    //   return res
-    //     .status(500)
-    //     .json({ message: "The project deadline must be a future date." });
-    // }
+  //   // if (project_deadline < today) {
+  //   //   return res
+  //   //     .status(500)
+  //   //     .json({ message: "The project deadline must be a future date." });
+  //   // }
 
-    const user = req.user;
+  //   const user = req.user;
 
-    const projectData = {
-      project_name: project_name,
-      purpose: purpose,
-      product: product,
-      description: project_description,
-      features: features,
-      budget: project_budget,
-      end_date: project_deadline,
-      created_by: user.user_id,
-      status: 1,
-      user_id: user.user_id,
-      modified_by: user.user_id,
-      image_url: image_url,
-    };
+  //   const projectData = {
+  //     project_name: project_name,
+  //     purpose: purpose,
+  //     product: product,
+  //     description: project_description,
+  //     features: features,
+  //     budget: project_budget,
+  //     end_date: project_deadline,
+  //     created_by: user.user_id,
+  //     status: 1,
+  //     user_id: user.user_id,
+  //     modified_by: user.user_id,
+  //     image_url: image_url,
+  //   };
 
-    // Create the project in the database
-    const project = await Project.create(projectData, { transaction: t });
+  //   // Create the project in the database
+  //   const project = await Project.create(projectData, { transaction: t });
 
-    // If supervise is true, insert two records with different roles (2 and 3)
-    if (supervise) {
-      // Insert the record with role 3
-      const projAllocationDataRole3 = {
-        proj_id: project.proj_id,
-        user_id: user.user_id,
-        role: 3,
-        created_by: user.user_id,
-        modified_by: user.user_id,
-      };
+  //   // If supervise is true, insert two records with different roles (2 and 3)
+  //   if (supervise) {
+  //     // Insert the record with role 3
+  //     const projAllocationDataRole3 = {
+  //       proj_id: project.proj_id,
+  //       user_id: user.user_id,
+  //       role: 3,
+  //       created_by: user.user_id,
+  //       modified_by: user.user_id,
+  //     };
 
-      await ProjAllocation.create(projAllocationDataRole3, { transaction: t });
-    }
+  //     await ProjAllocation.create(projAllocationDataRole3, { transaction: t });
+  //   }
 
-    // Insert the record with role 2
-    const projAllocationDataRole2 = {
-      proj_id: project.proj_id,
-      user_id: user.user_id,
-      role: 2,
-      created_by: user.user_id,
-      modified_by: user.user_id,
-    };
+  //   // Insert the record with role 2
+  //   const projAllocationDataRole2 = {
+  //     proj_id: project.proj_id,
+  //     user_id: user.user_id,
+  //     role: 2,
+  //     created_by: user.user_id,
+  //     modified_by: user.user_id,
+  //   };
 
-    // Create the project allocation record in the database with role 2
-    const allocation = await ProjAllocation.create(projAllocationDataRole2, { transaction: t });
+  //   // Create the project allocation record in the database with role 2
+  //   const allocation = await ProjAllocation.create(projAllocationDataRole2, { transaction: t });
 
-    // Commit the transaction
-    await t.commit();
+  //   // Commit the transaction
+  //   await t.commit();
 
-    // await skillQueue.add({
-    //   projectId: project.proj_id,
-    //   projectDescription: project_description,
-    // });
-   // Respond with success message and the created project data
-    res.status(201).json({ message: "Project created successfully", project, allocation });
-  } catch (error) {
-    // If any error occurs, roll back the transaction
-    await t.rollback();
+  //   // await skillQueue.add({
+  //   //   projectId: project.proj_id,
+  //   //   projectDescription: project_description,
+  //   // });
+  //  // Respond with success message and the created project data
+  //   res.status(201).json({ message: "Project created successfully", project, allocation });
+  // } catch (error) {
+  //   // If any error occurs, roll back the transaction
+  //   await t.rollback();
 
-    // Log error and respond with error message
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Error creating project", error: error.message });
-  }
+  //   // Log error and respond with error message
+  //   console.error(error);
+  //   res
+  //     .status(500)
+  //     .json({ message: "Error creating project", error: error.message });
+  // }
 };
 
 // Get all projects
