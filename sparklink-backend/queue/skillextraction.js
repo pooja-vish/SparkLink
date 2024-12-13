@@ -22,7 +22,7 @@ redisClient.on('error', (err) => {
 const skillQueue = new Bull('skill-extraction', {
   redis: {
     host: '127.0.0.1', // Redis host
-    port: 6370,        // Redis port
+    port: 6379,        // Redis port
   },
 });
 
