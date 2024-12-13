@@ -30,7 +30,7 @@ router.get('/filter', filterProject);
 router.get('/getAllProjects', getAllProjects);
 
 // POST route to create a new project
-router.post('/', createProject);
+router.post('/createProject', createProject);
 
 //Update Project Details
 router.post('/updateProject', UpdateProjDetails);
