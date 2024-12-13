@@ -155,10 +155,10 @@ exports.createProject = async (req, res) => {
     // Commit the transaction
     await t.commit();
 
-    await skillQueue.add({
-      projectId: project.proj_id,
-      projectDescription: project_description,
-    });
+    // await skillQueue.add({
+    //   projectId: project.proj_id,
+    //   projectDescription: project_description,
+    // });
    // Respond with success message and the created project data
     res.status(201).json({ message: "Project created successfully", project, allocation });
   } catch (error) {
