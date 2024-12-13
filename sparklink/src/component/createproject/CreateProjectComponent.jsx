@@ -152,125 +152,118 @@ const CreateProjectComponent = () => {
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    const response = await axios.post("/api/project/createProject");
-    console.log("RESPONSE PROJECT>>>>>", response);
-    // e.preventDefault();
+    e.preventDefault();
 
-    // // Clear previous messages
-    // setErrorMessage("");
-    // setSuccessMessage("");
-    // setLoading(false);
+    // Clear previous messages
+    setErrorMessage("");
+    setSuccessMessage("");
+    setLoading(false);
 
-    // if (setIsOtherPurposeChecked) {
-    //   setPurpose((prevPurpose) => [...prevPurpose, otherPurposeText]);
-    //   console.log("purpose --- > " + purpose);
-    // }
+    if (setIsOtherPurposeChecked) {
+      setPurpose((prevPurpose) => [...prevPurpose, otherPurposeText]);
+      console.log("purpose --- > " + purpose);
+    }
 
-    // // Basic form validation
-    // if (
-    //   !projectName ||
-    //   !purpose.length ||
-    //   !product.length ||
-    //   !projectBudget ||
-    //   !projectDescription ||
-    //   !features ||
-    //   !projectDeadline
-    // ) {
-    //   setErrorMessage("Please fill in all required fields.");
-    //   setLoading(false);
-    //   return;
-    // }
+    // Basic form validation
+    if (
+      !projectName ||
+      !purpose.length ||
+      !product.length ||
+      !projectBudget ||
+      !projectDescription ||
+      !features ||
+      !projectDeadline
+    ) {
+      setErrorMessage("Please fill in all required fields.");
+      setLoading(false);
+      return;
+    }
 
-    // const form_data = {
-    //   project_name: projectName,
-    //   purpose: purpose.join(", "),
-    //   product: product.join(", "),
-    //   project_budget: projectBudget,
-    //   project_description: projectDescription,
-    //   features: features,
-    //   project_deadline: projectDeadline,
-    //   image_url: getRandomImageName(), // Include the image URL in the form data
-    // };
+    const form_data = {
+      project_name: projectName,
+      purpose: purpose.join(", "),
+      product: product.join(", "),
+      project_budget: projectBudget,
+      project_description: projectDescription,
+      features: features,
+      project_deadline: projectDeadline,
+      image_url: getRandomImageName(), // Include the image URL in the form data
+    };
 
-    // console.log("Form Data Submitted:", form_data);
+    console.log("Form Data Submitted:", form_data);
 
-    // // Check if the user role is supervisor (role 3)
-    // if (user.role === "3") {
-    //   const result = await Swal.fire({
-    //     title: "Supervise Project?",
-    //     text: "Do you want to supervise this project?",
-    //     icon: "question",
-    //     showCancelButton: true,    // Show the Cancel button
-    //     showDenyButton: true,      // Show the Deny (No) button
-    //     confirmButtonText: "Yes",  // Text for the Confirm button
-    //     denyButtonText: "No",      // Text for the Deny button
-    //     cancelButtonText: "Cancel", // Text for the Cancel button
-    //   });
+    // Check if the user role is supervisor (role 3)
+    if (user.role === "3") {
+      const result = await Swal.fire({
+        title: "Supervise Project?",
+        text: "Do you want to supervise this project?",
+        icon: "question",
+        showCancelButton: true,    // Show the Cancel button
+        showDenyButton: true,      // Show the Deny (No) button
+        confirmButtonText: "Yes",  // Text for the Confirm button
+        denyButtonText: "No",      // Text for the Deny button
+        cancelButtonText: "Cancel", // Text for the Cancel button
+      });
 
-    //   // Handle user response
-    //   if (result.isConfirmed) {
-    //     form_data.supervise = true; // Add supervise field to form data
-    //     console.log("User opted to supervise the project.");
-    //   } else if (result.isDenied) {
-    //     form_data.supervise = false; // Add supervise = false if user clicked "No"
-    //     console.log("User declined to supervise the project.");
-    //   } else if (result.isDismissed) {
-    //     console.log("User canceled or closed the modal, stopping execution.");
-    //     return; // Stop execution if the modal was closed or canceled
-    //   }
-    // }
+      // Handle user response
+      if (result.isConfirmed) {
+        form_data.supervise = true; // Add supervise field to form data
+        console.log("User opted to supervise the project.");
+      } else if (result.isDenied) {
+        form_data.supervise = false; // Add supervise = false if user clicked "No"
+        console.log("User declined to supervise the project.");
+      } else if (result.isDismissed) {
+        console.log("User canceled or closed the modal, stopping execution.");
+        return; // Stop execution if the modal was closed or canceled
+      }
+    }
 
-    // // Proceed with the rest of the logic
+    // Proceed with the rest of the logic
 
 
-    // // Proceed with loading state after SweetAlert decision
-    // setLoading(true);
+    // Proceed with loading state after SweetAlert decision
+    setLoading(true);
 
-    // try {
-    //   // Make the API request only if user confirmed to supervise or declined but not canceled
-    //   const response = await axios.post("/project/createProject", form_data, {
-    //     withCredentials: true, // Ensure cookies are sent with the request
-    //     headers: {
-    //       'Content-Type': 'application/json', // If sending JSON data
-    //     },
-    //   });
+    try {
+      // Make the API request only if user confirmed to supervise or declined but not canceled
+      const response = await axios.post("/api/project/createProject", form_data);
 
-    //   if (response) {
-    //     const project = response.data;
-    //     Swal.fire({ title: 'Success', text: 'Project Created Successfully', icon: 'success', confirmButtonText: 'Ok' });
-    //     //setSuccessMessage("Project created successfully!");
-    //     updateNotifyCount();
-    //     console.log("Project created successfully:", project);
-    //     emptyForm(); // Reset form after successful submission
-    //   } else {
-    //     Swal.fire({
-    //       title: 'Error',
-    //       text: 'Failed to create project',
-    //       icon: 'error',
-    //       confirmButtonText: 'Ok'
-    //     });
-    //     //setErrorMessage("Failed to create project");
-    //   }
-    // } catch (error) {
-    //   // setErrorMessage("Error submitting form: " + error.message);
-    //   if (error.response) {
-    //     Swal.fire({
-    //       title: 'Error',
-    //       text: error.response.data.message,
-    //       icon: 'error',
-    //       confirmButtonText: 'Ok'
-    //     });
-    //   } else {
-    //     Swal.fire({
-    //       title: 'Error',
-    //       text: error.message,
-    //       icon: 'error',
-    //       confirmButtonText: 'Ok'
-    //     });
-    //   }
-    // } finally {
-    //   setLoading(false); // Hide loading indicator after the operation completes
-    // }
+      if (response) {
+        const project = response.data;
+        Swal.fire({ title: 'Success', text: 'Project Created Successfully', icon: 'success', confirmButtonText: 'Ok' });
+        //setSuccessMessage("Project created successfully!");
+        updateNotifyCount();
+        console.log("Project created successfully:", project);
+        emptyForm(); // Reset form after successful submission
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to create project',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+        //setErrorMessage("Failed to create project");
+      }
+    } catch (error) {
+      // setErrorMessage("Error submitting form: " + error.message);
+      if (error.response) {
+        Swal.fire({
+          title: 'Error',
+          text: error.response.data.message,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: error.message,
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
+      }
+    } finally {
+      setLoading(false); // Hide loading indicator after the operation completes
+    }
   };
 
 
