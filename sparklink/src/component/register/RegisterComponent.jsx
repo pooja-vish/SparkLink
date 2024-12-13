@@ -37,7 +37,7 @@ const RegistrationForm = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post("/api/users/register", {
+      const response = await axios.post("http://sparklink.cs.uwindsor.ca/api/users/register", {
         username,
         email,
         password,
