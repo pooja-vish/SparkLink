@@ -5,7 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./config/db'); // Import the database connection
-const passport = require('./config/passportConfig'); 
+const passport = require('./config/passportConfig');
 const session = require('express-session');
 
 
@@ -53,7 +53,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
-app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE"] })); 
+app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE"] }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -63,7 +63,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false , sameSite: 'Lax'} // Set `secure: true` if using HTTPS in production
+  cookie: { secure: false, sameSite: 'Lax' } // Set `secure: true` if using HTTPS in production
 }));
 
 // Passport middleware
@@ -85,51 +85,52 @@ sequelize.authenticate()
 
 
 // Define routes
-app.use('/api/users', userRoutes); // Route for user-related requests
-app.use('/api', roleRoutes); // Route for role-related requests
-app.use('/projectstatus', projectStatusRouter);
-app.use('/department', departmentRoutes);
-app.use('/project', projectRouter);
-app.use('/profile', profileRouter);
-app.use('/editProfile', EditProfileRouter);
-//app.use('',userRouter);
-app.use('/progressTracker', progressTrackerRouter);
+// app.use('/api/users', userRoutes); // Route for user-related requests
+// app.use('/api', roleRoutes); // Route for role-related requests
+// app.use('/projectstatus', projectStatusRouter);
+// app.use('/department', departmentRoutes);
+// app.use('/project', projectRouter);
+// app.use('/profile', profileRouter);
+// app.use('/editProfile', EditProfileRouter);
+// //app.use('',userRouter);
+// app.use('/progressTracker', progressTrackerRouter);
 // Error handling middleware
 
 
 function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-    // Store the path the user tried to access
-   return  res.status(200).json({ isAuthenticated: false });
+  if (req.isAuthenticated()) {
+    return next();
   }
-  
+  // Store the path the user tried to access
+  return res.status(200).json({ isAuthenticated: false });
+}
+
 // Define routes
 app.use('/api/users', userRoutes);
 app.use('/api', roleRoutes);
-app.use('/projectstatus',isAuthenticated,projectStatusRouter);
-app.use('/department', isAuthenticated,departmentRoutes);
-app.use('/project',projectRouter);
+app.use('/projectstatus', isAuthenticated, projectStatusRouter);
+app.use('/department', isAuthenticated, departmentRoutes);
+app.use('/project', isAuthenticated, projectRouter);
 app.use('/profile', profileRouter);
 app.use('/editProfile', EditProfileRouter);
 app.use('/apply', projApplicationRouter);
 app.use('/alloc', projAllocationRouter);
 app.use('/notify', notificationRouter);
+app.use('/progressTracker', progressTrackerRouter);
 
 
 
 
 
-app.get("/status",(req,res) => {
+app.get("/status", (req, res) => {
   console.log(`Inside status end point`);
   console.log(req.user);
   console.log(req.session);
-  return req.user? res.send(req.user) : res.sendStatus(401);
+  return req.user ? res.send(req.user) : res.sendStatus(401);
 });
 
 // Start the server
-const PORT =  5500;
+const PORT = 5500;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

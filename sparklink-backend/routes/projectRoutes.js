@@ -15,6 +15,8 @@ const {
   reportProject
 } = require('../controllers/projectController');
 
+const projectController = require('../controllers/projectController');
+
 const {acceptProject, rejectProject}= require('../controllers/projAllocationController');
 
 const router = express.Router();
@@ -30,7 +32,7 @@ router.get('/filter', filterProject);
 router.get('/getAllProjects', getAllProjects);
 
 // POST route to create a new project
-router.post('/createProject', createProject);
+router.post('/createProject', projectController.createProject);
 
 //Update Project Details
 router.post('/updateProject', UpdateProjDetails);
