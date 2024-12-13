@@ -52,7 +52,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); 
+app.options('*', cors(corsOptions));
+app.use(cors({ methods: ["GET", "POST", "PUT", "DELETE"] })); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
