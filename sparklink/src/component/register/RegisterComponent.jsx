@@ -7,7 +7,6 @@ import backgroundImage from "../../assets/background3.jpg"; // Add your backgrou
 import signupImage from "../../assets/signup-image.jpg";
 import sparklink_logo from "../../assets/SparkLink_Logo_3.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import axiosInstance from './axiosInstance';
 
 const RegistrationForm = () => {
   const [username, setUsername] = useState("");
@@ -38,7 +37,7 @@ const RegistrationForm = () => {
 
     try {
       setLoading(true);
-      const response = await axiosInstance.post("/api/users/register", {
+      const response = await axios.post("/api/users/register", {
         username,
         email,
         password,
