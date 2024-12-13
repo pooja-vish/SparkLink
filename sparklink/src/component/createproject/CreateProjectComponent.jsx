@@ -226,7 +226,7 @@ const CreateProjectComponent = () => {
 
     try {
       // Make the API request only if user confirmed to supervise or declined but not canceled
-      const response = await axios.post("/api/project/createProject", form_data);
+      const response = await axios.post("/project/createProject", form_data);
 
       if (response) {
         const project = response.data;
