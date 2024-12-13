@@ -77,29 +77,29 @@ exports.register = async (req, res) => {
       },
     });
 
-    const confirmationLink = `http://localhost:5100/api/users/confirm-email?token=${confirmationToken}`;
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Confirm Your Email",
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-          <h2 style="color: #4CAF50;">Welcome to Our Platform!</h2>
-          <p>Thank you for signing up. Please confirm your email address by clicking the button below:</p>
-          <a 
-            href="${confirmationLink}" 
-            style="display: inline-block; padding: 10px 20px; margin: 10px 0; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
-            Confirm Email
-          </a>
-          <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
-          <p style="word-break: break-word;">${confirmationLink}</p>
-          <hr style="border: none; border-top: 1px solid #ccc;">
-          <p style="font-size: 0.9em; color: #666;">
-            If you didn’t create an account, please ignore this email.
-          </p>
-        </div>
-      `,
-    });
+    // const confirmationLink = `http://localhost:5100/api/users/confirm-email?token=${confirmationToken}`;
+    // await transporter.sendMail({
+    //   from: process.env.EMAIL_USER,
+    //   to: email,
+    //   subject: "Confirm Your Email",
+    //   html: `
+    //     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    //       <h2 style="color: #4CAF50;">Welcome to Our Platform!</h2>
+    //       <p>Thank you for signing up. Please confirm your email address by clicking the button below:</p>
+    //       <a 
+    //         href="${confirmationLink}" 
+    //         style="display: inline-block; padding: 10px 20px; margin: 10px 0; color: #fff; background-color: #4CAF50; text-decoration: none; border-radius: 5px;">
+    //         Confirm Email
+    //       </a>
+    //       <p>If the button above doesn't work, copy and paste the following link into your browser:</p>
+    //       <p style="word-break: break-word;">${confirmationLink}</p>
+    //       <hr style="border: none; border-top: 1px solid #ccc;">
+    //       <p style="font-size: 0.9em; color: #666;">
+    //         If you didn’t create an account, please ignore this email.
+    //       </p>
+    //     </div>
+    //   `,
+    // });
 
     res.status(201).json({
       message:
