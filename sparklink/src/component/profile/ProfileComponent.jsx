@@ -47,7 +47,7 @@ const ProfileComponent = () => {
         console.log("PROF>>>>>", user_id);
         if (user) {
             try {
-                const response = await axios.get("/profile", {
+                const response = await axios.get("/api/profile", {
                     params: { user_id: user_id }
                 });
                 // console.log('profile data = ', response.data);

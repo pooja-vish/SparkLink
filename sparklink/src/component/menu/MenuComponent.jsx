@@ -55,7 +55,7 @@ const MenuComponent = () => {
   const fetchNotifCount = async () => {
     try {
       updateNotifyCount();
-      const response = await axios.get('/notify/count');
+      const response = await axios.get('/api/notify/count');
       console.log("message ---> ",response.data.message);
       console.log("count ---> ",response.data.notifCount);
       setNotifCount(response.data.notifCount);

@@ -68,20 +68,6 @@ const AboutComponent = () => {
       LinkedIn:'',
     },
   ];
-  useEffect(() => {
-    const fetchRecommendedProjects = async () => {
-      try {
-        console.log("helooooo")
-        const response = await axios.get('/api/users/recommendedprojects'); // Adjust the URL as needed
-        console.log(response.data); // Log the full response
-         // Log just the recommended projects
-      } catch (error) {
-        console.error('Error fetching recommended projects:', error);
-      }
-    };
-
-    fetchRecommendedProjects();
-  }, []); // Empty dependency array ensures this runs once when the component mounts
 
   return (
     <>

@@ -21,7 +21,7 @@ const ProjApplicationComponent = () => {
     try {
       // Send a POST request to the backend API with proj_id, user_id, and role
       setLoading(true);
-      const response = await axios.post("/alloc/accept", {
+      const response = await axios.post("/api/alloc/accept", {
         proj_id,
         user_id,
       });
@@ -54,7 +54,7 @@ const ProjApplicationComponent = () => {
     try {
       // Send a POST request to the backend API with proj_id, user_id, and role
       setLoading(true);
-      const response = await axios.post("/alloc/reject", {
+      const response = await axios.post("/api/alloc/reject", {
         proj_id,
         user_id,
       });
@@ -85,7 +85,7 @@ const ProjApplicationComponent = () => {
     try {
       // Send a POST request to the backend API with proj_id, user_id, and role
       setLoading(true);
-      const response = await axios.post("/notify/okay", {
+      const response = await axios.post("/api/notify/okay", {
         proj_id,
         user_id,
         code,
@@ -112,7 +112,7 @@ const ProjApplicationComponent = () => {
     try {
       setLoading(true);
       updateNotifyCount();
-      const response = await axios.get("/notify");
+      const response = await axios.get("/api/notify");
       console.log("APP DATA>>>>>>>>", response.data);
       setNotifications(response.data.notifications);
     } catch (error) {

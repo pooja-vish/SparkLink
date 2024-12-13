@@ -97,7 +97,7 @@ const ViewProjectComponent = () => {
 
     const fetchSuggestions = async (query) => {
         try {
-            const response = await axios.get('/project/filter', {
+            const response = await axios.get('/api/project/filter', {
                 params: { projName: query },
             });
 
@@ -197,7 +197,7 @@ const ViewProjectComponent = () => {
     const UpdateProjDetails = async () => {
         setLoading(true);
         try {
-            const response = await axios.post("/project/updateProject", {
+            const response = await axios.post("/api/project/updateProject", {
                 projDetailsList: projDetailsList
             });
 
@@ -285,7 +285,7 @@ const ViewProjectComponent = () => {
             if (result.isConfirmed) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('/project/deleteProject', {
+                    const response = await axios.post('/api/project/deleteProject', {
                         projData: projDetailsList
                     });
 
@@ -320,7 +320,7 @@ const ViewProjectComponent = () => {
             if (result.isConfirmed) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('/project/completeProject', {
+                    const response = await axios.post('/api/project/completeProject', {
                         projData: projDetailsList
                     });
 
@@ -345,7 +345,7 @@ const ViewProjectComponent = () => {
     const resumeProject = async () => {
         //setLoading(true);
         try {
-            const response = await axios.post('/project/resumeProject', {
+            const response = await axios.post('/api/project/resumeProject', {
                 projData: projDetailsList
             });
 
@@ -378,7 +378,7 @@ const ViewProjectComponent = () => {
             if (result.isConfirmed) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('/project/cancelProject', {
+                    const response = await axios.post('/api/project/cancelProject', {
                         projData: projDetailsList
                     });
 
@@ -413,7 +413,7 @@ const ViewProjectComponent = () => {
             if (result.isConfirmed) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('/project/delayProject', {
+                    const response = await axios.post('/api/project/delayProject', {
                         projData: projDetailsList
                     });
 
@@ -453,7 +453,7 @@ const ViewProjectComponent = () => {
                         role: role,
                         user_id: user_id
                     }
-                    const response = await axios.post('/project/removeStakeholder', {
+                    const response = await axios.post('/api/project/removeStakeholder', {
                         removeData: removeObj
                     });
                     if (response.status === 200) {
@@ -474,7 +474,7 @@ const ViewProjectComponent = () => {
     const submitApplication = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('/project/applyProject', {
+            const response = await axios.post('/api/project/applyProject', {
                 proj_id: projDetailsList.proj_id
             });
             if (response.status === 200 && response.data.success) {
@@ -499,7 +499,7 @@ const ViewProjectComponent = () => {
     const fetchUserRoles = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('/project/getUserRoleAccess', {
+            const response = await axios.post('/api/project/getUserRoleAccess', {
                 proj_id: projDetailsList.proj_id
             });
             if (response.status === 200) {
@@ -517,7 +517,7 @@ const ViewProjectComponent = () => {
     const fetchUserProfile = async (user_id) => {
         setLoading(true);
         try {
-            const response = await axios.get('/profile', {
+            const response = await axios.get('/api/profile', {
                 params: { user_id: user_id }
             });
 
@@ -555,7 +555,7 @@ const ViewProjectComponent = () => {
                         reason: reason
                     }
 
-                    const response = await axios.post('/project/reportProject', {
+                    const response = await axios.post('/api/project/reportProject', {
                         reportData: reportData
                     });
 

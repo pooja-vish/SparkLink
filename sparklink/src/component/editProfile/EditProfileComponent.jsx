@@ -19,7 +19,7 @@ const EditProfileComponent = () => {
     const fetchProfile = async () => {
         if (!user) return;
         try {
-            const response = await axios.get('/editProfile');
+            const response = await axios.get('/api/editProfile');
             setRole(response.data.role);
             setProfile(response.data.profile);
         } catch (err) {
@@ -46,7 +46,7 @@ const EditProfileComponent = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/editProfile', profile);
+            const response = await axios.post('/api/editProfile', profile);
             // navigate('/profile');
             navigate(`/profile?user_id=${user.user_id}`);
         } catch (error) {

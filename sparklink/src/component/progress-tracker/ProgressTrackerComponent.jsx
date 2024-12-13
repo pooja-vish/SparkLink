@@ -52,7 +52,7 @@ const ProgressTrackerComponent = () => {
     const ProjMilestones = async () => {
         setLoading(true);
         try {
-            const response = await axios.get("/progressTracker/projMilestones", {
+            const response = await axios.get("/api/progressTracker/projMilestones", {
                 params: { proj_id: projId }
             });
 
@@ -140,7 +140,7 @@ const ProgressTrackerComponent = () => {
     const fetchSuggestions = async (query) => {
         setLoading(true);
         try {
-            const response = await axios.get('/progressTracker/filterProjMilestones', {
+            const response = await axios.get('/api/progressTracker/filterProjMilestones', {
                 params: { projName: query },
             });
             setProjectList(response.data);
@@ -194,7 +194,7 @@ const ProgressTrackerComponent = () => {
     const fetchMilestone = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('/progressTracker/fetchMilestone', {
+            const response = await axios.post('/api/progressTracker/fetchMilestone', {
                 proj_id: proj_id
             });
             if (response.data.milestoneData.length > 0) {
@@ -224,7 +224,7 @@ const ProgressTrackerComponent = () => {
         query.preventDefault();
         setLoading(true);
         try {
-            const response = await axios.post('/progressTracker/createMilestone', {
+            const response = await axios.post('/api/progressTracker/createMilestone', {
                 milestoneList: milestoneList
             });
 
@@ -302,7 +302,7 @@ const ProgressTrackerComponent = () => {
     const updateMilestoneData = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('/progressTracker/updateMilestone', {
+            const response = await axios.post('/api/progressTracker/updateMilestone', {
                 milestoneList: detailsList
             });
             if (response.status === 200) {
@@ -364,7 +364,7 @@ const ProgressTrackerComponent = () => {
             if (result.isConfirmed) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('/progressTracker/deleteMilestone', {
+                    const response = await axios.post('/api/progressTracker/deleteMilestone', {
                         milestoneList: detailsList
                     });
 
@@ -402,7 +402,7 @@ const ProgressTrackerComponent = () => {
             if (result.isConfirmed) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('/progressTracker/completeMilestone', {
+                    const response = await axios.post('/api/progressTracker/completeMilestone', {
                         milestoneList: detailsList
                     });
 
@@ -440,7 +440,7 @@ const ProgressTrackerComponent = () => {
             if (result.isConfirmed) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('/progressTracker/resumeMilestone', {
+                    const response = await axios.post('/api/progressTracker/resumeMilestone', {
                         milestoneList: detailsList
                     });
 
@@ -468,7 +468,7 @@ const ProgressTrackerComponent = () => {
     const getUserRoleAccess = async (proj_id) => {
         setLoading(true);
         try {
-            const response = await axios.post('/progressTracker/getUserRoleAccess', {
+            const response = await axios.post('/api/progressTracker/getUserRoleAccess', {
                 proj_id: proj_id
             });
             setAccessVal(response.data.access_val);
