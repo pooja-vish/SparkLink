@@ -152,7 +152,7 @@ const CreateProjectComponent = () => {
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    const response = await axios.post("/project/createProject");
+    const response = await axios.post("/api/project/createProject");
     console.log("RESPONSE PROJECT>>>>>", response);
     // e.preventDefault();
 

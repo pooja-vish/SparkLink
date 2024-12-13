@@ -108,15 +108,15 @@ function isAuthenticated(req, res, next) {
 // Define routes
 app.use('/api/users', userRoutes);
 app.use('/api', roleRoutes);
-app.use('/projectstatus', isAuthenticated, projectStatusRouter);
-app.use('/department', isAuthenticated, departmentRoutes);
-app.use('/project', isAuthenticated, projectRouter);
-app.use('/profile', profileRouter);
-app.use('/editProfile', EditProfileRouter);
-app.use('/apply', projApplicationRouter);
-app.use('/alloc', projAllocationRouter);
-app.use('/notify', notificationRouter);
-app.use('/progressTracker', progressTrackerRouter);
+app.use('/api/projectstatus', isAuthenticated, projectStatusRouter);
+app.use('/api/department', isAuthenticated, departmentRoutes);
+app.use('/api/project', isAuthenticated, projectRouter);
+app.use('/api/profile', profileRouter);
+app.use('/api/editProfile', EditProfileRouter);
+app.use('/api/apply', projApplicationRouter);
+app.use('/api/alloc', projAllocationRouter);
+app.use('/api/notify', notificationRouter);
+app.use('/api/progressTracker', progressTrackerRouter);
 
 
 
