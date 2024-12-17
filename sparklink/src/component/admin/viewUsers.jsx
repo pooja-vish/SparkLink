@@ -54,7 +54,7 @@ const ViewUserComponent = () => {
       try {
         const response = await axios.get("/api/users/allusers");
         if (response.status === 200 && response.data.success) {
-          const mappedUsers = response.data.map((user) => ({
+          const mappedUsers = response.data.users.map((user) => ({
             ...user,
             roleName: roleMapping[user.role], // Add a readable roleName
             is_active: user.is_active === "Y", // Convert to boolean
