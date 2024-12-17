@@ -157,15 +157,17 @@ const ViewUserComponent = () => {
       Swal.fire({ title: 'Success', text: 'User updated successfully!', icon: 'success', confirmButtonText: 'Ok' });
       // Refresh user list
       const response = await axios.get("/api/users/allusers");
-      const mappedUsers = response.data.map((user) => ({
-        ...user,
-        roleName: roleMapping[user.role],
-        is_active: user.is_active === "Y", // Ensure boolean consistency
-      }));
-      setAllUsers(mappedUsers);
-      setFilteredUsers(mappedUsers);
-
-      console.log(response.data.message);
+      if (response.status === 200 && response.data.success) {
+        const mappedUsers = response.data.users.map((user) => ({
+          ...user,
+          roleName: roleMapping[user.role],
+          is_active: user.is_active === "Y", // Ensure boolean consistency
+        }));
+        setAllUsers(mappedUsers);
+        setFilteredUsers(mappedUsers);
+      } else if (response.status === 200 && !response.data.success) {
+        navigate('/');
+      }
     } catch (err) {
       console.log(err);
       Swal.fire({
