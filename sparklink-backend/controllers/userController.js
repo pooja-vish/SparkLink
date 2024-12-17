@@ -368,8 +368,12 @@ exports.resetPassword = async (req, res) => {
  
 exports.getallusers = async (req, res) => {
   try {
-    const users = await User.findAll();
-    return res.status(200).json(users);
+    if (req.user.role === '1') {
+      const users = await User.findAll();
+      return res.status(200).json({ success: true, users, msg: 'Authorized' });
+    } else {
+      return res.status(200).json({ success: false, msg: 'Not Authorized' });
+    }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

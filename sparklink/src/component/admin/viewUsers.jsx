@@ -8,6 +8,7 @@ import delete_icon from "../../assets/delete_icon.png";
 import "./viewUsers.css";
 import Swal from "sweetalert2";
 import { Modal, Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const roleMapping = {
   1: "Admin",
@@ -33,6 +34,7 @@ const ViewUserComponent = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [role, setRole] = useState("All");
+  const navigate = useNavigate();
 
   // Fetch users from the backend API
 
@@ -51,15 +53,19 @@ const ViewUserComponent = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get("/api/users/allusers");
-        const mappedUsers = response.data.map((user) => ({
-          ...user,
-          roleName: roleMapping[user.role], // Add a readable roleName
-          is_active: user.is_active === "Y", // Convert to boolean
-        }));
+        if (response.status === 200 && response.data.success) {
+          const mappedUsers = response.data.map((user) => ({
+            ...user,
+            roleName: roleMapping[user.role], // Add a readable roleName
+            is_active: user.is_active === "Y", // Convert to boolean
+          }));
 
-        console.log(mappedUsers);
-        setAllUsers(mappedUsers.sort((a, b) => a.user_id - b.user_id)); // Store full user list
-        setFilteredUsers(mappedUsers.sort((a, b) => a.user_id - b.user_id)); // Initialize filtered list as full list
+          console.log(mappedUsers);
+          setAllUsers(mappedUsers.sort((a, b) => a.user_id - b.user_id)); // Store full user list
+          setFilteredUsers(mappedUsers.sort((a, b) => a.user_id - b.user_id)); // Initialize filtered list as full list
+        } else if (response.status === 200 && !response.data.success) {
+          navigate('/');
+        }
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -129,8 +135,8 @@ const ViewUserComponent = () => {
       allUsers.filter((user) =>
         // Check if the user matches the query
         (user.username.toLowerCase().startsWith(query.toLowerCase()) ||
-        user.user_id.toString().startsWith(query) ||
-        user.email.toLowerCase().startsWith(query.toLowerCase())) &&
+          user.user_id.toString().startsWith(query) ||
+          user.email.toLowerCase().startsWith(query.toLowerCase())) &&
         // Check role condition
         (role === "All" || user.roleName === role) // Show all if role is "All", otherwise filter by role
       )
@@ -177,7 +183,7 @@ const ViewUserComponent = () => {
         <div className="container-fluid mb-5">
           <MenuComponent />
           <div className="row">
-            <MasterComponent/>
+            <MasterComponent />
             <div className="usertable">
               <h1>User Management</h1>
 

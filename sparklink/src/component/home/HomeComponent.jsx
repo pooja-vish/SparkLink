@@ -16,6 +16,7 @@ import caption_3 from '../../assets/Caption_3.png';
 import caption_4 from '../../assets/Caption_4.png';
 import caption_5 from '../../assets/Caption_5.png';
 import caption_6 from '../../assets/Caption_6.png';
+import { Link } from 'react-router-dom';
 
 const HomeComponent = () => {
     return (
@@ -107,7 +108,11 @@ const HomeComponent = () => {
                             </div>
                             <div className="row mt-3">
                                 <div className="col-12 text-center">
-                                    <button className="text-center button_text button-card">Know More</button>
+                                    <Link
+                                        className="text-menu"
+                                        to='/view-project'>
+                                        <button className="text-center button_text button-card">Know More</button>
+                                    </Link>
                                 </div>
                             </div>
 
@@ -132,7 +137,11 @@ const HomeComponent = () => {
                             </div>
                             <div className="row mt-3">
                                 <div className="col-12 text-center">
-                                    <button className="text-center button_text button-card">Know More</button>
+                                    <Link
+                                        className="text-menu"
+                                        to='/view-project'>
+                                        <button className="text-center button_text button-card">Know More</button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
